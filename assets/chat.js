@@ -1,6 +1,6 @@
 ﻿/**
  * COHO OpsHub — Built-in AI Chat Assistant
- * Powered by Gemini 3.6 Flash + 6 Finance Specialists + Continuous Learning Engine
+ * Powered by Gemini 3.6 Flash + 6 Finance Specialists + Continuous Learning Engine + Dark/Light Theme
  */
 
 const Chat = (() => {
@@ -25,7 +25,7 @@ const Chat = (() => {
 
       <!-- Chat Panel -->
       <div id="chatPanel"
-        class="fixed bottom-24 right-6 z-50 w-[420px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right"
+        class="fixed bottom-24 right-6 z-50 w-[420px] max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right"
         style="display:none; height: 600px; max-height: calc(100vh - 7.5rem);">
 
         <!-- Header -->
@@ -53,13 +53,13 @@ const Chat = (() => {
         </div>
 
         <!-- Slide-over Interactive User Guide -->
-        <div id="chatGuideView" class="hidden flex-1 overflow-y-auto p-4 bg-slate-50 border-b border-slate-200">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div id="chatGuideView" class="hidden flex-1 overflow-y-auto p-4 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
             <div>
-              <h3 class="text-sm font-bold text-slate-900">📖 Rev''s AI Chat & Learning Guide</h3>
-              <p class="text-xs text-slate-500">Click any example below to load it into your chat!</p>
+              <h3 class="text-sm font-bold text-slate-900 dark:text-white">📖 Rev''s AI Chat & Learning Guide</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Click any example below to load it into your chat!</p>
             </div>
-            <button onclick="Chat.toggleGuide()" class="text-slate-400 hover:text-slate-600 p-1">✕</button>
+            <button onclick="Chat.toggleGuide()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1">✕</button>
           </div>
 
           <!-- Guide Tabs -->
@@ -67,23 +67,23 @@ const Chat = (() => {
             
             <!-- Section 1: Teach Rules -->
             <div>
-              <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <h4 class="text-xs font-bold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 🧠 1. How to Teach the AI Rules
               </h4>
-              <p class="text-xs text-slate-600 mb-2 leading-relaxed">
+              <p class="text-xs text-slate-600 dark:text-slate-300 mb-2 leading-relaxed">
                 Start with <strong>"Remember this rule: ..."</strong> or <strong>"Save this: ..."</strong>. The AI saves it to your skill repo and remembers it in future chats!
               </p>
               <div class="space-y-1.5">
                 <div onclick="Chat.useExample('Remember this rule: Tenant Dave in Room 3 pays from his mum\'s account under \'Sarah Smith\'.')"
-                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  class="cursor-pointer p-2.5 bg-white dark:bg-slate-800/90 hover:bg-emerald-50 dark:hover:bg-slate-700/80 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-500 transition-all text-xs text-slate-700 dark:text-slate-200 shadow-3xs">
                   👉 <strong>Tenant Payment Alias:</strong> <em>"Remember: Dave in Room 3 pays from 'Sarah Smith' account."</em>
                 </div>
                 <div onclick="Chat.useExample('Remember this rule: Landlord John wants repair quotes over £200 approved before booking work.')"
-                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  class="cursor-pointer p-2.5 bg-white dark:bg-slate-800/90 hover:bg-emerald-50 dark:hover:bg-slate-700/80 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-500 transition-all text-xs text-slate-700 dark:text-slate-200 shadow-3xs">
                   👉 <strong>Landlord Approval Limit:</strong> <em>"Remember: Landlord John wants quotes > £200 approved."</em>
                 </div>
                 <div onclick="Chat.useExample('Remember this rule: Electrician Gary charges £65/hr and needs 24 hours advance notice.')"
-                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  class="cursor-pointer p-2.5 bg-white dark:bg-slate-800/90 hover:bg-emerald-50 dark:hover:bg-slate-700/80 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-500 transition-all text-xs text-slate-700 dark:text-slate-200 shadow-3xs">
                   👉 <strong>Contractor Rate:</strong> <em>"Remember: Gary charges £65/hr and needs 24h notice."</em>
                 </div>
               </div>
@@ -91,24 +91,24 @@ const Chat = (() => {
 
             <!-- Section 2: Finance Suite -->
             <div>
-              <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <h4 class="text-xs font-bold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 🏛️ 2. Ask the 6 Finance Specialists
               </h4>
               <div class="space-y-1.5">
                 <div onclick="Chat.useExample('Audit this plumber quote: £350 to replace a kitchen mixer tap at 14 Oak St. Is it reasonable?')"
-                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  class="cursor-pointer p-2.5 bg-white dark:bg-slate-800/90 hover:bg-emerald-50 dark:hover:bg-slate-700/80 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-500 transition-all text-xs text-slate-700 dark:text-slate-200 shadow-3xs">
                   💳 <strong>AP Invoice Audit:</strong> <em>"Audit this plumber quote: £350 for mixer tap replacement."</em>
                 </div>
                 <div onclick="Chat.useExample('Guide me through month-end bank reconciliation close for 24 Elm Grove.')"
-                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  class="cursor-pointer p-2.5 bg-white dark:bg-slate-800/90 hover:bg-emerald-50 dark:hover:bg-slate-700/80 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-500 transition-all text-xs text-slate-700 dark:text-slate-200 shadow-3xs">
                   📒 <strong>Month-End Close:</strong> <em>"Guide me through month-end reconciliation close."</em>
                 </div>
                 <div onclick="Chat.useExample('Calculate void loss: Room 2 has been vacant for 3 weeks at £650/month rent.')"
-                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  class="cursor-pointer p-2.5 bg-white dark:bg-slate-800/90 hover:bg-emerald-50 dark:hover:bg-slate-700/80 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-500 transition-all text-xs text-slate-700 dark:text-slate-200 shadow-3xs">
                   📊 <strong>Void & Yield:</strong> <em>"Calculate void loss for 3 vacant weeks at £650/month."</em>
                 </div>
                 <div onclick="Chat.useExample('Is replacing all communal HMO carpets tax-deductible as a revenue repair or capital improvement?')"
-                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  class="cursor-pointer p-2.5 bg-white dark:bg-slate-800/90 hover:bg-emerald-50 dark:hover:bg-slate-700/80 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-500 transition-all text-xs text-slate-700 dark:text-slate-200 shadow-3xs">
                   ⚖️ <strong>Property Tax:</strong> <em>"Is replacing communal carpets tax-deductible as a repair?"</em>
                 </div>
               </div>
@@ -116,19 +116,19 @@ const Chat = (() => {
 
             <!-- Section 3: Complain & Suggest -->
             <div>
-              <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <h4 class="text-xs font-bold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                 📋 3. App Feedback & Feature Requests
               </h4>
-              <p class="text-xs text-slate-600 mb-2 leading-relaxed">
+              <p class="text-xs text-slate-600 dark:text-slate-300 mb-2 leading-relaxed">
                 Notice a bug or want a new button? Just tell the AI. It logs it directly for Arnold & dev team to build!
               </p>
               <div class="space-y-1.5">
                 <div onclick="Chat.useExample('I find it annoying that the table doesn\'t have an export to PDF button, could we add that?')"
-                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  class="cursor-pointer p-2.5 bg-white dark:bg-slate-800/90 hover:bg-emerald-50 dark:hover:bg-slate-700/80 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-500 transition-all text-xs text-slate-700 dark:text-slate-200 shadow-3xs">
                   💡 <em>"I find it annoying that the table doesn't have an export to PDF button."</em>
                 </div>
                 <div onclick="Chat.useExample('Can we add a quick filter by Property Name on the Rent Roll tab?')"
-                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  class="cursor-pointer p-2.5 bg-white dark:bg-slate-800/90 hover:bg-emerald-50 dark:hover:bg-slate-700/80 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-500 transition-all text-xs text-slate-700 dark:text-slate-200 shadow-3xs">
                   💡 <em>"Can we add a quick filter by Property Name on the Rent Roll tab?"</em>
                 </div>
               </div>
@@ -138,33 +138,33 @@ const Chat = (() => {
         </div>
 
         <!-- Quick Finance & Learning Chips -->
-        <div id="chatQuickChips" class="px-3 py-2 bg-slate-100/90 border-b border-slate-200/80 flex items-center gap-1.5 overflow-x-auto text-[11px] flex-shrink-0 no-scrollbar">
-          <button onclick="Chat.usePrompt('Analyze room yield and void costs for ')" class="px-2 py-0.5 rounded-full bg-white text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 border border-slate-200 whitespace-nowrap shadow-3xs transition-colors">📊 Yield</button>
-          <button onclick="Chat.usePrompt('Audit this contractor repair quote like an AP Specialist: ')" class="px-2 py-0.5 rounded-full bg-white text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 border border-slate-200 whitespace-nowrap shadow-3xs transition-colors">🧾 Audit Invoice</button>
-          <button onclick="Chat.usePrompt('Guide me through month-end bank reconciliation close for ')" class="px-2 py-0.5 rounded-full bg-white text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 border border-slate-200 whitespace-nowrap shadow-3xs transition-colors">📒 Month-End</button>
-          <button onclick="Chat.usePrompt('Remember this rule: ')" class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 whitespace-nowrap shadow-3xs font-medium transition-colors">🧠 Teach Rule</button>
+        <div id="chatQuickChips" class="px-3 py-2 bg-slate-100/90 dark:bg-slate-800/90 border-b border-slate-200/80 dark:border-slate-700 flex items-center gap-1.5 overflow-x-auto text-[11px] flex-shrink-0 no-scrollbar">
+          <button onclick="Chat.usePrompt('Analyze room yield and void costs for ')" class="px-2 py-0.5 rounded-full bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors">📊 Yield</button>
+          <button onclick="Chat.usePrompt('Audit this contractor repair quote like an AP Specialist: ')" class="px-2 py-0.5 rounded-full bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors">🧾 Audit Invoice</button>
+          <button onclick="Chat.usePrompt('Guide me through month-end bank reconciliation close for ')" class="px-2 py-0.5 rounded-full bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors">📒 Month-End</button>
+          <button onclick="Chat.usePrompt('Remember this rule: ')" class="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap shadow-3xs font-medium transition-colors">🧠 Teach Rule</button>
         </div>
 
         <!-- Messages Area -->
-        <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50">
+        <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-900/90">
           <div class="flex gap-2">
             <div class="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0 mt-0.5">C</div>
-            <div class="bg-white rounded-xl rounded-tl-sm px-3.5 py-2.5 text-sm text-slate-700 shadow-xs border border-slate-100 max-w-[85%] leading-relaxed">
+            <div class="bg-white dark:bg-slate-800 rounded-xl rounded-tl-sm px-3.5 py-2.5 text-sm text-slate-700 dark:text-slate-200 shadow-xs border border-slate-100 dark:border-slate-700 max-w-[85%] leading-relaxed">
               Hi Rev! 👋 I''m your COHO Operations & Finance Assistant.
-              <div class="mt-2 text-xs text-slate-500 space-y-1">
+              <div class="mt-2 text-xs text-slate-500 dark:text-slate-400 space-y-1">
                 <p>• <strong>Finance Suite</strong>: Controller, AP, Yield, FP&A, Tax.</p>
                 <p>• <strong>Teach Me</strong>: Tell me <em>"Remember this rule: ..."</em> to save a habit.</p>
-                <p>• <strong>Need Ideas?</strong> Click <button onclick="Chat.toggleGuide()" class="text-emerald-600 font-bold underline">💡 Guide</button> above for copy-paste examples!</p>
+                <p>• <strong>Need Ideas?</strong> Click <button onclick="Chat.toggleGuide()" class="text-emerald-600 dark:text-emerald-400 font-bold underline">💡 Guide</button> above for copy-paste examples!</p>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Input Area -->
-        <div class="border-t border-slate-200 p-3 bg-white flex-shrink-0">
+        <div class="border-t border-slate-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-800 flex-shrink-0">
           <div class="flex gap-2">
             <textarea id="chatInput" rows="1" placeholder="Ask about rent, arrears, invoices, or teach a rule..."
-              class="flex-1 resize-none rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow"
+              class="flex-1 resize-none rounded-xl border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-shadow"
               style="min-height:38px; max-height:100px; overflow-y:auto;"
               onkeydown="Chat.handleKey(event)" oninput="Chat.autoResize(this)"></textarea>
             <button id="chatSendBtn" onclick="Chat.send()"
@@ -172,7 +172,7 @@ const Chat = (() => {
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
             </button>
           </div>
-          <p class="text-[10px] text-slate-400 mt-1.5 text-center">COHO OpsHub · Press Enter to send · Shift+Enter for newline</p>
+          <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1.5 text-center">COHO OpsHub · Press Enter to send · Shift+Enter for newline</p>
         </div>
       </div>
     `;
@@ -335,7 +335,7 @@ const Chat = (() => {
     const messages = document.getElementById("chatMessages");
     const badge = document.createElement("div");
     badge.className = "flex justify-center my-1.5";
-    badge.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-3xs animate-fade-in">${text}</span>`;
+    badge.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 shadow-3xs animate-fade-in">${text}</span>`;
     messages.appendChild(badge);
     scrollToBottom();
   }
@@ -346,7 +346,7 @@ const Chat = (() => {
     messages.innerHTML = `
       <div class="flex gap-2">
         <div class="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0 mt-0.5">C</div>
-        <div class="bg-white rounded-xl rounded-tl-sm px-3.5 py-2.5 text-sm text-slate-700 shadow-xs border border-slate-100 max-w-[85%]">
+        <div class="bg-white dark:bg-slate-800 rounded-xl rounded-tl-sm px-3.5 py-2.5 text-sm text-slate-700 dark:text-slate-200 shadow-xs border border-slate-100 dark:border-slate-700 max-w-[85%]">
           Chat cleared! How can I help you with HMO operations or finance today?
         </div>
       </div>`;
@@ -364,7 +364,7 @@ const Chat = (() => {
     const bubble = document.createElement("div");
     bubble.className = isUser
       ? "bg-emerald-600 text-white rounded-xl rounded-tr-sm px-3.5 py-2.5 text-sm max-w-[85%] whitespace-pre-wrap leading-relaxed"
-      : "bg-white rounded-xl rounded-tl-sm px-3.5 py-2.5 text-sm text-slate-700 shadow-xs border border-slate-100 max-w-[85%] whitespace-pre-wrap leading-relaxed";
+      : "bg-white dark:bg-slate-800 rounded-xl rounded-tl-sm px-3.5 py-2.5 text-sm text-slate-700 dark:text-slate-200 shadow-xs border border-slate-100 dark:border-slate-700 max-w-[85%] whitespace-pre-wrap leading-relaxed";
 
     bubble.textContent = text || (isUser ? "" : "▌");
 
