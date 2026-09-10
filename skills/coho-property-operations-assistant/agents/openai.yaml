@@ -1,0 +1,4 @@
+interface:
+  display_name: "COHO Property Operations Assistant"
+  short_description: "Daily COHO property operations and finance support"
+  default_prompt: "Use $coho-property-operations-assistant to review this property-management task and identify the checks, exceptions, and next actions."
