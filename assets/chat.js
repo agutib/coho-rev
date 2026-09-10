@@ -5,6 +5,7 @@
 
 const Chat = (() => {
   let isOpen = false;
+  let isGuideOpen = false;
   let history = []; // { role: "user"|"model", text: string }
   let isStreaming = false;
 
@@ -24,8 +25,8 @@ const Chat = (() => {
 
       <!-- Chat Panel -->
       <div id="chatPanel"
-        class="fixed bottom-24 right-6 z-50 w-96 max-w-[calc(100vw-2.5rem)] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right"
-        style="display:none; height: 580px; max-height: calc(100vh - 8rem);">
+        class="fixed bottom-24 right-6 z-50 w-[420px] max-w-[calc(100vw-2rem)] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right"
+        style="display:none; height: 600px; max-height: calc(100vh - 7.5rem);">
 
         <!-- Header -->
         <div class="bg-emerald-600 px-4 py-3 flex items-center justify-between flex-shrink-0">
@@ -36,19 +37,108 @@ const Chat = (() => {
                 <p class="text-sm font-bold text-white leading-none">COHO Assistant</p>
                 <span class="text-[9px] bg-emerald-700 text-emerald-100 px-1.5 py-0.5 rounded font-medium">Finance Suite</span>
               </div>
-              <p class="text-[11px] text-emerald-100 mt-0.5">UK HMO Operations & Financial Controller</p>
+              <p class="text-[11px] text-emerald-100 mt-0.5">UK HMO Operations & Controller</p>
             </div>
           </div>
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1.5">
+            <button onclick="Chat.toggleGuide()" title="User Guide & Example Prompts"
+              class="px-2 py-1 rounded-lg text-emerald-100 bg-white/10 hover:bg-white/20 transition-colors text-xs font-semibold flex items-center gap-1">
+              💡 <span>Guide</span>
+            </button>
             <button onclick="Chat.clearHistory()" title="Clear conversation" class="p-1.5 rounded-lg text-emerald-100 hover:bg-white/10 transition-colors text-xs">🗑️</button>
-            <button onclick="Chat.toggle()" title="Close" class="p-1.5 rounded-lg text-emerald-100 hover:bg-white/10 transition-colors">
+            <button onclick="Chat.toggle()" title="Close chat" class="p-1.5 rounded-lg text-emerald-100 hover:bg-white/10 transition-colors">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
           </div>
         </div>
 
+        <!-- Slide-over Interactive User Guide -->
+        <div id="chatGuideView" class="hidden flex-1 overflow-y-auto p-4 bg-slate-50 border-b border-slate-200">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">📖 Rev''s AI Chat & Learning Guide</h3>
+              <p class="text-xs text-slate-500">Click any example below to load it into your chat!</p>
+            </div>
+            <button onclick="Chat.toggleGuide()" class="text-slate-400 hover:text-slate-600 p-1">✕</button>
+          </div>
+
+          <!-- Guide Tabs -->
+          <div class="mt-3 space-y-4">
+            
+            <!-- Section 1: Teach Rules -->
+            <div>
+              <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                🧠 1. How to Teach the AI Rules
+              </h4>
+              <p class="text-xs text-slate-600 mb-2 leading-relaxed">
+                Start with <strong>"Remember this rule: ..."</strong> or <strong>"Save this: ..."</strong>. The AI saves it to your skill repo and remembers it in future chats!
+              </p>
+              <div class="space-y-1.5">
+                <div onclick="Chat.useExample('Remember this rule: Tenant Dave in Room 3 pays from his mum\'s account under \'Sarah Smith\'.')"
+                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  👉 <strong>Tenant Payment Alias:</strong> <em>"Remember: Dave in Room 3 pays from 'Sarah Smith' account."</em>
+                </div>
+                <div onclick="Chat.useExample('Remember this rule: Landlord John wants repair quotes over £200 approved before booking work.')"
+                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  👉 <strong>Landlord Approval Limit:</strong> <em>"Remember: Landlord John wants quotes > £200 approved."</em>
+                </div>
+                <div onclick="Chat.useExample('Remember this rule: Electrician Gary charges £65/hr and needs 24 hours advance notice.')"
+                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  👉 <strong>Contractor Rate:</strong> <em>"Remember: Gary charges £65/hr and needs 24h notice."</em>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 2: Finance Suite -->
+            <div>
+              <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                🏛️ 2. Ask the 6 Finance Specialists
+              </h4>
+              <div class="space-y-1.5">
+                <div onclick="Chat.useExample('Audit this plumber quote: £350 to replace a kitchen mixer tap at 14 Oak St. Is it reasonable?')"
+                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  💳 <strong>AP Invoice Audit:</strong> <em>"Audit this plumber quote: £350 for mixer tap replacement."</em>
+                </div>
+                <div onclick="Chat.useExample('Guide me through month-end bank reconciliation close for 24 Elm Grove.')"
+                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  📒 <strong>Month-End Close:</strong> <em>"Guide me through month-end reconciliation close."</em>
+                </div>
+                <div onclick="Chat.useExample('Calculate void loss: Room 2 has been vacant for 3 weeks at £650/month rent.')"
+                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  📊 <strong>Void & Yield:</strong> <em>"Calculate void loss for 3 vacant weeks at £650/month."</em>
+                </div>
+                <div onclick="Chat.useExample('Is replacing all communal HMO carpets tax-deductible as a revenue repair or capital improvement?')"
+                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  ⚖️ <strong>Property Tax:</strong> <em>"Is replacing communal carpets tax-deductible as a repair?"</em>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 3: Complain & Suggest -->
+            <div>
+              <h4 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                📋 3. App Feedback & Feature Requests
+              </h4>
+              <p class="text-xs text-slate-600 mb-2 leading-relaxed">
+                Notice a bug or want a new button? Just tell the AI. It logs it directly for Arnold & dev team to build!
+              </p>
+              <div class="space-y-1.5">
+                <div onclick="Chat.useExample('I find it annoying that the table doesn\'t have an export to PDF button, could we add that?')"
+                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  💡 <em>"I find it annoying that the table doesn't have an export to PDF button."</em>
+                </div>
+                <div onclick="Chat.useExample('Can we add a quick filter by Property Name on the Rent Roll tab?')"
+                  class="cursor-pointer p-2.5 bg-white hover:bg-emerald-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-xs text-slate-700 shadow-3xs">
+                  💡 <em>"Can we add a quick filter by Property Name on the Rent Roll tab?"</em>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
         <!-- Quick Finance & Learning Chips -->
-        <div class="px-3 py-2 bg-slate-100/90 border-b border-slate-200/80 flex items-center gap-1.5 overflow-x-auto text-[11px] flex-shrink-0 no-scrollbar">
+        <div id="chatQuickChips" class="px-3 py-2 bg-slate-100/90 border-b border-slate-200/80 flex items-center gap-1.5 overflow-x-auto text-[11px] flex-shrink-0 no-scrollbar">
           <button onclick="Chat.usePrompt('Analyze room yield and void costs for ')" class="px-2 py-0.5 rounded-full bg-white text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 border border-slate-200 whitespace-nowrap shadow-3xs transition-colors">📊 Yield</button>
           <button onclick="Chat.usePrompt('Audit this contractor repair quote like an AP Specialist: ')" class="px-2 py-0.5 rounded-full bg-white text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 border border-slate-200 whitespace-nowrap shadow-3xs transition-colors">🧾 Audit Invoice</button>
           <button onclick="Chat.usePrompt('Guide me through month-end bank reconciliation close for ')" class="px-2 py-0.5 rounded-full bg-white text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 border border-slate-200 whitespace-nowrap shadow-3xs transition-colors">📒 Month-End</button>
@@ -62,9 +152,9 @@ const Chat = (() => {
             <div class="bg-white rounded-xl rounded-tl-sm px-3.5 py-2.5 text-sm text-slate-700 shadow-xs border border-slate-100 max-w-[85%] leading-relaxed">
               Hi Rev! 👋 I''m your COHO Operations & Finance Assistant.
               <div class="mt-2 text-xs text-slate-500 space-y-1">
-                <p>• <strong>Finance Suite</strong>: Controller, AP, Yield & FP&A analysis, UK Property Tax.</p>
-                <p>• <strong>Continuous Learning</strong>: Tell me <em>"Remember this rule: ..."</em> to update our skill.</p>
-                <p>• <strong>Feedback</strong>: Complain or suggest changes anytime — I'll log it for Arnold!</p>
+                <p>• <strong>Finance Suite</strong>: Controller, AP, Yield, FP&A, Tax.</p>
+                <p>• <strong>Teach Me</strong>: Tell me <em>"Remember this rule: ..."</em> to save a habit.</p>
+                <p>• <strong>Need Ideas?</strong> Click <button onclick="Chat.toggleGuide()" class="text-emerald-600 font-bold underline">💡 Guide</button> above for copy-paste examples!</p>
               </div>
             </div>
           </div>
@@ -105,10 +195,39 @@ const Chat = (() => {
     if (isOpen) {
       setTimeout(() => {
         const input = document.getElementById("chatInput");
-        if (input) input.focus();
+        if (input && !isGuideOpen) input.focus();
         scrollToBottom();
       }, 50);
     }
+  }
+
+  function toggleGuide() {
+    const guide = document.getElementById("chatGuideView");
+    const messages = document.getElementById("chatMessages");
+    const chips = document.getElementById("chatQuickChips");
+
+    isGuideOpen = !isGuideOpen;
+    if (isGuideOpen) {
+      guide.classList.remove("hidden");
+      messages.classList.add("hidden");
+      chips.classList.add("hidden");
+    } else {
+      guide.classList.add("hidden");
+      messages.classList.remove("hidden");
+      chips.classList.remove("hidden");
+      const input = document.getElementById("chatInput");
+      if (input) input.focus();
+    }
+  }
+
+  function openWithGuide() {
+    if (!isOpen) toggle();
+    if (!isGuideOpen) toggleGuide();
+  }
+
+  function useExample(text) {
+    toggleGuide();
+    usePrompt(text);
   }
 
   function usePrompt(text) {
@@ -122,6 +241,8 @@ const Chat = (() => {
 
   async function send() {
     if (isStreaming) return;
+    if (isGuideOpen) toggleGuide(); // close guide if open
+
     const input = document.getElementById("chatInput");
     const message = input.value.trim();
     if (!message) return;
@@ -172,7 +293,6 @@ const Chat = (() => {
             const parsed = JSON.parse(data);
             if (parsed.text) {
               rawResponse += parsed.text;
-              // Clean any system tags from display
               const cleanedText = rawResponse
                 .replace(/\[\[LEARNED_RULE:[\s\S]*?\]\]/g, "")
                 .replace(/\[\[APP_FEEDBACK:[\s\S]*?\]\]/g, "")
@@ -291,7 +411,7 @@ const Chat = (() => {
     });
   }
 
-  return { init, toggle, send, clearHistory, handleKey, autoResize, usePrompt };
+  return { init, toggle, toggleGuide, openWithGuide, useExample, usePrompt, send, clearHistory, handleKey, autoResize };
 })();
 
 if (document.readyState === "loading") {
