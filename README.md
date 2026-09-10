@@ -55,9 +55,29 @@ COHO-Property-Operations/
     └── REVS_DAILY_GUIDE.md      # Rev's 5-minute everyday operating manual
 ```
 
+7. **Built-in AI Operations & Finance Suite:**
+   - Powered by Google Gemini 3.6 Flash via internal streaming proxy.
+   - Includes 6 Finance Specialists: Bookkeeper/Controller, AP Specialist, Financial Analyst, FP&A Analyst, Property Tax Strategist, and CFO.
+   - Continuous Learning: Intercepts *"Remember this rule: ..."* and updates property skills on GitHub automatically.
+   - User Feedback Logger: Automatically routes Rev's bug reports and feature ideas to `docs/USER_FEEDBACK_LOG.md`.
+
+8. **Simple Dark & Light Theme:**
+   - Toggle button in header (`🌙` / `☀️`) with zero-FOUC and local preference persistence.
+
+---
+
+## 🤖 Handover Guides for Other AI Tools (Claude, Codex, Cursor, etc.)
+
+If you are switching AI assistants or hit rate limits, point your new AI tool to these handover files:
+- **`CLAUDE.md`** — Dedicated rules and operational manual for **Claude Code**.
+- **`AGENTS.md`** — Universal architectural handover for **OpenAI Codex, Cursor, Windsurf, Copilot**.
+- **`CONTEXT_HANDOVER.md`** — Complete session chronology, lessons learned, and exact server commands.
+
 ---
 
 ## Quick Start
-1. Double-click `start-app.bat` (or open `index.html` in Chrome or Edge).
-2. Click **"⚡ Load Demo Data"** to test the full portfolio and bank match.
-3. Drop your real bank or COHO export files to start daily operations!
+1. Live Production Site: [https://coho.arnoldgutib.pro](https://coho.arnoldgutib.pro) (Password: `coho@2026!`).
+2. Local Development: Double-click `start-app.bat` (or open `index.html` in Chrome or Edge).
+3. Click **"⚡ Load Demo Data"** to test the full portfolio and bank match.
+4. Drop your real bank or COHO export files to start daily operations!
+
