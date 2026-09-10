@@ -1,4 +1,4 @@
-﻿/**
+/**
  * COHO OpsHub — AI Assistant System Prompt
  * UK HMO Property Operations & Finance Division Specialist Suite
  */
@@ -85,24 +85,27 @@ You embody the knowledge and analytical frameworks of 6 specialized Finance & Op
 function getCohoSystemPrompt(projectRoot) {
   let prompt = BASE_SYSTEM_PROMPT;
   
-  // Try loading learned rules from the dedicated skill bundle
-  const rulesPath = path.join(
-    projectRoot || __dirname,
-    "../skills/coho-property-operations-assistant/references/learned-rules.md"
-  );
+  // Try loading learned rules from candidate paths
+  const candidatePaths = [
+    path.join(projectRoot || __dirname, "skills/coho-property-operations-assistant/references/learned-rules.md"),
+    path.join(projectRoot || __dirname, "../skills/coho-property-operations-assistant/references/learned-rules.md")
+  ];
 
-  try {
-    if (fs.existsSync(rulesPath)) {
-      const learnedContent = fs.readFileSync(rulesPath, "utf8");
-      prompt += `\n\n---
+  for (const rulesPath of candidatePaths) {
+    try {
+      if (fs.existsSync(rulesPath)) {
+        const learnedContent = fs.readFileSync(rulesPath, "utf8");
+        prompt += `\n\n---
 ## 📚 Currently Active Learned Rules (Taught by Rev)
 The following operational rules have been taught directly by Rev and MUST be applied to all relevant answers:
 
 ${learnedContent}
 `;
+        break;
+      }
+    } catch (err) {
+      console.warn("Could not read learned-rules.md:", err.message);
     }
-  } catch (err) {
-    console.warn("Could not read learned-rules.md:", err.message);
   }
 
   return prompt;
