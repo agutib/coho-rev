@@ -9,3 +9,7 @@ Thumbs.db
 
 # Local logs
 *.log
+
+# API Backend — secrets and deps (NEVER commit these)
+api/.env
+api/node_modules/
