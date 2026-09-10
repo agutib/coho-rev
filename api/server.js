@@ -1,4 +1,4 @@
-﻿/**
+/**
  * COHO OpsHub — AI Chat Backend
  * Secure proxy between the browser and Gemini API
  */
@@ -72,7 +72,7 @@ app.post("/api/chat", async (req, res) => {
 
   try {
     const responseStream = await ai.models.generateContentStream({
-      model: "gemini-2.0-flash",
+      model: "gemini-3.6-flash",
       config: {
         systemInstruction: COHO_SYSTEM_PROMPT,
         temperature: 0.7,
