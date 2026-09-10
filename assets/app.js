@@ -15,9 +15,19 @@ const App = {
   },
 
   init() {
+    // Auth gate — redirect to login if no valid session
+    if (sessionStorage.getItem('coho_auth') !== 'true') {
+      window.location.replace('login.html');
+      return;
+    }
     this.loadFromStorage();
     this.bindEvents();
     this.render();
+  },
+
+  logout() {
+    sessionStorage.removeItem('coho_auth');
+    window.location.replace('login.html');
   },
 
   // Save state to local storage for zero-loss persistence
