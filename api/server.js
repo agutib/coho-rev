@@ -82,7 +82,7 @@ app.post("/api/chat", async (req, res) => {
     });
 
     for await (const chunk of responseStream) {
-      const text = chunk.text();
+      const text = chunk.text;
       if (text) {
         res.write(`data: ${JSON.stringify({ text })}\n\n`);
       }
