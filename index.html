@@ -200,24 +200,8 @@
       </div>
     </div>
 
-    <!-- Drag & Drop Intake Box -->
-    <div id="dropzone" class="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 rounded-2xl bg-white dark:bg-slate-800/60 p-6 text-center transition-all duration-200 cursor-pointer group shadow-2xs">
-      <input type="file" id="file-input" class="hidden" accept=".csv, .xlsx, .xls">
-      <div class="flex flex-col items-center justify-center gap-2 pointer-events-none">
-        <div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-700 group-hover:bg-emerald-50 dark:group-hover:bg-emerald-950/50 flex items-center justify-center text-2xl transition-colors">
-          📁
-        </div>
-        <div class="text-sm font-semibold text-slate-800 dark:text-slate-100">
-          Drop your Bank CSV or COHO Rent Roll / Excel here
-        </div>
-        <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md">
-          Supports Bank Statement CSVs (Barclays, Lloyds, Starling, Revolut, etc.) and COHO exports. Files are processed locally on your device with complete privacy.
-        </p>
-        <button onclick="document.getElementById('file-input').click()" class="mt-2 px-4 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-white transition-colors pointer-events-auto shadow-xs">
-          Browse Computer Files
-        </button>
-      </div>
-    </div>
+    <!-- Hidden file input for manual file uploads -->
+    <input type="file" id="file-input" class="hidden" accept=".csv, .xlsx, .xls">
 
     <!-- Main Navigation Tabs -->
     <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 gap-4">
@@ -253,59 +237,58 @@
           <p class="text-sm text-emerald-200 mt-1 max-w-md">Will automatically parse, update OpsHub metrics, and stage for instant Gemini financial analysis!</p>
         </div>
 
-        <!-- Copilot Workspace Header -->
-        <div class="bg-slate-900 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center text-slate-950 font-black text-base shadow-sm shadow-emerald-500/30">
+        <!-- Copilot Workspace Header (Single-row layout with controls beside title) -->
+        <div class="bg-slate-900 text-white px-4 py-2.5 flex items-center justify-between gap-3 border-b border-slate-800">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center text-slate-950 font-black text-sm shadow-sm shadow-emerald-500/30 flex-shrink-0">
               ⚡
             </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h2 class="text-sm font-bold text-white leading-none">Antigravity AI Copilot</h2>
-                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Gemini 3.6 Flash</span>
-                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">6 Specialists Active</span>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <h2 class="text-sm font-bold text-white leading-none whitespace-nowrap">Antigravity AI Copilot</h2>
+                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 whitespace-nowrap">Gemini 3.6 Flash</span>
               </div>
-              <p class="text-xs text-slate-400 mt-0.5">Drag-and-drop CSVs or ask any question · Learns rules dynamically</p>
+              <p class="text-[11px] text-slate-400 mt-0.5 truncate hidden 2xl:block">Drag-and-drop CSVs or ask any question · Learns rules dynamically</p>
             </div>
           </div>
 
-          <div class="flex items-center flex-wrap gap-2">
+          <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
             <!-- Specialist Dropdown (Green Box) -->
             <div class="relative">
               <select id="copilot-specialist-select" onchange="Chat.handleSpecialistSelect(this.value)" 
-                class="appearance-none bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-medium pl-3 pr-7 py-1.5 rounded-lg border border-slate-700 hover:border-slate-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs">
+                class="appearance-none bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-medium pl-2.5 pr-6 py-1.5 rounded-lg border border-slate-700 hover:border-slate-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs">
                 <option value="all">🌟 Specialist: All-Round</option>
                 <option value="controller">📒 Bookkeeper & Controller</option>
                 <option value="ap">💳 AP Invoice Auditor</option>
-                <option value="analyst">📊 Financial Analyst (Yield & Void)</option>
+                <option value="analyst">📊 Financial Analyst</option>
                 <option value="fpa">📈 FP&A Cash Forecast</option>
-                <option value="tax">⚖️ Property Tax Strategist</option>
-                <option value="cfo">🏛️ CFO & Capex Planner</option>
+                <option value="tax">⚖️ Tax Strategist</option>
+                <option value="cfo">🏛️ CFO & Capex</option>
               </select>
-              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400 text-[10px]">▼</div>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-slate-400 text-[10px]">▼</div>
             </div>
 
             <!-- COHO Skills Dropdown (Red Box) -->
             <div class="relative">
               <select id="copilot-skill-select" onchange="Chat.handleSkillSelect(this)" 
-                class="appearance-none bg-slate-800 hover:bg-slate-750 text-emerald-300 hover:text-emerald-200 text-xs font-medium pl-3 pr-7 py-1.5 rounded-lg border border-slate-700 hover:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs">
+                class="appearance-none bg-slate-800 hover:bg-slate-750 text-emerald-300 hover:text-emerald-200 text-xs font-medium pl-2.5 pr-6 py-1.5 rounded-lg border border-slate-700 hover:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs">
                 <option value="" selected disabled>🛠️ COHO Skills & SOPs ▾</option>
                 <option value="rent-arrears">⚖️ Rent & Arrears Protocol</option>
-                <option value="reconciliation">📒 3-Way Reconcile & Bookkeeping</option>
+                <option value="reconciliation">📒 3-Way Reconcile</option>
                 <option value="maintenance">🔧 Maintenance (£200 Limit)</option>
-                <option value="compliance">🛡️ HMO Compliance (CP12/EICR)</option>
+                <option value="compliance">🛡️ HMO Compliance</option>
                 <option value="comms">💬 Tenant & Landlord Comms</option>
                 <option value="kpis">📊 98% Collection & Yield KPI</option>
-                <option value="escalation">🚨 Approvals & Legal Escalation</option>
+                <option value="escalation">🚨 Legal Escalation</option>
                 <option value="learned-rules">🧠 Learned Rules Memory</option>
               </select>
-              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-emerald-400 text-[10px]">▼</div>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-emerald-400 text-[10px]">▼</div>
             </div>
 
-            <button onclick="Chat.toggleGuideInWorkspace()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors flex items-center gap-1.5 shadow-2xs">
-              <span>💡</span> <span>Learning & Prompt Guide</span>
+            <button onclick="Chat.toggleGuideInWorkspace()" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors flex items-center gap-1 shadow-2xs whitespace-nowrap">
+              <span>💡</span> <span>Guide</span>
             </button>
-            <button onclick="Chat.clearHistory()" class="px-2.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 hover:bg-rose-950/60 text-slate-300 hover:text-rose-400 border border-slate-700 transition-colors" title="Clear Chat History">
+            <button onclick="Chat.clearHistory()" class="px-2 py-1.5 text-xs font-medium rounded-lg bg-slate-800 hover:bg-rose-950/60 text-slate-300 hover:text-rose-400 border border-slate-700 transition-colors whitespace-nowrap" title="Clear Chat History">
               🗑️ Clear
             </button>
           </div>
@@ -461,8 +444,8 @@
       
       <!-- Filters and Search -->
       <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <input type="text" id="table-search" placeholder="Search property, room, or tenant..." class="px-3.5 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 w-full sm:w-64 transition-colors">
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <input type="text" id="table-search" placeholder="Search property, room, or tenant..." class="px-3.5 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 w-full sm:w-60 transition-colors">
           <select id="status-filter" class="px-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-colors">
             <option value="ALL">All Statuses</option>
             <option value="MISSING">Missing Rent Only</option>
@@ -470,6 +453,9 @@
             <option value="CLEARED">Cleared / On Schedule</option>
             <option value="OVERPAID">Overpaid / Credit</option>
           </select>
+          <button onclick="document.getElementById('file-input').click()" class="px-3 py-2 text-xs font-semibold rounded-xl bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 transition-colors flex items-center gap-1.5 shadow-3xs" title="Upload Bank CSV or COHO Rent Roll">
+            <span>📁</span> <span>Import File</span>
+          </button>
         </div>
 
         <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">

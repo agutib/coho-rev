@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -74,7 +74,7 @@
     const PASS_HASH = 'c3f89002f28c39474375003faf4f51cccce5a77b515696194ba280c3b5ee4f10';
 
     if (sessionStorage.getItem('coho_auth') === 'true') {
-      window.location.replace('index.html');
+      window.location.replace('/home');
     }
 
     async function sha256(message) {
@@ -99,7 +99,7 @@
       if (hash === PASS_HASH) {
         sessionStorage.setItem('coho_auth', 'true');
         sessionStorage.setItem('coho_auth_time', Date.now().toString());
-        window.location.replace('index.html');
+        window.location.replace('/home');
       } else {
         errorMsg.classList.remove('hidden');
         submitBtn.disabled = false;

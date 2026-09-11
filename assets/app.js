@@ -20,6 +20,10 @@ const App = {
       window.location.replace('login.html');
       return;
     }
+    // Clean URL: rewrite /index.html or / to /home
+    if (window.location.pathname === '/index.html' || window.location.pathname === '/') {
+      window.history.replaceState(null, '', '/home');
+    }
     this.loadFromStorage();
     this.bindEvents();
     this.render();
@@ -194,11 +198,20 @@ const App = {
 
   // UI Event Bindings
   bindEvents() {
-    // Dropzone
-    const dropzone = document.getElementById('dropzone');
+    // File input for manual upload
     const fileInput = document.getElementById('file-input');
+    if (fileInput) {
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          this.handleFileUpload(e.target.files[0]);
+          e.target.value = '';
+        }
+      });
+    }
 
-    if (dropzone && fileInput) {
+    // Optional legacy dropzone if present
+    const dropzone = document.getElementById('dropzone');
+    if (dropzone) {
       dropzone.addEventListener('dragover', (e) => {
         e.preventDefault();
         dropzone.classList.add('border-emerald-500', 'bg-emerald-500/5');
@@ -212,12 +225,6 @@ const App = {
         dropzone.classList.remove('border-emerald-500', 'bg-emerald-500/5');
         if (e.dataTransfer.files.length > 0) {
           this.handleFileUpload(e.dataTransfer.files[0]);
-        }
-      });
-      fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
-          this.handleFileUpload(e.target.files[0]);
-          e.target.value = '';
         }
       });
     }
@@ -312,7 +319,10 @@ const App = {
     document.getElementById('stat-total-expected').innerText = `£${recon.summary.totalExpected.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`;
     document.getElementById('stat-total-collected').innerText = `£${recon.summary.totalReceived.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`;
     document.getElementById('stat-total-arrears').innerText = `£${recon.summary.totalArrears.toLocaleString('en-GB', { minimumFractionDigits: 2 })}`;
-    document.getElementById('stat-collection-rate').innerText = `${recon.summary.collectionRate}%`;
+    const rate = recon.summary.collectionRate !== undefined && !isNaN(recon.summary.collectionRate)
+      ? Number(recon.summary.collectionRate).toFixed(1)
+      : '0.0';
+    document.getElementById('stat-collection-rate').innerText = `${rate}%`;
 
     const expiredComp = this.state.compliance.filter(c => c.status === 'Expired').length;
     const dueComp = this.state.compliance.filter(c => c.status === 'Due Soon').length;

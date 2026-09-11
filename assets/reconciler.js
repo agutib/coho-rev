@@ -15,7 +15,7 @@ const Reconciler = {
       return {
         matchedRecords: [],
         unallocatedTxns: bankTxns || [],
-        summary: { totalExpected: 0, totalReceived: 0, totalArrears: 0, clearedCount: 0, exceptionCount: 0 }
+        summary: { totalExpected: 0, totalReceived: 0, totalArrears: 0, clearedCount: 0, exceptionCount: 0, collectionRate: 0.0 }
       };
     }
 
@@ -144,3 +144,7 @@ const Reconciler = {
     };
   }
 };
+
+if (typeof module !== 'undefined') {
+  module.exports = Reconciler;
+}
