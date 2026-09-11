@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -92,9 +92,55 @@
         <button onclick="App.generateLandlordReport()" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 transition-colors shadow-2xs">
           📋 Landlord Report
         </button>
-        <button onclick="App.exportReconciledCSV()" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 transition-colors shadow-2xs">
-          📥 Export CSV
-        </button>
+
+        <!-- Multi-Format Export Dropdown -->
+        <div class="relative inline-block text-left" id="exportDropdownContainer">
+          <button id="exportMenuBtn" onclick="App.toggleExportMenu(event)" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 transition-colors shadow-2xs flex items-center gap-1.5">
+            <span>📥 Export Data</span>
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div id="exportMenuDropdown" class="hidden absolute right-0 mt-2 w-64 rounded-xl bg-white dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700 py-1.5 z-50 text-xs text-slate-700 dark:text-slate-200 animate-in fade-in zoom-in-95 duration-100">
+            <div class="px-3 py-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Spreadsheets</div>
+            <button onclick="App.exportExcel()" class="w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-700/60 flex items-center gap-2.5 transition-colors">
+              <span class="text-emerald-600 font-bold text-sm">📗</span>
+              <div>
+                <div class="font-semibold text-slate-800 dark:text-slate-100">Excel Workbook (.xlsx)</div>
+                <div class="text-[10px] text-slate-400 dark:text-slate-500">Multi-tab: Reconciled, Tenancies, Radar</div>
+              </div>
+            </button>
+            <button onclick="App.exportGoogleSheets()" class="w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-700/60 flex items-center gap-2.5 transition-colors">
+              <span class="text-green-600 font-bold text-sm">📊</span>
+              <div>
+                <div class="font-semibold text-slate-800 dark:text-slate-100">Google Sheets (Copy / TSV)</div>
+                <div class="text-[10px] text-slate-400 dark:text-slate-500">1-click copy formatted for Sheets paste</div>
+              </div>
+            </button>
+            <button onclick="App.exportReconciledCSV()" class="w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-700/60 flex items-center gap-2.5 transition-colors">
+              <span class="text-slate-500 font-bold text-sm">📄</span>
+              <div>
+                <div class="font-semibold text-slate-800 dark:text-slate-100">Standard CSV (.csv)</div>
+                <div class="text-[10px] text-slate-400 dark:text-slate-500">Universal comma-separated format</div>
+              </div>
+            </button>
+            <div class="my-1 border-t border-slate-100 dark:border-slate-700"></div>
+            <div class="px-3 py-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Reports & Documents</div>
+            <button onclick="App.exportPDF()" class="w-full text-left px-3 py-2 hover:bg-rose-50 dark:hover:bg-slate-700/60 flex items-center gap-2.5 transition-colors">
+              <span class="text-rose-600 font-bold text-sm">📕</span>
+              <div>
+                <div class="font-semibold text-slate-800 dark:text-slate-100">Executive PDF Report (.pdf)</div>
+                <div class="text-[10px] text-slate-400 dark:text-slate-500">Formatted statement ready to print/save</div>
+              </div>
+            </button>
+            <button onclick="App.exportWordDoc()" class="w-full text-left px-3 py-2 hover:bg-blue-50 dark:hover:bg-slate-700/60 flex items-center gap-2.5 transition-colors">
+              <span class="text-blue-600 font-bold text-sm">📘</span>
+              <div>
+                <div class="font-semibold text-slate-800 dark:text-slate-100">Word Document (.doc)</div>
+                <div class="text-[10px] text-slate-400 dark:text-slate-500">Editable Word & Google Docs file</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
         <button onclick="App.clearAllData()" class="px-2.5 py-1.5 text-xs font-medium rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors" title="Reset All Records">
           🗑️ Clear
         </button>
@@ -107,8 +153,8 @@
         </button>
 
         <!-- AI Chat & Learning Guide Button -->
-        <button onclick="Chat.openWithGuide()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 transition-colors shadow-2xs" title="Open AI Chat & Learning Guide">
-          💡 AI Guide
+        <button onclick="App.openAICopilotWithGuide()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 transition-colors shadow-2xs flex items-center gap-1.5" title="Open AI Copilot Workspace & Learning Guide">
+          <span>🤖</span> <span>AI Copilot & Guide</span>
         </button>
 
         <button onclick="App.logout()" class="px-3 py-1.5 text-xs font-medium rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors shadow-2xs" title="Sign Out">
@@ -176,6 +222,9 @@
     <!-- Main Navigation Tabs -->
     <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 gap-4">
       <div class="flex gap-2 text-sm font-medium overflow-x-auto">
+        <button data-tab="ai-copilot" class="nav-tab pb-3 px-4 border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-2">
+          <span>🤖</span> AI Copilot Workspace
+        </button>
         <button data-tab="reconciler" class="nav-tab pb-3 px-4 border-b-2 border-emerald-600 text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-2">
           <span>⚖️</span> Rent Reconciler & Arrears
         </button>
@@ -188,6 +237,191 @@
         <button data-tab="nothing-slips" class="nav-tab pb-3 px-4 border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-2">
           <span>📝</span> "Nothing-Slips" SOP
         </button>
+      </div>
+    </div>
+
+    <!-- PANE 0: Full Antigravity AI Copilot Workspace -->
+    <div id="pane-ai-copilot" class="tab-pane hidden space-y-4">
+      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-colors duration-200 min-h-[720px] relative" id="copilot-workspace">
+        
+        <!-- Drag & Drop Overlay for Workspace -->
+        <div id="copilot-drop-overlay" class="hidden absolute inset-0 z-40 bg-emerald-950/80 backdrop-blur-xs border-4 border-dashed border-emerald-400 rounded-2xl flex flex-col items-center justify-center p-8 text-white text-center pointer-events-none transition-all">
+          <div class="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center text-3xl mb-3 animate-bounce">
+            📥
+          </div>
+          <h3 class="text-lg font-bold">Drop Bank CSV or COHO Rent Roll / Excel here</h3>
+          <p class="text-sm text-emerald-200 mt-1 max-w-md">Will automatically parse, update OpsHub metrics, and stage for instant Gemini financial analysis!</p>
+        </div>
+
+        <!-- Copilot Workspace Header -->
+        <div class="bg-slate-900 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center text-slate-950 font-black text-base shadow-sm shadow-emerald-500/30">
+              ⚡
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-sm font-bold text-white leading-none">Antigravity AI Copilot</h2>
+                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Gemini 3.6 Flash</span>
+                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">6 Specialists Active</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">Drag-and-drop CSVs or ask any question · Learns rules dynamically</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="Chat.toggleGuideInWorkspace()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors flex items-center gap-1.5 shadow-2xs">
+              <span>💡</span> <span>Learning & Prompt Guide</span>
+            </button>
+            <button onclick="Chat.clearHistory()" class="px-2.5 py-1.5 text-xs font-medium rounded-lg bg-slate-800 hover:bg-rose-950/60 text-slate-300 hover:text-rose-400 border border-slate-700 transition-colors" title="Clear Chat History">
+              🗑️ Clear
+            </button>
+          </div>
+        </div>
+
+        <!-- 6 Finance Specialists Selector Chips -->
+        <div class="bg-slate-50 dark:bg-slate-900/90 px-4 py-2.5 border-b border-slate-200 dark:border-slate-700 flex items-center gap-2 overflow-x-auto text-xs no-scrollbar">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex-shrink-0 mr-1">Consult Specialist:</span>
+          <button onclick="Chat.selectSpecialist('all')" class="specialist-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-600 text-white shadow-2xs whitespace-nowrap transition-colors" data-spec="all">
+            🌟 All-Round Operations
+          </button>
+          <button onclick="Chat.selectSpecialist('controller')" class="specialist-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 whitespace-nowrap transition-colors" data-spec="controller">
+            📒 Bookkeeper & Controller
+          </button>
+          <button onclick="Chat.selectSpecialist('ap')" class="specialist-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 whitespace-nowrap transition-colors" data-spec="ap">
+            💳 AP Invoice Auditor
+          </button>
+          <button onclick="Chat.selectSpecialist('analyst')" class="specialist-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 whitespace-nowrap transition-colors" data-spec="analyst">
+            📊 Financial Analyst (Yield & Void)
+          </button>
+          <button onclick="Chat.selectSpecialist('fpa')" class="specialist-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 whitespace-nowrap transition-colors" data-spec="fpa">
+            📈 FP&A Cash Forecast
+          </button>
+          <button onclick="Chat.selectSpecialist('tax')" class="specialist-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 whitespace-nowrap transition-colors" data-spec="tax">
+            ⚖️ Property Tax Strategist
+          </button>
+          <button onclick="Chat.selectSpecialist('cfo')" class="specialist-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 whitespace-nowrap transition-colors" data-spec="cfo">
+            🏛️ CFO & Capex Planner
+          </button>
+        </div>
+
+        <!-- Embedded Interactive User Guide View (Slide-down) -->
+        <div id="copilot-guide-view" class="hidden p-5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 transition-all max-h-96 overflow-y-auto">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900 dark:text-white">📖 Rev's Interactive Learning & Prompt Guide</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Click any prompt card below to immediately run it with your active OpsHub data!</p>
+            </div>
+            <button onclick="Chat.toggleGuideInWorkspace()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-bold px-2 py-1">✕ Close Guide</button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 text-xs">
+            <div class="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2 shadow-3xs">
+              <div class="font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider text-[11px] flex items-center gap-1">
+                <span>🧠</span> Teach Rules Dynamically
+              </div>
+              <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-[11px]">Start with <strong>"Remember this rule: ..."</strong> to persist habits directly to the skill repo.</p>
+              <div class="space-y-1.5">
+                <button onclick="Chat.usePrompt('Remember this rule: Tenant Dave in Room 3 pays from his mum\'s account under \'Sarah Smith\'.')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
+                  👉 <em>"Remember: Dave in Room 3 pays under 'Sarah Smith'."</em>
+                </button>
+                <button onclick="Chat.usePrompt('Remember this rule: Landlord John wants quotes over £200 approved before booking work.')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
+                  👉 <em>"Remember: Landlord John quotes > £200 need approval."</em>
+                </button>
+              </div>
+            </div>
+
+            <div class="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2 shadow-3xs">
+              <div class="font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider text-[11px] flex items-center gap-1">
+                <span>🏛️</span> Finance Specialist Queries
+              </div>
+              <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-[11px]">Deep 3-way matching, invoice checking, and HMO tax classifications.</p>
+              <div class="space-y-1.5">
+                <button onclick="Chat.usePrompt('Audit this plumber quote: £350 to replace a kitchen mixer tap at 14 Oak St. Is it reasonable?')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
+                  👉 <em>"Audit plumber quote: £350 for mixer tap replacement."</em>
+                </button>
+                <button onclick="Chat.usePrompt('Calculate void loss: Room 2 has been vacant for 3 weeks at £650/month rent.')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
+                  👉 <em>"Calculate void loss for 3 vacant weeks at £650/month."</em>
+                </button>
+              </div>
+            </div>
+
+            <div class="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2 shadow-3xs">
+              <div class="font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider text-[11px] flex items-center gap-1">
+                <span>📋</span> Website Suggestions & Feedback
+              </div>
+              <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-[11px]">Tell Gemini what you want added or changed on OpsHub. It logs it directly for developers.</p>
+              <div class="space-y-1.5">
+                <button onclick="Chat.usePrompt('I find it annoying that the table doesn\'t have an export to PDF button, could we add that?')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
+                  👉 <em>"I find it annoying that..." / "Can we add..."</em>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Messages Container -->
+        <div id="copilot-messages" class="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-50/50 dark:bg-slate-900/60 min-h-[460px] max-h-[600px]">
+          <!-- Populated dynamically via Chat.render() -->
+        </div>
+
+        <!-- Staged / Loaded File Notification Bar in Chat -->
+        <div id="copilot-loaded-file-bar" class="hidden px-4 py-2 bg-emerald-50 dark:bg-emerald-950/50 border-t border-emerald-200 dark:border-emerald-800/60 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
+            <span class="text-sm">📁</span>
+            <span id="copilot-loaded-file-name" class="font-bold">File Loaded</span>
+            <span class="text-emerald-600 dark:text-emerald-400 text-[11px]" id="copilot-loaded-file-summary">— Synced live into OpsHub Dashboard</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="Chat.askAboutLoadedFile()" class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-3xs">
+              ⚡ Audit Discrepancies
+            </button>
+            <button onclick="Chat.dismissLoadedFileBar()" class="text-emerald-500 hover:text-emerald-700 dark:hover:text-emerald-300 text-sm font-bold px-1">
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Prompt Chips -->
+        <div class="px-4 py-2 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center gap-1.5 overflow-x-auto text-[11px] no-scrollbar">
+          <span class="text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] mr-1">Quick Action:</span>
+          <button onclick="Chat.usePrompt('Audit all active tenancies against bank credits and flag missing or partial rents.')" class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors">
+            ⚖️ Audit All Rents
+          </button>
+          <button onclick="Chat.usePrompt('Check HMO compliance certificates: what is expired or due in next 30 days?')" class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors">
+            🛡️ Check Compliance
+          </button>
+          <button onclick="Chat.usePrompt('Analyze void loss and gross monthly yield for all active HMO properties.')" class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors">
+            📊 Yield & Voids
+          </button>
+          <button onclick="Chat.usePrompt('Remember this rule: ')" class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap shadow-3xs font-semibold transition-colors">
+            🧠 Remember Rule
+          </button>
+        </div>
+
+        <!-- Copilot Input Box & Attach Button -->
+        <div class="p-4 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+          <input type="file" id="copilot-file-input" class="hidden" accept=".csv, .xlsx, .xls">
+          <div class="flex items-end gap-2.5">
+            <!-- File Attach Button -->
+            <button onclick="document.getElementById('copilot-file-input').click()" title="Attach Bank CSV or COHO Rent Roll to load into OpsHub and chat" class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 border border-slate-200 dark:border-slate-600 flex items-center justify-center flex-shrink-0 transition-colors shadow-2xs">
+              <span class="text-base">📎</span>
+            </button>
+
+            <!-- Multiline Input -->
+            <textarea id="copilot-input" rows="1" placeholder="Ask Gemini about rent, arrears, invoices, or drop a CSV here..." class="flex-1 resize-none rounded-xl border border-slate-300 dark:border-slate-600 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all min-h-[42px] max-h-36 overflow-y-auto leading-relaxed" onkeydown="Chat.handleWorkspaceKey(event)" oninput="Chat.autoResize(this)"></textarea>
+
+            <!-- Send Button -->
+            <button id="copilot-send-btn" onclick="Chat.sendWorkspace()" class="w-10 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center flex-shrink-0 transition-colors shadow-sm shadow-emerald-500/20 disabled:opacity-40 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+            </button>
+          </div>
+          <div class="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 px-1">
+            <span>💡 Tip: Drag & drop any CSV or Excel file directly onto this chat to load into OpsHub.</span>
+            <span>Press Enter to send · Shift+Enter for newline</span>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -431,8 +665,14 @@
     </div>
   </div>
 
+  <!-- Floating Antigravity Copilot Launcher Button -->
+  <button id="floatingCopilotBtn" onclick="App.openAICopilotWithGuide()" title="Open Antigravity AI Copilot Workspace (Ctrl+/)"
+    class="fixed bottom-6 right-6 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl shadow-emerald-500/25 flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+    <span class="text-2xl leading-none">🤖</span>
+  </button>
+
   <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-medium shadow-lg transition-all duration-300 opacity-0 translate-y-2 pointer-events-none">
+  <div id="toast" class="fixed bottom-24 right-6 z-50 px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-medium shadow-lg transition-all duration-300 opacity-0 translate-y-2 pointer-events-none">
     Notification
   </div>
 

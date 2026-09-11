@@ -1,4 +1,4 @@
-﻿# Complete Project Context & Handover Dossier
+# Complete Project Context & Handover Dossier
 **Generated:** September 10, 2026  
 **Project:** COHO OpsHub (UK HMO Property Operations Center)  
 **Author / Maintainer:** Arnold Gutib (agutib)  
@@ -94,3 +94,6 @@ If you are maintaining this system in any AI tool, keep these critical points in
 | **User Feedback Logger** | `api/server.js`, `docs/USER_FEEDBACK_LOG.md` | Logs Rev''s complaints and suggestions for iterative development. |
 | **User Guide Modal** | `assets/chat.js`, `docs/REVS_AI_CHAT_GUIDE.md` | Clickable prompt cards inside the chat for instant testing. |
 | **Dark & Light Theme** | `assets/theme.js`, `index.html` | Zero-FOUC theme toggle with `localStorage` persistence. |
+| **Antigravity AI Copilot** | `assets/chat.js`, `index.html` | Full first-class workspace tab with drag-and-drop file intake, live OpsHub synchronization, 6 specialist switcher, and rich markdown rendering. |
+| **5-Format Export Suite** | `assets/app.js`, `index.html` | Multi-format operational exports: Excel (.xlsx via SheetJS), Executive PDF Report (.pdf), Word Document (.doc), Standard CSV (.csv), and Google Sheets (TSV clipboard copy). |
+

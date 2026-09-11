@@ -1,4 +1,4 @@
-﻿# AGENTS.md — Universal AI Agent Handover Guide
+# AGENTS.md — Universal AI Agent Handover Guide
 **Project:** COHO OpsHub — UK HMO Property Operations Center  
 **Repository:** https://github.com/agutib/coho-rev  
 **Production Site:** https://coho.arnoldgutib.pro  
@@ -73,6 +73,13 @@ COHO-Property-Operations/
   4. *FP&A Analyst:* Cash flow forecast, budget variance.
   5. *Property Tax Strategist:* Repairs vs capital improvements, Section 24.
   6. *CFO:* Sinking funds, capex reserves.
+- **Antigravity AI Copilot Workspace:** Full first-class tab (`#pane-ai-copilot`) featuring drag-and-drop dual-action ingestion (dropping any CSV/XLSX file updates live OpsHub tables & KPI metrics AND stages data for instant Gemini financial review).
+- **5-Format Export Suite:**
+  1. *Excel Workbook (.xlsx):* Full multi-sheet export (Reconciliation, Tenancies, Compliance, Suspense) via SheetJS.
+  2. *Executive PDF Report (.pdf):* Formatted print-ready landlord report with print-to-PDF trigger.
+  3. *Word Document (.doc):* Downloadable formatted document for Word & Google Docs.
+  4. *Accounting CSV (.csv):* Clean comma-separated values for bookkeeping software.
+  5. *Google Sheets Copy (TSV):* 1-click clipboard copy formatted for direct spreadsheet pasting.
 - **Trigger for Teaching:** If Rev starts a chat message with *"Remember this rule: ..."*, the AI outputs `[[LEARNED_RULE: {...}]]`. The backend captures this, writes to `learned-rules.md`, commits, pushes to Git, and injects it into every future conversation.
 - **Trigger for Feedback:** If Rev complains or suggests a feature, the AI outputs `[[APP_FEEDBACK: {...}]]`. The backend writes to `USER_FEEDBACK_LOG.md` and commits to Git.
 
@@ -84,3 +91,4 @@ COHO-Property-Operations/
 - Server `.env` is stored at `/opt/coho-app/api/.env` with permissions `600`.
 - Browser never sees the Gemini API key; calls go to `/api/chat` which Nginx proxies internally to port 3001.
 - All scanner exploit probes (`phpunit`, `.env`, `eval-stdin`) are dropped with HTTP 444 by Nginx.
+

@@ -222,6 +222,17 @@ const App = {
       });
     }
 
+    // Close export dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      const container = document.getElementById('exportDropdownContainer');
+      const dropdown = document.getElementById('exportMenuDropdown');
+      if (dropdown && !dropdown.classList.contains('hidden')) {
+        if (container && !container.contains(e.target)) {
+          dropdown.classList.add('hidden');
+        }
+      }
+    });
+
     // Tab buttons
     document.querySelectorAll('.nav-tab').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -252,8 +263,8 @@ const App = {
     this.state.activeTab = tabId;
     document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
     document.querySelectorAll('.nav-tab').forEach(btn => {
-      btn.classList.remove('border-emerald-500', 'text-emerald-600', 'dark:text-emerald-400', 'font-bold');
-      btn.classList.add('border-transparent', 'text-[var(--muted-foreground)]');
+      btn.classList.remove('border-emerald-600', 'text-emerald-600', 'dark:text-emerald-400', 'font-bold');
+      btn.classList.add('border-transparent', 'text-slate-500', 'dark:text-slate-400');
     });
 
     const pane = document.getElementById(`pane-${tabId}`);
@@ -261,11 +272,24 @@ const App = {
 
     if (pane) pane.classList.remove('hidden');
     if (btn) {
-      btn.classList.remove('border-transparent', 'text-[var(--muted-foreground)]');
-      btn.classList.add('border-emerald-500', 'text-emerald-600', 'dark:text-emerald-400', 'font-bold');
+      btn.classList.remove('border-transparent', 'text-slate-500', 'dark:text-slate-400');
+      btn.classList.add('border-emerald-600', 'text-emerald-600', 'dark:text-emerald-400', 'font-bold');
+    }
+
+    if (tabId === 'ai-copilot') {
+      if (typeof Chat !== 'undefined' && Chat.focusWorkspace) {
+        Chat.focusWorkspace();
+      }
     }
 
     this.render();
+  },
+
+  openAICopilotWithGuide() {
+    this.switchTab('ai-copilot');
+    if (typeof Chat !== 'undefined' && Chat.openGuideInWorkspace) {
+      Chat.openGuideInWorkspace();
+    }
   },
 
   // Render Whole View
@@ -513,8 +537,161 @@ const App = {
     document.getElementById('message-modal').classList.remove('hidden');
   },
 
-  // Export to CSV
+  // Export Menu Controls
+  toggleExportMenu(e) {
+    if (e) e.stopPropagation();
+    const dropdown = document.getElementById('exportMenuDropdown');
+    if (dropdown) dropdown.classList.toggle('hidden');
+  },
+
+  closeExportMenu() {
+    const dropdown = document.getElementById('exportMenuDropdown');
+    if (dropdown) dropdown.classList.add('hidden');
+  },
+
+  // 1. Export Excel (.xlsx) Multi-Tab Workbook via SheetJS
+  exportExcel() {
+    this.closeExportMenu();
+    if (!this.state.reconciliation || this.state.reconciliation.matchedRecords.length === 0) {
+      alert('No data loaded to export. Please load or drop your records first.');
+      return;
+    }
+    if (typeof XLSX === 'undefined') {
+      alert('SheetJS Excel library not available. Please export as CSV.');
+      return;
+    }
+
+    const wb = XLSX.utils.book_new();
+
+    // Sheet 1: Rent Reconciliation
+    const reconData = [
+      ['Property', 'Room', 'Tenant ID', 'Tenant Name', 'Due Day', 'Expected (£)', 'Received (£)', 'Balance Arrears (£)', 'Status', 'Matched Bank Credits', 'Action Needed'],
+      ...this.state.reconciliation.matchedRecords.map(r => [
+        r.tenancy.property,
+        r.tenancy.room,
+        r.tenancy.id,
+        r.tenancy.tenantName,
+        r.tenancy.dueDay,
+        r.expected,
+        r.received,
+        r.balance,
+        r.status,
+        r.matchedTxns.map(m => `£${m.amount.toFixed(2)} (${m.date || ''} - ${m.reference || m.description})`).join('; ') || 'None',
+        r.actionNeeded
+      ])
+    ];
+    const wsRecon = XLSX.utils.aoa_to_sheet(reconData);
+    XLSX.utils.book_append_sheet(wb, wsRecon, 'Rent Reconciliation');
+
+    // Sheet 2: Tenancy Directory
+    if (this.state.rentRoll && this.state.rentRoll.length > 0) {
+      const tenData = [
+        ['Property', 'Room', 'Tenant ID', 'Tenant Name', 'Monthly Rent (£)', 'Due Day', 'Start Date', 'End Date', 'Deposit (£)', 'Deposit Status'],
+        ...this.state.rentRoll.map(t => [
+          t.property,
+          t.room,
+          t.id,
+          t.tenantName,
+          t.monthlyRent,
+          t.dueDay,
+          t.startDate || '',
+          t.endDate || '',
+          t.depositAmount || 0,
+          t.depositStatus || ''
+        ])
+      ];
+      const wsTen = XLSX.utils.aoa_to_sheet(tenData);
+      XLSX.utils.book_append_sheet(wb, wsTen, 'Tenancy Directory');
+    }
+
+    // Sheet 3: HMO Compliance
+    if (this.state.compliance && this.state.compliance.length > 0) {
+      const compData = [
+        ['Property', 'Scope / Room', 'Requirement', 'Reference', 'Effective Date', 'Expiry Date', 'Status', 'Provider / Notes'],
+        ...this.state.compliance.map(c => [
+          c.property,
+          c.room,
+          c.requirement,
+          c.reference,
+          c.effectiveDate || '',
+          c.expiryDate || '',
+          c.status,
+          c.notes || c.provider || ''
+        ])
+      ];
+      const wsComp = XLSX.utils.aoa_to_sheet(compData);
+      XLSX.utils.book_append_sheet(wb, wsComp, 'HMO Compliance');
+    }
+
+    // Sheet 4: Suspense (Unallocated Bank Credits)
+    const unalloc = this.state.reconciliation.unallocatedTxns || [];
+    if (unalloc.length > 0) {
+      const unallocData = [
+        ['Date', 'Description', 'Payer Reference', 'Amount (£)', 'Account Status'],
+        ...unalloc.map(u => [
+          u.date || '',
+          u.description || '',
+          u.reference || '',
+          u.amount || 0,
+          'Unallocated (Suspense Account)'
+        ])
+      ];
+      const wsUnalloc = XLSX.utils.aoa_to_sheet(unallocData);
+      XLSX.utils.book_append_sheet(wb, wsUnalloc, 'Suspense Credits');
+    }
+
+    const dateStr = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(wb, `COHO_Operations_Master_${dateStr}.xlsx`);
+    this.showToast('📗 Exported full multi-sheet Excel Workbook (.xlsx)!');
+  },
+
+  // 2. Export Google Sheets (Clipboard TSV + TSV file)
+  exportGoogleSheets() {
+    this.closeExportMenu();
+    if (!this.state.reconciliation || this.state.reconciliation.matchedRecords.length === 0) {
+      alert('No data loaded to export.');
+      return;
+    }
+
+    const headers = ['Property', 'Room', 'Tenant ID', 'Tenant Name', 'Due Day', 'Expected Rent (£)', 'Received Rent (£)', 'Balance Arrears (£)', 'Status', 'Action Needed'];
+    const rows = this.state.reconciliation.matchedRecords.map(r => [
+      r.tenancy.property,
+      r.tenancy.room,
+      r.tenancy.id,
+      r.tenancy.tenantName,
+      r.tenancy.dueDay,
+      r.expected.toFixed(2),
+      r.received.toFixed(2),
+      r.balance.toFixed(2),
+      r.status,
+      r.actionNeeded
+    ]);
+
+    const tsvContent = [headers.join('\t'), ...rows.map(r => r.join('\t'))].join('\n');
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(tsvContent).then(() => {
+        this.showToast('📊 Copied to clipboard! Just click any cell in Google Sheets and press Ctrl+V.');
+      }).catch(() => {
+        this.downloadTSVFile(tsvContent);
+      });
+    } else {
+      this.downloadTSVFile(tsvContent);
+    }
+  },
+
+  downloadTSVFile(content) {
+    const blob = new Blob([content], { type: 'text/tab-separated-values;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `COHO_Google_Sheets_Ready_${new Date().toISOString().slice(0, 10)}.tsv`;
+    link.click();
+    this.showToast('Downloaded Google Sheets TSV file.');
+  },
+
+  // 3. Export Standard Accounting CSV (.csv)
   exportReconciledCSV() {
+    this.closeExportMenu();
     if (!this.state.reconciliation || this.state.reconciliation.matchedRecords.length === 0) {
       alert('No data to export.');
       return;
@@ -540,6 +717,212 @@ const App = {
     link.href = URL.createObjectURL(blob);
     link.download = `COHO_Reconciled_Rent_Report_${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
+    this.showToast('📄 Downloaded Reconciled CSV file.');
+  },
+
+  // 4. Export Executive PDF Report (Print-ready document)
+  exportPDF() {
+    this.closeExportMenu();
+    if (!this.state.reconciliation || this.state.reconciliation.matchedRecords.length === 0) {
+      alert('No data loaded to generate report.');
+      return;
+    }
+
+    const recon = this.state.reconciliation;
+    const records = recon.matchedRecords;
+    const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>COHO OpsHub — Executive Property Operations Report</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #0f172a; margin: 30px; font-size: 12px; line-height: 1.4; }
+          .header { border-bottom: 2px solid #059669; padding-bottom: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .logo { font-size: 20px; font-weight: 800; color: #059669; }
+          .sublogo { font-size: 11px; color: #64748b; margin-top: 2px; }
+          .meta { text-align: right; font-size: 11px; color: #64748b; }
+          .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+          .kpi-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; background: #f8fafc; }
+          .kpi-title { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+          .kpi-val { font-size: 18px; font-weight: 800; color: #0f172a; margin-top: 2px; }
+          .val-green { color: #059669; }
+          .val-red { color: #dc2626; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 11px; }
+          th { background: #f1f5f9; text-align: left; padding: 8px 10px; font-weight: 700; border-bottom: 2px solid #cbd5e1; font-size: 10px; text-transform: uppercase; color: #475569; }
+          td { padding: 7px 10px; border-bottom: 1px solid #e2e8f0; }
+          .badge { display: inline-block; padding: 2px 7px; border-radius: 9999px; font-size: 9px; font-weight: 700; }
+          .badge-cleared { background: #dcfce7; color: #166534; }
+          .badge-partial { background: #fef3c7; color: #92400e; }
+          .badge-missing { background: #fee2e2; color: #991b1b; }
+          .badge-overpaid { background: #f3e8ff; color: #6b21a8; }
+          .footer { margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 12px; font-size: 10px; color: #94a3b8; display: flex; justify-content: space-between; }
+          @media print {
+            body { margin: 0; }
+            .no-print { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <div class="logo">COHO OpsHub</div>
+            <div class="sublogo">UK HMO Property Management & Operations Center</div>
+          </div>
+          <div class="meta">
+            <div><strong>Report Date:</strong> ${dateStr}</div>
+            <div><strong>Total Units:</strong> ${records.length} rooms</div>
+          </div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi-card">
+            <div class="kpi-title">Expected Rent</div>
+            <div class="kpi-val">£${recon.summary.totalExpected.toLocaleString('en-GB', { minimumFractionDigits: 2 })}</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-title">Collected Rent</div>
+            <div class="kpi-val val-green">£${recon.summary.totalReceived.toLocaleString('en-GB', { minimumFractionDigits: 2 })}</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-title">Arrears Shortfall</div>
+            <div class="kpi-val val-red">£${recon.summary.totalArrears.toLocaleString('en-GB', { minimumFractionDigits: 2 })}</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-title">Collection Rate</div>
+            <div class="kpi-val">${recon.summary.collectionRate}%</div>
+          </div>
+        </div>
+
+        <h3 style="font-size: 13px; font-weight: 700; margin-bottom: 8px;">Rent Reconciliation & Arrears Schedule</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Property & Room</th>
+              <th>Tenant Name</th>
+              <th>Due Day</th>
+              <th style="text-align: right;">Expected</th>
+              <th style="text-align: right;">Received</th>
+              <th style="text-align: right;">Balance</th>
+              <th style="text-align: center;">Status</th>
+              <th>Action Required</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${records.map(r => `
+              <tr>
+                <td><strong>${r.tenancy.property}</strong> - ${r.tenancy.room}</td>
+                <td>${r.tenancy.tenantName}</td>
+                <td>${r.tenancy.dueDay}th</td>
+                <td style="text-align: right; font-family: monospace;">£${r.expected.toFixed(2)}</td>
+                <td style="text-align: right; font-family: monospace; color: #059669;">£${r.received.toFixed(2)}</td>
+                <td style="text-align: right; font-family: monospace; font-weight: bold; color: ${r.balance > 0 ? '#dc2626' : '#059669'};">£${r.balance.toFixed(2)}</td>
+                <td style="text-align: center;">
+                  <span class="badge ${r.status === 'CLEARED' ? 'badge-cleared' : r.status === 'PARTIAL' ? 'badge-partial' : r.status === 'OVERPAID' ? 'badge-overpaid' : 'badge-missing'}">
+                    ${r.status}
+                  </span>
+                </td>
+                <td style="font-size: 10px; color: #64748b;">${r.actionNeeded}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <div class="footer">
+          <div>Generated by COHO OpsHub · Private & Confidential Operations Dossier</div>
+          <div>Page 1 of 1</div>
+        </div>
+
+        <script>
+          window.onload = function() { window.print(); };
+        </script>
+      </body>
+      </html>
+    `;
+
+    const printWin = window.open('', '_blank', 'width=900,height=750');
+    if (printWin) {
+      printWin.document.write(html);
+      printWin.document.close();
+      this.showToast('📕 PDF Print window opened! Select "Save as PDF" to save.');
+    } else {
+      alert('Please allow popups to generate the printable PDF report.');
+    }
+  },
+
+  // 5. Export Word Document (.doc)
+  exportWordDoc() {
+    this.closeExportMenu();
+    if (!this.state.reconciliation || this.state.reconciliation.matchedRecords.length === 0) {
+      alert('No data loaded to export.');
+      return;
+    }
+
+    const recon = this.state.reconciliation;
+    const records = recon.matchedRecords;
+    const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    const docContent = `
+      <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+      <head>
+        <meta charset="utf-8">
+        <title>COHO OpsHub Operations Summary</title>
+        <style>
+          body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; color: #111827; }
+          h1 { color: #047857; font-size: 18pt; margin-bottom: 4pt; }
+          h2 { color: #374151; font-size: 13pt; margin-top: 14pt; }
+          p { margin: 4pt 0; }
+          table { width: 100%; border-collapse: collapse; margin-top: 10pt; }
+          th { background-color: #f3f4f6; border: 1px solid #d1d5db; padding: 6pt; font-weight: bold; text-align: left; font-size: 10pt; }
+          td { border: 1px solid #e5e7eb; padding: 6pt; font-size: 10pt; }
+          .strong { font-weight: bold; }
+        </style>
+      </head>
+      <body>
+        <h1>COHO OpsHub — Property Operations Summary</h1>
+        <p><strong>Report Date:</strong> ${dateStr}</p>
+        <p><strong>Total Expected Rent:</strong> £${recon.summary.totalExpected.toFixed(2)} | <strong>Collected:</strong> £${recon.summary.totalReceived.toFixed(2)} | <strong>Arrears:</strong> £${recon.summary.totalArrears.toFixed(2)} | <strong>Collection Rate:</strong> ${recon.summary.collectionRate}%</p>
+
+        <h2>Tenancy Reconciliation Schedule</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Room</th>
+              <th>Tenant</th>
+              <th>Expected (£)</th>
+              <th>Received (£)</th>
+              <th>Balance (£)</th>
+              <th>Status</th>
+              <th>Action Needed</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${records.map(r => `
+              <tr>
+                <td>${r.tenancy.property}</td>
+                <td>${r.tenancy.room}</td>
+                <td>${r.tenancy.tenantName}</td>
+                <td>${r.expected.toFixed(2)}</td>
+                <td>${r.received.toFixed(2)}</td>
+                <td>${r.balance.toFixed(2)}</td>
+                <td>${r.status}</td>
+                <td>${r.actionNeeded}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob(['\ufeff' + docContent], { type: 'application/msword' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `COHO_Executive_Summary_${new Date().toISOString().slice(0, 10)}.doc`;
+    link.click();
+    this.showToast('📘 Downloaded Word Document (.doc)!');
   },
 
   // Toast notification
