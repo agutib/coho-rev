@@ -193,7 +193,7 @@ const Chat = (() => {
     sendWorkspace();
   }
 
-  // ── Specialist Selection ─────────────────────────────────────
+  // ── Specialist Selection & Quick Invocation ─────────────────
   function selectSpecialist(roleKey) {
     activeSpecialist = roleKey;
     document.querySelectorAll(".specialist-chip").forEach(chip => {
@@ -207,6 +207,12 @@ const Chat = (() => {
 
     const specInfo = SPECIALIST_CONFIGS[roleKey];
     App.showToast(`Switched consultation focus to: ${specInfo ? specInfo.name : roleKey}`);
+  }
+
+  function invokeSpecialist(roleKey, promptText) {
+    selectSpecialist(roleKey);
+    usePrompt(promptText);
+    focusWorkspace();
   }
 
   // ── User & Learning Guide Controls ───────────────────────────
@@ -256,58 +262,85 @@ const Chat = (() => {
     }
 
     container.innerHTML = `
-      <div class="flex flex-col items-center justify-center py-8 px-4 text-center max-w-2xl mx-auto space-y-6">
-        <div class="w-16 h-16 rounded-2xl bg-emerald-600 flex items-center justify-center text-white text-3xl font-black shadow-lg shadow-emerald-500/20 animate-in fade-in zoom-in duration-200">
+      <div class="flex flex-col items-center justify-center py-6 px-4 text-center max-w-3xl mx-auto space-y-5">
+        <div class="w-14 h-14 rounded-2xl bg-emerald-600 flex items-center justify-center text-white text-2xl font-black shadow-lg shadow-emerald-500/20 animate-in fade-in zoom-in duration-200">
           ⚡
         </div>
         
         <div>
-          <h3 class="text-lg font-bold text-slate-900 dark:text-white">COHO Antigravity Copilot</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-md leading-relaxed">
-            Your high-speed UK HMO operations & financial intelligence cockpit. Drag & drop files directly here to update OpsHub and get instant financial analysis.
+          <h3 class="text-base font-bold text-slate-900 dark:text-white">COHO Antigravity Copilot</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-lg leading-relaxed">
+            Your high-speed UK HMO operations & financial intelligence cockpit. Select any finance agent below to immediately consult their domain expertise, or drop a CSV to auto-sync.
           </p>
         </div>
 
         <!-- Interactive Drag-and-Drop Ingestion Card -->
-        <div onclick="document.getElementById('copilot-file-input').click()" class="w-full border-2 border-dashed border-emerald-500/40 hover:border-emerald-500 dark:border-emerald-700/60 dark:hover:border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-2xl p-5 cursor-pointer transition-all shadow-3xs group">
+        <div onclick="document.getElementById('copilot-file-input').click()" class="w-full border-2 border-dashed border-emerald-500/40 hover:border-emerald-500 dark:border-emerald-700/60 dark:hover:border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-2xl p-4 cursor-pointer transition-all shadow-3xs group">
           <div class="flex items-center justify-center gap-3">
             <span class="text-2xl group-hover:scale-110 transition-transform">📂</span>
             <div class="text-left">
-              <div class="text-xs font-bold text-emerald-800 dark:text-emerald-300">Drop Bank CSV or COHO Rent Roll here</div>
-              <div class="text-[11px] text-emerald-600 dark:text-emerald-400">Automatically synchronizes into OpsHub Reconciler & stages for Gemini analysis</div>
+              <div class="text-xs font-bold text-emerald-800 dark:text-emerald-300">Drop Bank CSV or COHO Rent Roll / Excel here</div>
+              <div class="text-[11px] text-emerald-600 dark:text-emerald-400">Automatically synchronizes into OpsHub Reconciler & stages for instant Gemini financial review</div>
             </div>
           </div>
         </div>
 
-        <!-- 4 Quick Starter Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full text-left">
-          <button onclick="Chat.usePrompt('Audit all active tenancies against bank credits and flag missing or partial rents.')" class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all">
-            <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
-              <span>⚖️</span> Audit Live Reconciliation
-            </div>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Review active rent roll against bank credits and identify arrears.</p>
-          </button>
+        <!-- 6 Finance Specialists Grid -->
+        <div class="w-full space-y-2">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-left px-1">
+            Finance Division Specialists (1-Click Consult):
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 w-full text-left">
+            
+            <button onclick="Chat.invokeSpecialist('controller', 'Perform a full 3-way reconciliation audit between bank credits, active rent rolls, and tenancy schedules. Flag any discrepancies.')"
+              class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>📒</span> Controller
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">3-way matching (Bank ↔ Rent Roll ↔ AST), month-end close & suspense triage.</p>
+            </button>
 
-          <button onclick="Chat.usePrompt('Audit this plumber quote: £350 to replace a kitchen mixer tap at 14 Oak St. Is it reasonable?')" class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all">
-            <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
-              <span>💳</span> AP Invoice & Quote Audit
-            </div>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Audit contractor quotes, repairs vs capital improvements, and trade rates.</p>
-          </button>
+            <button onclick="Chat.invokeSpecialist('ap', 'Audit this contractor invoice or repair quote like an AP Specialist against typical UK trade rates: ')"
+              class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>💳</span> AP Specialist
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Audit contractor repair quotes, plumbing/electrical rates, and utility bills.</p>
+            </button>
 
-          <button onclick="Chat.usePrompt('Analyze void loss and gross monthly yield for all active HMO properties.')" class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all">
-            <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
-              <span>📊</span> Yield & Void Analysis
-            </div>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Calculate room yields, RevPAM, and revenue lost to vacant periods.</p>
-          </button>
+            <button onclick="Chat.invokeSpecialist('analyst', 'Calculate room yields, RevPAM, and revenue lost to void vacancy periods for our properties.')"
+              class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>📊</span> Financial Analyst
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Gross & net yield, RevPAM, and revenue lost to vacant void periods.</p>
+            </button>
 
-          <button onclick="Chat.usePrompt('Remember this rule: ')" class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all">
-            <div class="text-xs font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
-              <span>🧠</span> Teach a New Rule
-            </div>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Start with "Remember this rule:" to persist rules permanently in GitHub.</p>
-          </button>
+            <button onclick="Chat.invokeSpecialist('fpa', 'Prepare a 13-week rolling cash flow forecast and budget variance analysis based on our rent collection and upcoming bills.')"
+              class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>📈</span> FP&A Analyst
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">13-week rolling cash flow forecast and budget vs actual variance analysis.</p>
+            </button>
+
+            <button onclick="Chat.invokeSpecialist('tax', 'Classify this property expense: is it tax-deductible as a revenue repair or a capital improvement under UK HMO rules? Expenditure: ')"
+              class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>⚖️</span> Tax Strategist
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Section 24 mortgage relief, revenue repairs vs capital improvements (Capex).</p>
+            </button>
+
+            <button onclick="Chat.invokeSpecialist('cfo', 'Advise on sizing our sinking fund reserve for major HMO capex and calculate our portfolio debt coverage (DSCR).')"
+              class="p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>🏛️</span> CFO / Capex
+              </div>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">Sinking fund reserves, capex budgeting, and portfolio debt refinancing.</p>
+            </button>
+
+          </div>
         </div>
       </div>
     `;
@@ -619,6 +652,7 @@ const Chat = (() => {
     sendWorkspace,
     handleWorkspaceKey,
     selectSpecialist,
+    invokeSpecialist,
     toggleGuideInWorkspace,
     openGuideInWorkspace,
     focusWorkspace,

@@ -382,20 +382,45 @@
           </div>
         </div>
 
-        <!-- Quick Prompt Chips -->
+        <!-- Quick Action Bar: All 6 Finance Division Specialists -->
         <div class="px-4 py-2 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center gap-1.5 overflow-x-auto text-[11px] no-scrollbar">
-          <span class="text-slate-400 dark:text-slate-500 font-semibold uppercase text-[10px] mr-1">Quick Action:</span>
-          <button onclick="Chat.usePrompt('Audit all active tenancies against bank credits and flag missing or partial rents.')" class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors">
-            ⚖️ Audit All Rents
+          <span class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider text-[10px] mr-1 flex-shrink-0">Finance Specialists:</span>
+          
+          <button onclick="Chat.invokeSpecialist('controller', 'Perform a full 3-way reconciliation audit between bank credits, active rent rolls, and tenancy schedules. Flag any discrepancies.')"
+            class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap shadow-3xs font-medium transition-colors flex items-center gap-1">
+            <span>📒</span> <span>Controller (3-Way Match)</span>
           </button>
-          <button onclick="Chat.usePrompt('Check HMO compliance certificates: what is expired or due in next 30 days?')" class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors">
-            🛡️ Check Compliance
+
+          <button onclick="Chat.invokeSpecialist('ap', 'Audit this contractor invoice or repair quote like an AP Specialist against typical UK trade rates: ')"
+            class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors flex items-center gap-1">
+            <span>💳</span> <span>AP (Audit Invoice/Quote)</span>
           </button>
-          <button onclick="Chat.usePrompt('Analyze void loss and gross monthly yield for all active HMO properties.')" class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors">
-            📊 Yield & Voids
+
+          <button onclick="Chat.invokeSpecialist('analyst', 'Calculate room yields, RevPAM, and revenue lost to void vacancy periods for our properties.')"
+            class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors flex items-center gap-1">
+            <span>📊</span> <span>Analyst (Yield & Void)</span>
           </button>
-          <button onclick="Chat.usePrompt('Remember this rule: ')" class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap shadow-3xs font-semibold transition-colors">
-            🧠 Remember Rule
+
+          <button onclick="Chat.invokeSpecialist('fpa', 'Prepare a 13-week rolling cash flow forecast and budget variance analysis based on our rent collection and upcoming bills.')"
+            class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors flex items-center gap-1">
+            <span>📈</span> <span>FP&A (Cash Flow Forecast)</span>
+          </button>
+
+          <button onclick="Chat.invokeSpecialist('tax', 'Classify this property expense: is it tax-deductible as a revenue repair or a capital improvement under UK HMO rules? Expenditure: ')"
+            class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors flex items-center gap-1">
+            <span>⚖️</span> <span>Tax (Repairs vs Capex)</span>
+          </button>
+
+          <button onclick="Chat.invokeSpecialist('cfo', 'Advise on sizing our sinking fund reserve for major HMO capex and calculate our portfolio debt coverage (DSCR).')"
+            class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors flex items-center gap-1">
+            <span>🏛️</span> <span>CFO (Sinking Funds)</span>
+          </button>
+
+          <div class="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1 flex-shrink-0"></div>
+
+          <button onclick="Chat.usePrompt('Remember this rule: ')"
+            class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap shadow-3xs font-semibold transition-colors flex items-center gap-1">
+            <span>🧠</span> <span>Remember Rule</span>
           </button>
         </div>
 
