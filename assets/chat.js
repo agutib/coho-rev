@@ -20,6 +20,49 @@ const Chat = (() => {
     cfo: { name: "CFO & Capex Planner", prefix: "[Consulting as Chief Financial Officer]: " }
   };
 
+  const COHO_SKILLS_CONFIG = {
+    "rent-arrears": {
+      name: "Rent & Arrears Protocol",
+      icon: "⚖️",
+      prompt: "Review our current rent roll and bank matching status. Draft an escalated late rent notice (Stage 1 Friendly Reminder, Stage 2 Formal Warning, or Stage 3 Final Notice / Guarantor Contact) for any tenant with overdue arrears."
+    },
+    "reconciliation": {
+      name: "3-Way Reconcile & Bookkeeping",
+      icon: "📒",
+      prompt: "Perform a strict 3-way reconciliation audit between our bank credit statement, active COHO rent roll, and tenancy AST agreements. Identify any unmatched credits, partial payments, overpayments, or suspense items."
+    },
+    "maintenance": {
+      name: "Maintenance & Supplier Admin",
+      icon: "🔧",
+      prompt: "Audit this maintenance work order or invoice quote against UK trade benchmarks (£200 landlord pre-approval threshold, contractor rates, priority SLAs): "
+    },
+    "compliance": {
+      name: "HMO Statutory Compliance",
+      icon: "🛡️",
+      prompt: "Audit our HMO compliance expiry register. Check CP12 Gas Safety (annual), EICR (5-year), PAT testing, HMO license validity, and confirm if deposit protection + Prescribed Information is within the strict 30-day statutory window."
+    },
+    "comms": {
+      name: "Tenant & Landlord Comms",
+      icon: "💬",
+      prompt: "Draft a clear, professional, neutral communication under COHO communication standards. Situation / Context: "
+    },
+    "kpis": {
+      name: "Operational KPIs & Yield",
+      icon: "📊",
+      prompt: "Analyze our HMO operational performance: calculate current collection rate vs our 98% target, monthly void loss cost, room-by-room gross/net yields, and RevPAM."
+    },
+    "escalation": {
+      name: "Approvals & Legal Escalation",
+      icon: "🚨",
+      prompt: "Advise on legal escalation and notice readiness for persistent arrears or breach: evaluate Section 8 (Grounds 8, 10, 11) rent threshold requirements, Section 21 prerequisite checklist, and landlord emergency sign-off."
+    },
+    "learned-rules": {
+      name: "Learned Rules Memory",
+      icon: "🧠",
+      prompt: "What operational rules, landlord instructions, and custom policies have you learned so far from Rev? Summarize them clearly by category."
+    }
+  };
+
   function init() {
     renderWorkspaceWelcome();
     bindWorkspaceEvents();
@@ -215,6 +258,24 @@ const Chat = (() => {
     focusWorkspace();
   }
 
+  function invokeCohoSkill(skillKey) {
+    const config = COHO_SKILLS_CONFIG[skillKey];
+    if (!config) return;
+
+    document.querySelectorAll(".coho-skill-chip").forEach(chip => {
+      const skill = chip.getAttribute("data-skill");
+      if (skill === skillKey) {
+        chip.className = "coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-600 text-white shadow-2xs whitespace-nowrap transition-colors flex items-center gap-1";
+      } else {
+        chip.className = "coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1";
+      }
+    });
+
+    usePrompt(config.prompt);
+    focusWorkspace();
+    App.showToast(`Selected COHO Skill: ${config.name}`);
+  }
+
   // ── User & Learning Guide Controls ───────────────────────────
   function toggleGuideInWorkspace() {
     const guide = document.getElementById("copilot-guide-view");
@@ -285,10 +346,88 @@ const Chat = (() => {
           </div>
         </div>
 
-        <!-- 6 Finance Specialists Grid -->
+        <!-- 1. COHO Property Operations Skills Grid (SOP Workflows) -->
         <div class="w-full space-y-2">
-          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-left px-1">
-            Finance Division Specialists (1-Click Consult):
+          <div class="flex items-center justify-between px-1">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
+              <span>🛠️</span> <span>COHO Property Operations SOPs (1-Click Run):</span>
+            </div>
+            <span class="text-[10px] text-slate-400 dark:text-slate-500">8 Core Protocols</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 w-full text-left">
+            <button onclick="Chat.invokeCohoSkill('rent-arrears')"
+              class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>⚖️</span> Rent & Arrears
+              </div>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">Expected vs received, 3-stage notice escalation & guarantor follow-up.</p>
+            </button>
+
+            <button onclick="Chat.invokeCohoSkill('reconciliation')"
+              class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>📒</span> 3-Way Reconcile
+              </div>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">Bank credits ↔ COHO Schedule ↔ AST audit & suspense triage.</p>
+            </button>
+
+            <button onclick="Chat.invokeCohoSkill('maintenance')"
+              class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>🔧</span> Maintenance (£200)
+              </div>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">£200 landlord sign-off threshold, UK trade rates & work order SLAs.</p>
+            </button>
+
+            <button onclick="Chat.invokeCohoSkill('compliance')"
+              class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>🛡️</span> HMO Compliance
+              </div>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">CP12, EICR, HMO licensing & 30-day deposit protection window.</p>
+            </button>
+
+            <button onclick="Chat.invokeCohoSkill('comms')"
+              class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>💬</span> Comms Generator
+              </div>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">Polite, neutral, factual tenant notices & landlord email summaries.</p>
+            </button>
+
+            <button onclick="Chat.invokeCohoSkill('kpis')"
+              class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>📊</span> KPIs & Yield Target
+              </div>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">98% collection benchmark, void vacancy loss, room yields & RevPAM.</p>
+            </button>
+
+            <button onclick="Chat.invokeCohoSkill('escalation')"
+              class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 hover:shadow-xs transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>🚨</span> Legal Escalation
+              </div>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">Section 8 grounds (8/10/11), Section 21 readiness & emergency thresholds.</p>
+            </button>
+
+            <button onclick="Chat.invokeCohoSkill('learned-rules')"
+              class="p-2.5 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 hover:border-emerald-500 hover:shadow-xs transition-all text-left">
+              <div class="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+                <span>🧠</span> Learned Rules
+              </div>
+              <p class="text-[10px] text-emerald-700 dark:text-emerald-400 mt-0.5 line-clamp-2">View active operational rules & custom policies taught directly by Rev.</p>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. 6 Finance Specialists Grid -->
+        <div class="w-full space-y-2">
+          <div class="flex items-center justify-between px-1">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 text-left">
+              Finance Division Specialists (1-Click Consult):
+            </div>
+            <span class="text-[10px] text-slate-400 dark:text-slate-500">6 Roles</span>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 w-full text-left">
             
@@ -653,6 +792,7 @@ const Chat = (() => {
     handleWorkspaceKey,
     selectSpecialist,
     invokeSpecialist,
+    invokeCohoSkill,
     toggleGuideInWorkspace,
     openGuideInWorkspace,
     focusWorkspace,

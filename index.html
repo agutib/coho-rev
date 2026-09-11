@@ -305,6 +305,37 @@
           </button>
         </div>
 
+        <!-- COHO Property Operations Skills Selector Bar -->
+        <div class="bg-white dark:bg-slate-800/90 px-4 py-2 border-b border-slate-200 dark:border-slate-700 flex items-center gap-1.5 overflow-x-auto text-xs no-scrollbar">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 flex-shrink-0 mr-1 flex items-center gap-1">
+            <span>🛠️</span> <span>COHO Skills:</span>
+          </span>
+          <button data-skill="rent-arrears" onclick="Chat.invokeCohoSkill('rent-arrears')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1">
+            <span>⚖️</span> <span>Rent & Arrears</span>
+          </button>
+          <button data-skill="reconciliation" onclick="Chat.invokeCohoSkill('reconciliation')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1">
+            <span>📒</span> <span>3-Way Reconcile</span>
+          </button>
+          <button data-skill="maintenance" onclick="Chat.invokeCohoSkill('maintenance')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1">
+            <span>🔧</span> <span>Maintenance (£200 Limit)</span>
+          </button>
+          <button data-skill="compliance" onclick="Chat.invokeCohoSkill('compliance')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1">
+            <span>🛡️</span> <span>HMO Compliance (CP12/EICR)</span>
+          </button>
+          <button data-skill="comms" onclick="Chat.invokeCohoSkill('comms')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1">
+            <span>💬</span> <span>Tenant & Landlord Comms</span>
+          </button>
+          <button data-skill="kpis" onclick="Chat.invokeCohoSkill('kpis')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1">
+            <span>📊</span> <span>98% Collection & Yield KPI</span>
+          </button>
+          <button data-skill="escalation" onclick="Chat.invokeCohoSkill('escalation')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1">
+            <span>🚨</span> <span>Approvals & Legal Escalation</span>
+          </button>
+          <button data-skill="learned-rules" onclick="Chat.invokeCohoSkill('learned-rules')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap transition-colors flex items-center gap-1">
+            <span>🧠</span> <span>Learned Rules Memory</span>
+          </button>
+        </div>
+
         <!-- Embedded Interactive User Guide View (Slide-down) -->
         <div id="copilot-guide-view" class="hidden p-5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 transition-all max-h-96 overflow-y-auto">
           <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">

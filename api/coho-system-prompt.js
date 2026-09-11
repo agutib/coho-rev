@@ -84,23 +84,48 @@ You embody the knowledge and analytical frameworks of 6 specialized Finance & Op
 
 function getCohoSystemPrompt(projectRoot) {
   let prompt = BASE_SYSTEM_PROMPT;
+  const root = projectRoot || path.join(__dirname, "..");
   
-  // Try loading learned rules from candidate paths
-  const candidatePaths = [
-    path.join(projectRoot || __dirname, "skills/coho-property-operations-assistant/references/learned-rules.md"),
-    path.join(projectRoot || __dirname, "../skills/coho-property-operations-assistant/references/learned-rules.md")
+  // 1. Load All 7 Master COHO Operations Skill References
+  const skillFiles = [
+    { name: "Rent and Arrears Protocol", file: "rent-and-arrears.md" },
+    { name: "3-Way Reconciliation & Bookkeeping", file: "reconciliation-and-bookkeeping.md" },
+    { name: "Maintenance & Supplier Administration (£200 Limit)", file: "maintenance-and-suppliers.md" },
+    { name: "Statutory Compliance & Expiry Register", file: "compliance-administration.md" },
+    { name: "Tenant & Landlord Communications Standard", file: "communications.md" },
+    { name: "Operational Reporting & KPIs (98% Collection)", file: "reporting-and-kpis.md" },
+    { name: "Approvals and Legal Escalations (Section 8/21)", file: "approvals-and-escalation.md" }
   ];
 
-  for (const rulesPath of candidatePaths) {
+  let skillsSection = "\n\n---\n## 🛠️ Master COHO Property Operations Skills & SOP Frameworks\n";
+  for (const skill of skillFiles) {
+    const candidatePaths = [
+      path.join(root, `skills/coho-property-operations-assistant/references/${skill.file}`),
+      path.join(__dirname, `../skills/coho-property-operations-assistant/references/${skill.file}`)
+    ];
+    for (const p of candidatePaths) {
+      try {
+        if (fs.existsSync(p)) {
+          const content = fs.readFileSync(p, "utf8");
+          skillsSection += `\n### 📌 [COHO SKILL] ${skill.name}\n${content}\n`;
+          break;
+        }
+      } catch (_) {}
+    }
+  }
+  prompt += skillsSection;
+
+  // 2. Load Learned Rules taught directly by Rev
+  const learnedCandidatePaths = [
+    path.join(root, "skills/coho-property-operations-assistant/references/learned-rules.md"),
+    path.join(__dirname, "../skills/coho-property-operations-assistant/references/learned-rules.md")
+  ];
+
+  for (const rulesPath of learnedCandidatePaths) {
     try {
       if (fs.existsSync(rulesPath)) {
         const learnedContent = fs.readFileSync(rulesPath, "utf8");
-        prompt += `\n\n---
-## 📚 Currently Active Learned Rules (Taught by Rev)
-The following operational rules have been taught directly by Rev and MUST be applied to all relevant answers:
-
-${learnedContent}
-`;
+        prompt += `\n\n---\n## 📚 Currently Active Learned Rules (Taught by Rev)\nThe following operational rules have been taught directly by Rev and MUST be applied to all relevant answers:\n\n${learnedContent}\n`;
         break;
       }
     } catch (err) {
@@ -112,3 +137,4 @@ ${learnedContent}
 }
 
 module.exports = { getCohoSystemPrompt, BASE_SYSTEM_PROMPT };
+
