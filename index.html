@@ -269,7 +269,39 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex items-center flex-wrap gap-2">
+            <!-- Specialist Dropdown (Green Box) -->
+            <div class="relative">
+              <select id="copilot-specialist-select" onchange="Chat.handleSpecialistSelect(this.value)" 
+                class="appearance-none bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-medium pl-3 pr-7 py-1.5 rounded-lg border border-slate-700 hover:border-slate-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs">
+                <option value="all">🌟 Specialist: All-Round</option>
+                <option value="controller">📒 Bookkeeper & Controller</option>
+                <option value="ap">💳 AP Invoice Auditor</option>
+                <option value="analyst">📊 Financial Analyst (Yield & Void)</option>
+                <option value="fpa">📈 FP&A Cash Forecast</option>
+                <option value="tax">⚖️ Property Tax Strategist</option>
+                <option value="cfo">🏛️ CFO & Capex Planner</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400 text-[10px]">▼</div>
+            </div>
+
+            <!-- COHO Skills Dropdown (Red Box) -->
+            <div class="relative">
+              <select id="copilot-skill-select" onchange="Chat.handleSkillSelect(this)" 
+                class="appearance-none bg-slate-800 hover:bg-slate-750 text-emerald-300 hover:text-emerald-200 text-xs font-medium pl-3 pr-7 py-1.5 rounded-lg border border-slate-700 hover:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs">
+                <option value="" selected disabled>🛠️ COHO Skills & SOPs ▾</option>
+                <option value="rent-arrears">⚖️ Rent & Arrears Protocol</option>
+                <option value="reconciliation">📒 3-Way Reconcile & Bookkeeping</option>
+                <option value="maintenance">🔧 Maintenance (£200 Limit)</option>
+                <option value="compliance">🛡️ HMO Compliance (CP12/EICR)</option>
+                <option value="comms">💬 Tenant & Landlord Comms</option>
+                <option value="kpis">📊 98% Collection & Yield KPI</option>
+                <option value="escalation">🚨 Approvals & Legal Escalation</option>
+                <option value="learned-rules">🧠 Learned Rules Memory</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-emerald-400 text-[10px]">▼</div>
+            </div>
+
             <button onclick="Chat.toggleGuideInWorkspace()" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors flex items-center gap-1.5 shadow-2xs">
               <span>💡</span> <span>Learning & Prompt Guide</span>
             </button>
@@ -277,63 +309,6 @@
               🗑️ Clear
             </button>
           </div>
-        </div>
-
-        <!-- 6 Finance Specialists Selector Chips -->
-        <div class="bg-slate-50 dark:bg-slate-900/90 px-4 py-2.5 border-b border-slate-200 dark:border-slate-700 flex items-center gap-2 overflow-x-auto text-xs no-scrollbar">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex-shrink-0 mr-1">Consult Specialist:</span>
-          <button onclick="Chat.selectSpecialist('all')" class="specialist-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-600 text-white shadow-2xs whitespace-nowrap transition-colors" data-spec="all">
-            🌟 All-Round Operations
-          </button>
-          <button onclick="Chat.selectSpecialist('controller')" class="specialist-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 whitespace-nowrap transition-colors" data-spec="controller">
-            📒 Bookkeeper & Controller
-          </button>
-          <button onclick="Chat.selectSpecialist('ap')" class="specialist-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 whitespace-nowrap transition-colors" data-spec="ap">
-            💳 AP Invoice Auditor
-          </button>
-          <button onclick="Chat.selectSpecialist('analyst')" class="specialist-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 whitespace-nowrap transition-colors" data-spec="analyst">
-            📊 Financial Analyst (Yield & Void)
-          </button>
-          <button onclick="Chat.selectSpecialist('fpa')" class="specialist-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 whitespace-nowrap transition-colors" data-spec="fpa">
-            📈 FP&A Cash Forecast
-          </button>
-          <button onclick="Chat.selectSpecialist('tax')" class="specialist-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 whitespace-nowrap transition-colors" data-spec="tax">
-            ⚖️ Property Tax Strategist
-          </button>
-          <button onclick="Chat.selectSpecialist('cfo')" class="specialist-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 whitespace-nowrap transition-colors" data-spec="cfo">
-            🏛️ CFO & Capex Planner
-          </button>
-        </div>
-
-        <!-- COHO Property Operations Skills Selector Bar -->
-        <div class="bg-white dark:bg-slate-800/90 px-4 py-2 border-b border-slate-200 dark:border-slate-700 flex items-center gap-1.5 overflow-x-auto text-xs no-scrollbar">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 flex-shrink-0 mr-1 flex items-center gap-1">
-            <span>🛠️</span> <span>COHO Skills:</span>
-          </span>
-          <button data-skill="rent-arrears" onclick="Chat.invokeCohoSkill('rent-arrears')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1">
-            <span>⚖️</span> <span>Rent & Arrears</span>
-          </button>
-          <button data-skill="reconciliation" onclick="Chat.invokeCohoSkill('reconciliation')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1">
-            <span>📒</span> <span>3-Way Reconcile</span>
-          </button>
-          <button data-skill="maintenance" onclick="Chat.invokeCohoSkill('maintenance')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1">
-            <span>🔧</span> <span>Maintenance (£200 Limit)</span>
-          </button>
-          <button data-skill="compliance" onclick="Chat.invokeCohoSkill('compliance')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1">
-            <span>🛡️</span> <span>HMO Compliance (CP12/EICR)</span>
-          </button>
-          <button data-skill="comms" onclick="Chat.invokeCohoSkill('comms')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1">
-            <span>💬</span> <span>Tenant & Landlord Comms</span>
-          </button>
-          <button data-skill="kpis" onclick="Chat.invokeCohoSkill('kpis')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1">
-            <span>📊</span> <span>98% Collection & Yield KPI</span>
-          </button>
-          <button data-skill="escalation" onclick="Chat.invokeCohoSkill('escalation')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1">
-            <span>🚨</span> <span>Approvals & Legal Escalation</span>
-          </button>
-          <button data-skill="learned-rules" onclick="Chat.invokeCohoSkill('learned-rules')" class="coho-skill-chip px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap transition-colors flex items-center gap-1">
-            <span>🧠</span> <span>Learned Rules Memory</span>
-          </button>
         </div>
 
         <!-- Embedded Interactive User Guide View (Slide-down) -->

@@ -239,6 +239,12 @@ const Chat = (() => {
   // ── Specialist Selection & Quick Invocation ─────────────────
   function selectSpecialist(roleKey) {
     activeSpecialist = roleKey;
+
+    const selectEl = document.getElementById("copilot-specialist-select");
+    if (selectEl && selectEl.value !== roleKey) {
+      selectEl.value = roleKey;
+    }
+
     document.querySelectorAll(".specialist-chip").forEach(chip => {
       const spec = chip.getAttribute("data-spec");
       if (spec === roleKey) {
@@ -250,6 +256,19 @@ const Chat = (() => {
 
     const specInfo = SPECIALIST_CONFIGS[roleKey];
     App.showToast(`Switched consultation focus to: ${specInfo ? specInfo.name : roleKey}`);
+  }
+
+  function handleSpecialistSelect(roleKey) {
+    selectSpecialist(roleKey);
+    focusWorkspace();
+  }
+
+  function handleSkillSelect(selectEl) {
+    if (!selectEl) return;
+    const skillKey = selectEl.value;
+    if (!skillKey) return;
+    invokeCohoSkill(skillKey);
+    selectEl.value = "";
   }
 
   function invokeSpecialist(roleKey, promptText) {
@@ -791,8 +810,10 @@ const Chat = (() => {
     sendWorkspace,
     handleWorkspaceKey,
     selectSpecialist,
+    handleSpecialistSelect,
     invokeSpecialist,
     invokeCohoSkill,
+    handleSkillSelect,
     toggleGuideInWorkspace,
     openGuideInWorkspace,
     focusWorkspace,
