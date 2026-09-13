@@ -359,17 +359,42 @@ const App = {
 
     // Update Header active labels & breadcrumbs
     const clientLabel = document.getElementById('currentClientLabel');
+    const clientIcon = document.getElementById('currentClientIcon');
+    const clientBtn = document.getElementById('clientMenuBtn');
     const hubBreadcrumb = document.getElementById('hubBreadcrumb');
+    const cohoHeaderActions = document.getElementById('cohoHeaderActions');
+    const copilotSkillContainer = document.getElementById('copilot-skill-container');
 
     const meta = {
-      hub: 'Rev OPS Hub',
-      coho: 'COHO Operations',
-      p360: 'People360',
-      isi: 'Innovuze Solutions'
+      hub: { name: 'Rev OPS Hub', icon: '🏢', btnClass: 'bg-slate-100 dark:bg-slate-700/80 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-600' },
+      coho: { name: 'COHO Operations', icon: '🏡', btnClass: 'bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' },
+      p360: { name: 'People360', icon: '👥', btnClass: 'bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-800' },
+      isi: { name: 'Innovuze Solutions', icon: '⚡', btnClass: 'bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800' }
     };
 
-    if (clientLabel) clientLabel.textContent = meta[key] || 'Rev OPS Hub';
+    const info = meta[key] || meta.hub;
+    if (clientLabel) clientLabel.textContent = info.name;
+    if (clientIcon) clientIcon.textContent = info.icon;
+    if (clientBtn) {
+      clientBtn.className = `px-2 sm:px-2.5 py-1 text-xs font-bold rounded-lg border transition-colors flex items-center gap-1.5 shadow-2xs whitespace-nowrap flex-shrink-0 ${info.btnClass}`;
+    }
     if (hubBreadcrumb) hubBreadcrumb.classList.toggle('hidden', key === 'hub');
+
+    // Toggle COHO header action buttons (Only on COHO workspace)
+    if (cohoHeaderActions) {
+      if (key === 'coho') {
+        cohoHeaderActions.classList.remove('hidden');
+        cohoHeaderActions.classList.add('flex');
+      } else {
+        cohoHeaderActions.classList.add('hidden');
+        cohoHeaderActions.classList.remove('flex');
+      }
+    }
+
+    // Toggle Copilot COHO skills dropdown (Only on COHO workspace)
+    if (copilotSkillContainer) {
+      copilotSkillContainer.classList.toggle('hidden', key !== 'coho');
+    }
 
     if (updateHash) {
       window.location.hash = `#/${key}`;
