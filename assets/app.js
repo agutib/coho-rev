@@ -9,6 +9,7 @@ const App = {
     compliance: [],
     reconciliation: null,
     activeTab: 'reconciler',
+    currentWorkspace: 'hub',
     statusFilter: 'ALL',
     searchQuery: '',
     selectedRecordForMsg: null
@@ -22,11 +23,27 @@ const App = {
     }
     // Clean URL: rewrite /index.html or / to /home
     if (window.location.pathname === '/index.html' || window.location.pathname === '/') {
-      window.history.replaceState(null, '', '/home');
+      window.history.replaceState(null, '', '/home' + (window.location.hash || ''));
     }
     this.loadFromStorage();
     this.bindEvents();
     this.render();
+
+    // Check initial hash route
+    const hash = (window.location.hash || '').replace('#/', '').replace('#', '').toLowerCase();
+    if (hash === 'coho' || hash === 'p360' || hash === 'isi') {
+      this.switchWorkspace(hash, false);
+    } else {
+      this.switchWorkspace('hub', false);
+    }
+
+    // Bind hash change listener
+    window.addEventListener('hashchange', () => {
+      const h = (window.location.hash || '').replace('#/', '').replace('#', '').toLowerCase();
+      if (h === 'coho' || h === 'p360' || h === 'isi' || h === 'hub') {
+        this.switchWorkspace(h, false);
+      }
+    });
   },
 
   logout() {
@@ -242,21 +259,30 @@ const App = {
       });
     }
 
-    // Close export dropdown when clicking outside
+    // Close dropdowns when clicking outside
     document.addEventListener('click', (e) => {
-      const container = document.getElementById('exportDropdownContainer');
-      const dropdown = document.getElementById('exportMenuDropdown');
-      if (dropdown && !dropdown.classList.contains('hidden')) {
-        if (container && !container.contains(e.target)) {
+      const exportContainer = document.getElementById('exportDropdownContainer');
+      const exportDropdown = document.getElementById('exportMenuDropdown');
+      if (exportDropdown && !exportDropdown.classList.contains('hidden')) {
+        if (exportContainer && !exportContainer.contains(e.target)) {
           this.closeExportMenu();
+        }
+      }
+
+      const clientContainer = document.getElementById('clientDropdownContainer');
+      const clientDropdown = document.getElementById('clientMenuDropdown');
+      if (clientDropdown && !clientDropdown.classList.contains('hidden')) {
+        if (clientContainer && !clientContainer.contains(e.target)) {
+          this.closeClientMenu();
         }
       }
     });
 
-    // Close export dropdown and modals on Escape key (Remediates A11Y-003)
+    // Close dropdowns and modals on Escape key (Remediates A11Y-003)
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         this.closeExportMenu();
+        this.closeClientMenu();
         this.closeMessageModal();
         this.closeAuditModal();
       }
@@ -316,10 +342,93 @@ const App = {
     this.render();
   },
 
+  switchWorkspace(key, updateHash = true) {
+    const validKeys = ['hub', 'coho', 'p360', 'isi'];
+    if (!validKeys.includes(key)) key = 'hub';
+    this.state.currentWorkspace = key;
+
+    const hubEl = document.getElementById('view-hub-home');
+    const cohoEl = document.getElementById('view-workspace-coho');
+    const p360El = document.getElementById('view-workspace-p360');
+    const isiEl = document.getElementById('view-workspace-isi');
+
+    if (hubEl) hubEl.classList.toggle('hidden', key !== 'hub');
+    if (cohoEl) cohoEl.classList.toggle('hidden', key !== 'coho');
+    if (p360El) p360El.classList.toggle('hidden', key !== 'p360');
+    if (isiEl) isiEl.classList.toggle('hidden', key !== 'isi');
+
+    // Update Header active labels & breadcrumbs
+    const clientLabel = document.getElementById('currentClientLabel');
+    const hubBreadcrumb = document.getElementById('hubBreadcrumb');
+
+    const meta = {
+      hub: 'Rev OPS Hub',
+      coho: 'COHO Operations',
+      p360: 'People360',
+      isi: 'Innovuze Solutions'
+    };
+
+    if (clientLabel) clientLabel.textContent = meta[key] || 'Rev OPS Hub';
+    if (hubBreadcrumb) hubBreadcrumb.classList.toggle('hidden', key === 'hub');
+
+    if (updateHash) {
+      window.location.hash = `#/${key}`;
+    }
+
+    // Move Copilot Workspace into the active view container
+    const copilot = document.getElementById('copilot-workspace');
+    if (copilot) {
+      let targetContainer = document.getElementById('hub-copilot-container');
+      if (key === 'coho') {
+        targetContainer = document.getElementById('coho-copilot-container') || targetContainer;
+      } else if (key === 'p360') {
+        targetContainer = document.getElementById('p360-copilot-container') || targetContainer;
+      } else if (key === 'isi') {
+        targetContainer = document.getElementById('isi-copilot-container') || targetContainer;
+      }
+      if (targetContainer && copilot.parentElement !== targetContainer) {
+        targetContainer.appendChild(copilot);
+      }
+    }
+
+    // Set Chat client context
+    if (typeof Chat !== 'undefined' && Chat.setClientContext) {
+      Chat.setClientContext(key);
+    }
+
+    this.closeClientMenu();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  toggleClientMenu(e) {
+    if (e) e.stopPropagation();
+    const dropdown = document.getElementById('clientMenuDropdown');
+    const btn = document.getElementById('clientMenuBtn');
+    if (dropdown) {
+      const isHidden = dropdown.classList.toggle('hidden');
+      if (btn) btn.setAttribute('aria-expanded', (!isHidden).toString());
+    }
+  },
+
+  closeClientMenu() {
+    const dropdown = document.getElementById('clientMenuDropdown');
+    const btn = document.getElementById('clientMenuBtn');
+    if (dropdown) dropdown.classList.add('hidden');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  },
+
   openAICopilotWithGuide() {
-    this.switchTab('ai-copilot');
+    if (this.state.currentWorkspace === 'coho') {
+      this.switchTab('ai-copilot');
+    } else if (this.state.currentWorkspace === 'hub') {
+      const el = document.getElementById('hub-copilot-container');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
     if (typeof Chat !== 'undefined' && Chat.openGuideInWorkspace) {
       Chat.openGuideInWorkspace();
+    }
+    if (typeof Chat !== 'undefined' && Chat.focusWorkspace) {
+      Chat.focusWorkspace();
     }
   },
 

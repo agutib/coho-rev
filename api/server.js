@@ -33,7 +33,7 @@ const ai = new GoogleGenAI({ apiKey: API_KEY });
 app.use(express.json({ limit: "50kb" }));
 
 app.use(cors({
-  origin: ["https://coho.arnoldgutib.pro", "http://localhost"],
+  origin: ["https://rev.arnoldgutib.pro", "https://coho.arnoldgutib.pro", "http://localhost"],
   methods: ["POST", "GET"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
@@ -83,19 +83,31 @@ function commitAndPush(filePath, commitMessage) {
   });
 }
 
-// ── Helper: Save Learned Rule ───────────────────────────
+// ── Helper: Save Learned Rule (Multi-Tenant Client Segregation) ──
 function saveLearnedRule(ruleData) {
   try {
+    const rawClient = String(ruleData.client || "").toLowerCase().trim();
+    let clientKey = "coho";
+    let clientTag = "COHO";
+
+    if (rawClient.includes("p360") || rawClient.includes("people")) {
+      clientKey = "p360";
+      clientTag = "P360";
+    } else if (rawClient.includes("isi") || rawClient.includes("innovuze") || rawClient.includes("inovuze")) {
+      clientKey = "isi";
+      clientTag = "ISI";
+    }
+
     const rulesFile = path.join(
       PROJECT_ROOT,
-      "skills/coho-property-operations-assistant/references/learned-rules.md"
+      `skills/coho-property-operations-assistant/references/learned-rules-${clientKey}.md`
     );
     const dateStr = new Date().toISOString().replace("T", " ").substring(0, 16);
-    const entry = `\n### 📌 [${ruleData.category || "Operational Rule"}] ${ruleData.summary || "Rule"} (${dateStr} UTC)\n- **Rule Details**: ${ruleData.details || ""}\n`;
+    const entry = `\n### 📌 [${clientTag} • ${ruleData.category || "Operational Rule"}] ${ruleData.summary || "Rule"} (${dateStr} UTC)\n- **Rule Details**: ${ruleData.details || ""}\n`;
 
     fs.appendFileSync(rulesFile, entry, "utf8");
-    console.log(`[Learned Rule Saved] ${ruleData.summary}`);
-    commitAndPush(rulesFile, `chore(skills): learned rule from Rev - ${ruleData.summary || "new rule"}`);
+    console.log(`[Learned Rule Saved for ${clientTag}] ${ruleData.summary}`);
+    commitAndPush(rulesFile, `chore(skills): learned rule for [${clientTag}] - ${ruleData.summary || "new rule"}`);
   } catch (err) {
     console.error("Failed to save learned rule:", err);
   }
@@ -124,7 +136,7 @@ app.post("/api/chat", async (req, res) => {
     return res.status(401).json({ error: "Unauthorized access. Valid authentication required." });
   }
 
-  const { message, history = [] } = req.body;
+  const { message, history = [], clientContext } = req.body;
 
   if (!message || typeof message !== "string" || message.trim().length === 0) {
     return res.status(400).json({ error: "Message is required." });
@@ -151,7 +163,10 @@ app.post("/api/chat", async (req, res) => {
   let fullResponse = "";
 
   try {
-    const currentSystemPrompt = getCohoSystemPrompt(PROJECT_ROOT);
+    let currentSystemPrompt = getCohoSystemPrompt(PROJECT_ROOT);
+    if (clientContext && clientContext !== "general" && clientContext !== "hub") {
+      currentSystemPrompt += `\n\n---\n## 🎯 ACTIVE WORKSPACE CONTEXT: [${clientContext.toUpperCase()}]\nRev is currently in the ${clientContext.toUpperCase()} workspace. Prioritize this organization's terminology, context, and operational rules unless she explicitly mentions another client.\n`;
+    }
 
     const responseStream = await ai.models.generateContentStream({
       model: "gemini-3.6-flash",
@@ -176,10 +191,13 @@ app.post("/api/chat", async (req, res) => {
     if (ruleMatch) {
       try {
         const parsedRule = JSON.parse(ruleMatch[1]);
+        if (!parsedRule.client && clientContext && clientContext !== "general" && clientContext !== "hub") {
+          parsedRule.client = clientContext;
+        }
         saveLearnedRule(parsedRule);
         res.write(`data: ${JSON.stringify({ event: "rule_saved", data: parsedRule })}\n\n`);
-      } catch (e) {
-        console.warn("Could not parse learned rule JSON:", e);
+      } catch (err) {
+        console.warn("Could not parse LEARNED_RULE tag:", err.message);
       }
     }
 

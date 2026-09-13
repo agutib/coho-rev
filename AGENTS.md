@@ -1,13 +1,17 @@
 # AGENTS.md — Universal AI Agent Handover Guide
-**Project:** COHO OpsHub — UK HMO Property Operations Center  
+**Project:** Rev OPS Hub — Multi-Client Operations Command Center (COHO, People360, Innovuze Solutions Inc)  
 **Repository:** https://github.com/agutib/coho-rev  
-**Production Site:** https://coho.arnoldgutib.pro  
+**Production Site:** https://rev.arnoldgutib.pro  
+*(Redirected Legacy Domain: https://coho.arnoldgutib.pro → HTTP 301)*  
 
 ---
 
 ## 🎯 What Any AI Agent Joining This Project Must Know
 
-1. **Who uses this:** Rev (Arnold''s wife). This is her actual, day-to-day web app for managing UK HMO (House in Multiple Occupation) properties, rent reconciliation, tenant arrears, and compliance. Keep all code simple, practical, and dependable.
+1. **Who uses this:** Rev (Arnold's wife). This is her actual, day-to-day web app for managing operations across multiple client portfolios:
+   - **COHO**: UK HMO property management, rent reconciliation, tenant arrears, and compliance.
+   - **People360 (P360)**: Workforce scheduling, HR operations, and contractor governance.
+   - **Innovuze Solutions Inc (ISI)**: Technical projects, client deliverables, and SLA operations.
 2. **Architecture:**
    - Client-side Single Page Application (vanilla JS, Tailwind CSS CDN, SheetJS).
    - No build tools (no webpack/vite). Edits to `index.html` or `assets/*.js` take effect immediately upon page reload.
@@ -15,7 +19,7 @@
 3. **Deployment Target:**
    - Host: `sindbad-dev-web-vm` (`34.124.177.92`), custom SSH Port `2363`.
    - Access: Run via WSL Ubuntu distribution as user `bong`.
-   - Webroot: `/var/www/coho.arnoldgutib.pro/` (Nginx).
+   - Webroot: `/var/www/rev.arnoldgutib.pro/` (Nginx, symlinked from `/var/www/coho.arnoldgutib.pro/`).
    - Backend repo: `/opt/coho-app/` managed by PM2 (`coho-api`).
 
 ---
@@ -80,7 +84,7 @@ COHO-Property-Operations/
   3. *Word Document (.doc):* Downloadable formatted document for Word & Google Docs.
   4. *Accounting CSV (.csv):* Clean comma-separated values for bookkeeping software.
   5. *Google Sheets Copy (TSV):* 1-click clipboard copy formatted for direct spreadsheet pasting.
-- **Trigger for Teaching:** If Rev starts a chat message with *"Remember this rule: ..."*, the AI outputs `[[LEARNED_RULE: {...}]]`. The backend captures this, writes to `learned-rules.md`, commits, pushes to Git, and injects it into every future conversation.
+- **Trigger for Teaching (Multi-Tenant Disambiguation Gate):** If Rev says *"Remember this rule: ..."* without specifying a client, Gemini prompts her: *"Which client is this rule for? Please specify COHO, P360, or ISI"*. Once specified (or if specified in prompt), the AI outputs `[[LEARNED_RULE: {"client": "COHO|P360|ISI", ...}]]`. The backend routes and appends this rule into `learned-rules-coho.md`, `learned-rules-p360.md`, or `learned-rules-isi.md`, commits, pushes to Git, and injects it into future conversations organized by client.
 - **Trigger for Feedback:** If Rev complains or suggests a feature, the AI outputs `[[APP_FEEDBACK: {...}]]`. The backend writes to `USER_FEEDBACK_LOG.md` and commits to Git.
 - **Superpowers Engine (All Agents: Codex, Claude, Antigravity, Cursor):** All 14 Superpowers skills (`using-superpowers`, `brainstorming`, `writing-plans`, `executing-plans`, `test-driven-development`, `systematic-debugging`, etc.) are installed across all tool directories (`~/.codex/skills`, `~/.claude/skills`, `~/.gemini/config/plugins/superpowers`, `.cursor/rules`). Always check for and invoke relevant skills before code generation or actions.
 

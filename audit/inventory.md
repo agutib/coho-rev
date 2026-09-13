@@ -1,6 +1,6 @@
 # Application Audit Inventory & Attack Surface Tracker
-**Project:** COHO OpsHub — UK HMO Property Operations Center  
-**Target:** `https://coho.arnoldgutib.pro` | `sindbad-dev-web-vm` (`34.124.177.92:2363`)  
+**Project:** Rev OPS Hub — Multi-Client Operations Command Center  
+**Target:** `https://rev.arnoldgutib.pro` (Redirect: `https://coho.arnoldgutib.pro` → 301) | `sindbad-dev-web-vm` (`34.124.177.92:2363`)  
 **Audit Framework:** `prelaunch-qa-vapt-gate` & Multi-Specialist Agent Suite  
 **Date:** 2026-09-13  
 
@@ -8,10 +8,14 @@
 
 ## 1. Routes & Pages
 - [x] `/` (Nginx HTTP to HTTPS 301 redirect)
-- [x] `/home` (Main Single Page Application Dashboard, HTTP 200)
+- [x] `/home` (Main Single Page Application Executive Portal, HTTP 200)
 - [x] `/index.html` (Canonical SPA HTML; Nginx 301 redirects to `/home`; `history.replaceState` canonicalization)
 - [x] `/login.html` (Authentication Gateway, WebCrypto SHA-256 password challenge)
-- [x] `#pane-ai-copilot` (Antigravity AI Copilot Workspace tab)
+- [x] `#/hub` (Rev OPS Hub Executive Portal: 3 Client Cards & Cross-Client Gemini AI Copilot)
+- [x] `#/coho` (COHO Operations Center: HMO Reconciler, Radar, Directory, SOP, Copilot)
+- [x] `#/p360` (People360 Operations: Workforce, Scheduling, HR, Payroll, Copilot)
+- [x] `#/isi` (Innovuze Solutions Inc Operations: Tech Services, SLAs, Deliverables, Copilot)
+- [x] `#pane-ai-copilot` (Antigravity AI Copilot Workspace tab inside COHO)
 - [x] `#pane-reconciler` (Rent Reconciler & Arrears Schedule tab)
 - [x] `#pane-compliance` (HMO Compliance Radar tab)
 - [x] `#pane-tenancies` (Tenancy Directory tab)
@@ -22,11 +26,14 @@
 ## 2. API Endpoints
 - [x] `POST /api/chat`
   - **Transport:** HTTP/2 (Nginx reverse proxy to Node.js `127.0.0.1:3001`)
-  - **Auth Requirement:** *None* (Currently public, unauthenticated)
+  - **Auth Requirement:** Bearer Token required (`COHO_AUTH_TOKEN` header validation)
   - **Rate Limiting:** `express-rate-limit` (30 req/min per IP)
-  - **Input Schema:** JSON `{ message: string (1-4000 chars), history?: Array<{role, text}> }`
-  - **Output:** Server-Sent Events (`text/event-stream`) streaming Gemini response chunks + learning tags
+  - **Input Schema:** JSON `{ message: string, history?: Array<{role, text}>, clientContext?: string }`
+  - **Output:** Server-Sent Events (`text/event-stream`) streaming Gemini response chunks + multi-tenant learning tags
 - [x] `GET /api/health`
+  - **Transport:** HTTP/2 (Nginx reverse proxy to Node.js `127.0.0.1:3001`)
+  - **Auth Requirement:** None (Public)
+  - **Output:** JSON `{ status: "ok", service: "coho-chat-api", learningEngine: "active", financeSpecialists: 6 }`
   - **Transport:** HTTP/2 (Nginx reverse proxy to Node.js `127.0.0.1:3001`)
   - **Auth Requirement:** None (Public)
   - **Output:** JSON `{ status: "ok", service: "coho-chat-api", learningEngine: "active", financeSpecialists: 6 }`
@@ -43,7 +50,9 @@
   - `coho_auth`: Client-side authentication flag (`'true'`)
   - `coho_auth_time`: Timestamp of successful login
 - [x] **Server Flat-File Repositories:**
-  - `skills/coho-property-operations-assistant/references/learned-rules.md`: Continuous learning rule store
+  - `skills/coho-property-operations-assistant/references/learned-rules-coho.md`: COHO HMO learning rule store
+  - `skills/coho-property-operations-assistant/references/learned-rules-p360.md`: People360 learning rule store
+  - `skills/coho-property-operations-assistant/references/learned-rules-isi.md`: Innovuze Solutions Inc learning rule store
   - `docs/USER_FEEDBACK_LOG.md`: User complaints, bugs, and feature request log
 
 ---

@@ -1,7 +1,8 @@
 # CLAUDE.md — Project & Agent Handover Manual
-**Project:** COHO OpsHub — UK HMO Property Operations & Financial Control Center  
-**Target User:** Rev (Arnold''s wife) — Day-to-day UK HMO Property Operations Manager  
-**Live URL:** https://coho.arnoldgutib.pro  
+**Project:** Rev OPS Hub — Multi-Client Operations Command Center (COHO, People360, Innovuze Solutions Inc)  
+**Target User:** Rev (Arnold's wife) — Multi-Client Operations Manager  
+**Live URL:** https://rev.arnoldgutib.pro  
+*(Redirected Legacy Domain: https://coho.arnoldgutib.pro → HTTP 301)*  
 **GitHub Repository:** https://github.com/agutib/coho-rev  
 
 ---

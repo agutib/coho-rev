@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>COHO OpsHub | UK Property & HMO Operations Center</title>
+  <title>Rev OPS Hub | Executive Operations Center</title>
   
   <script>
     // Immediate Theme initialization to prevent FOUC (Flash of Unstyled Content)
@@ -72,15 +72,62 @@
   <header class="bg-white dark:bg-slate-800/95 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-xs backdrop-blur-md transition-colors duration-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-black text-lg shadow-sm shadow-emerald-500/20">
-          C
-        </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-base font-bold text-slate-900 dark:text-white leading-none">COHO OpsHub</h1>
-            <span class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">UK HMO Edition</span>
+        <a href="#/hub" onclick="App.switchWorkspace('hub'); return false;" class="flex items-center gap-2.5 group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white font-black text-lg shadow-sm shadow-emerald-500/25 group-hover:scale-105 transition-transform">
+            R
           </div>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Property Management & Financial Control Center</p>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-base font-bold text-slate-900 dark:text-white leading-none">Rev OPS Hub</h1>
+              <span class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">Executive</span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Multi-Client Operations & Intelligence</p>
+          </div>
+        </a>
+
+        <!-- Client Switcher Component in Header -->
+        <div class="ml-1 sm:ml-3 pl-2 sm:pl-3 border-l border-slate-200 dark:border-slate-700 flex items-center gap-2">
+          <button id="hubBreadcrumb" onclick="App.switchWorkspace('hub')" class="hidden px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition-colors flex items-center gap-1 shadow-2xs" title="Return to Rev OPS Hub Overview">
+            <span>←</span> <span>Hub Home</span>
+          </button>
+          
+          <div class="relative inline-block text-left" id="clientDropdownContainer">
+            <button id="clientMenuBtn" onclick="App.toggleClientMenu(event)" aria-haspopup="menu" aria-expanded="false" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 transition-colors flex items-center gap-1.5 shadow-2xs">
+              <span>🏢</span> <span id="currentClientLabel">Rev OPS Hub</span>
+              <svg class="w-3 h-3 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div id="clientMenuDropdown" role="menu" aria-labelledby="clientMenuBtn" class="hidden absolute left-0 mt-2 w-72 rounded-xl bg-white dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700 py-1.5 z-50 text-xs text-slate-700 dark:text-slate-200 animate-in fade-in zoom-in-95 duration-100">
+              <div class="px-3 py-1.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Select Client Workspace</div>
+              <button role="menuitem" onclick="App.switchWorkspace('hub')" class="w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-700/60 flex items-center gap-2.5 transition-colors">
+                <span class="text-base">🏠</span>
+                <div>
+                  <div class="font-semibold text-slate-800 dark:text-slate-100">Rev OPS Hub (Home)</div>
+                  <div class="text-[10px] text-slate-400 dark:text-slate-500">Overview portal & cross-client Copilot</div>
+                </div>
+              </button>
+              <button role="menuitem" onclick="App.switchWorkspace('coho')" class="w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-700/60 flex items-center gap-2.5 transition-colors">
+                <span class="text-base">🏡</span>
+                <div>
+                  <div class="font-semibold text-slate-800 dark:text-slate-100">COHO Operations</div>
+                  <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">UK HMO Management • 4 Properties</div>
+                </div>
+              </button>
+              <button role="menuitem" onclick="App.switchWorkspace('p360')" class="w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-700/60 flex items-center gap-2.5 transition-colors">
+                <span class="text-base">👥</span>
+                <div>
+                  <div class="font-semibold text-slate-800 dark:text-slate-100">People360 (P360)</div>
+                  <div class="text-[10px] text-blue-600 dark:text-blue-400 font-medium">Workforce & HR Operations</div>
+                </div>
+              </button>
+              <button role="menuitem" onclick="App.switchWorkspace('isi')" class="w-full text-left px-3 py-2 hover:bg-emerald-50 dark:hover:bg-slate-700/60 flex items-center gap-2.5 transition-colors">
+                <span class="text-base">⚡</span>
+                <div>
+                  <div class="font-semibold text-slate-800 dark:text-slate-100">Innovuze Solutions Inc (ISI)</div>
+                  <div class="text-[10px] text-amber-600 dark:text-amber-400 font-medium">Technical & Solutions Operations</div>
+                </div>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -167,6 +214,391 @@
   <!-- Main Content Container -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
+    <!-- VIEW 1: REV OPS HUB (EXECUTIVE PORTAL) -->
+    <div id="view-hub-home" class="space-y-8">
+      <!-- Executive Welcome Banner -->
+      <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 text-white p-6 sm:p-8 rounded-3xl shadow-lg border border-slate-700/60 relative overflow-hidden">
+        <div class="relative z-10 max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold border border-emerald-500/30 mb-3">
+            <span>✨</span> <span>Executive Operations Portal</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Welcome back, Rev.
+          </h1>
+          <p class="text-sm sm:text-base text-slate-300 mt-2 leading-relaxed">
+            Your centralized multi-client operations command center. Monitor HMO rent reconciliation and compliance for <strong class="text-emerald-300 font-semibold">COHO</strong>, manage upcoming workforce and HR operations for <strong class="text-blue-300 font-semibold">People360</strong>, and track tech operations for <strong class="text-amber-300 font-semibold">Innovuze Solutions Inc</strong>.
+          </p>
+        </div>
+        <div class="absolute -right-8 -bottom-8 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      </div>
+
+      <!-- Client Portfolios 3-Card Grid -->
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span>🏢</span> Client Workspaces
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Select a client below to launch their dedicated operational suite.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <!-- CARD 1: COHO (Active HMO Operations) -->
+          <div onclick="App.switchWorkspace('coho')" class="group cursor-pointer bg-white dark:bg-slate-800 rounded-2xl border-2 border-emerald-500/30 hover:border-emerald-500 dark:border-emerald-500/30 dark:hover:border-emerald-400 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-bl-full pointer-events-none group-hover:bg-emerald-500/20 transition-colors"></div>
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                  🏡
+                </div>
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Active Live
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                COHO Operations
+              </h3>
+              <p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mt-0.5">UK HMO Property Management</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 leading-relaxed">
+                Automated 3-way rent reconciliation, bank matching, tenant arrears tracking, HMO compliance calendar, and landlord communications.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400">
+                <span class="font-medium text-slate-700 dark:text-slate-200">4 Properties</span>
+                <span>•</span>
+                <span>10 Tenancies</span>
+                <span>•</span>
+                <span>SOP Checklists</span>
+              </div>
+            </div>
+            <div class="mt-5 pt-3">
+              <span class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 group-hover:bg-emerald-700 text-white font-semibold text-xs transition-colors shadow-sm shadow-emerald-500/20">
+                <span>Open COHO Workspace</span>
+                <span>→</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- CARD 2: People360 (P360 - Workforce & HR) -->
+          <div onclick="App.switchWorkspace('p360')" class="group cursor-pointer bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-400 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-bl-full pointer-events-none group-hover:bg-blue-500/20 transition-colors"></div>
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                  👥
+                </div>
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                  <span>⏳</span> Setup in Progress
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                People360 (P360)
+              </h3>
+              <p class="text-xs font-semibold text-blue-700 dark:text-blue-400 mt-0.5">Workforce & HR Operations</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 leading-relaxed">
+                Workforce management, staff scheduling, HR policy administration, payroll reconciliation, and contractor credential compliance.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400">
+                <span class="font-medium text-slate-700 dark:text-slate-200">Onboarding Data</span>
+                <span>•</span>
+                <span>Gemini Ready</span>
+                <span>•</span>
+                <span>P360 Rules</span>
+              </div>
+            </div>
+            <div class="mt-5 pt-3">
+              <span class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 group-hover:bg-blue-600 group-hover:text-white text-slate-700 dark:text-slate-200 font-semibold text-xs transition-colors">
+                <span>Open P360 Workspace</span>
+                <span>→</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- CARD 3: Innovuze Solutions Inc (ISI - Tech & Solutions) -->
+          <div onclick="App.switchWorkspace('isi')" class="group cursor-pointer bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-400 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-bl-full pointer-events-none group-hover:bg-amber-500/20 transition-colors"></div>
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                  ⚡
+                </div>
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                  <span>⏳</span> Setup in Progress
+                </span>
+              </div>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                Innovuze Solutions Inc (ISI)
+              </h3>
+              <p class="text-xs font-semibold text-amber-700 dark:text-amber-400 mt-0.5">Technical & Solutions Operations</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 leading-relaxed">
+                Client deliverables, technology project tracking, vendor service level agreements (SLAs), and engineering operations governance.
+              </p>
+              <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400">
+                <span class="font-medium text-slate-700 dark:text-slate-200">Onboarding Data</span>
+                <span>•</span>
+                <span>Gemini Ready</span>
+                <span>•</span>
+                <span>ISI Rules</span>
+              </div>
+            </div>
+            <div class="mt-5 pt-3">
+              <span class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 group-hover:bg-amber-600 group-hover:text-white text-slate-700 dark:text-slate-200 font-semibold text-xs transition-colors">
+                <span>Open ISI Workspace</span>
+                <span>→</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hub AI Copilot Section -->
+      <div class="space-y-3 pt-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span>🤖</span> Rev Cross-Client AI Copilot
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">
+              Ask questions across any client, stage financial documents, or teach Gemini rules for COHO, P360, or ISI.
+            </p>
+          </div>
+        </div>
+
+        <div id="hub-copilot-container" class="w-full">
+          <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-colors duration-200 min-h-[720px] relative" id="copilot-workspace">
+            
+            <!-- Drag & Drop Overlay for Workspace -->
+            <div id="copilot-drop-overlay" class="hidden absolute inset-0 z-40 bg-emerald-950/80 backdrop-blur-xs border-4 border-dashed border-emerald-400 rounded-2xl flex flex-col items-center justify-center p-8 text-white text-center pointer-events-none transition-all">
+              <div class="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center text-3xl mb-3 animate-bounce">
+                📥
+              </div>
+              <h3 class="text-lg font-bold">Drop Bank CSV or COHO Rent Roll / Excel here</h3>
+              <p class="text-sm text-emerald-200 mt-1 max-w-md">Will automatically parse, update OpsHub metrics, and stage for instant Gemini financial analysis!</p>
+            </div>
+
+            <!-- Copilot Workspace Header (Single-row layout with controls beside title) -->
+            <div class="bg-slate-900 text-white px-4 py-2.5 flex items-center justify-between gap-3 border-b border-slate-800">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center text-slate-950 font-black text-sm shadow-sm shadow-emerald-500/30 flex-shrink-0">
+                  ⚡
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <h2 class="text-sm font-bold text-white leading-none whitespace-nowrap">Antigravity AI Copilot</h2>
+                    <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 whitespace-nowrap">Gemini 3.6 Flash</span>
+                  </div>
+                  <p class="text-[11px] text-slate-400 mt-0.5 truncate hidden 2xl:block">Drag-and-drop CSVs or ask any question · Learns rules dynamically</p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+                <!-- Specialist Dropdown (Green Box) -->
+                <div class="relative">
+                  <select id="copilot-specialist-select" aria-label="Select Finance Specialist" onchange="Chat.handleSpecialistSelect(this.value)" 
+                    class="appearance-none bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-medium pl-2.5 pr-6 py-1.5 rounded-lg border border-slate-700 hover:border-slate-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs">
+                    <option value="all">🌟 Specialist: All-Round</option>
+                    <option value="controller">📒 Bookkeeper & Controller</option>
+                    <option value="ap">💳 AP Invoice Auditor</option>
+                    <option value="analyst">📊 Financial Analyst</option>
+                    <option value="fpa">📈 FP&A Cash Forecast</option>
+                    <option value="tax">⚖️ Tax Strategist</option>
+                    <option value="cfo">🏛️ CFO & Capex</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-slate-400 text-[10px]">▼</div>
+                </div>
+
+                <!-- COHO Skills Dropdown (Red Box) -->
+                <div class="relative">
+                  <select id="copilot-skill-select" aria-label="Select COHO Skill Workflow" onchange="Chat.handleSkillSelect(this)" 
+                    class="appearance-none bg-slate-800 hover:bg-slate-750 text-emerald-300 hover:text-emerald-200 text-xs font-medium pl-2.5 pr-6 py-1.5 rounded-lg border border-slate-700 hover:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs">
+                    <option value="" selected disabled>🛠️ COHO Skills & SOPs ▾</option>
+                    <option value="rent-arrears">⚖️ Rent & Arrears Protocol</option>
+                    <option value="reconciliation">📒 3-Way Reconcile</option>
+                    <option value="maintenance">🔧 Maintenance (£200 Limit)</option>
+                    <option value="compliance">🛡️ HMO Compliance</option>
+                    <option value="comms">💬 Tenant & Landlord Comms</option>
+                    <option value="kpis">📊 98% Collection & Yield KPI</option>
+                    <option value="escalation">🚨 Legal Escalation</option>
+                    <option value="learned-rules">🧠 Learned Rules Memory</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-emerald-400 text-[10px]">▼</div>
+                </div>
+
+                <button onclick="Chat.toggleGuideInWorkspace()" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors flex items-center gap-1 shadow-2xs whitespace-nowrap">
+                  <span>💡</span> <span>Guide</span>
+                </button>
+                <button onclick="Chat.clearHistory()" class="px-2 py-1.5 text-xs font-medium rounded-lg bg-slate-800 hover:bg-rose-950/60 text-slate-300 hover:text-rose-400 border border-slate-700 transition-colors whitespace-nowrap" title="Clear Chat History">
+                  🗑️ Clear
+                </button>
+              </div>
+            </div>
+
+            <!-- Embedded Interactive User Guide View (Slide-down) -->
+            <div id="copilot-guide-view" class="hidden p-5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 transition-all max-h-96 overflow-y-auto">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
+                <div>
+                  <h3 class="text-sm font-bold text-slate-900 dark:text-white">📖 Rev's Interactive Learning & Prompt Guide</h3>
+                  <p class="text-xs text-slate-500 dark:text-slate-400">Click any prompt card below to immediately run it with your active OpsHub data!</p>
+                </div>
+                <button onclick="Chat.toggleGuideInWorkspace()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-bold px-2 py-1">✕ Close Guide</button>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 text-xs">
+                <div class="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2 shadow-3xs">
+                  <div class="font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider text-[11px] flex items-center gap-1">
+                    <span>🧠</span> Teach Rules Dynamically
+                  </div>
+                  <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-[11px]">Specify client (<code class="font-mono text-emerald-600 dark:text-emerald-400">COHO</code>, <code class="font-mono text-blue-600 dark:text-blue-400">P360</code>, or <code class="font-mono text-amber-600 dark:text-amber-400">ISI</code>) to save rules into separated knowledge bases.</p>
+                  <div class="space-y-1.5">
+                    <button onclick="Chat.usePrompt('Remember this rule for COHO: Tenant Dave in Room 3 pays from his mum\'s account under \'Sarah Smith\'.')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
+                      👉 <em>"Remember rule for COHO: Dave pays under 'Sarah Smith'."</em>
+                    </button>
+                    <button onclick="Chat.usePrompt('Remember this rule for P360: Sunday night shifts have a 1.5x hourly pay rate multiplier.')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-blue-50 dark:hover:bg-blue-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
+                      👉 <em>"Remember rule for P360: Sunday shifts get 1.5x multiplier."</em>
+                    </button>
+                    <button onclick="Chat.usePrompt('Remember this rule for ISI: Server expense approvals above £500 require Arnold.')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-amber-50 dark:hover:bg-amber-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
+                      👉 <em>"Remember rule for ISI: Server expenses > £500 need Arnold."</em>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2 shadow-3xs">
+                  <div class="font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider text-[11px] flex items-center gap-1">
+                    <span>🏛️</span> Finance Specialist Queries
+                  </div>
+                  <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-[11px]">Deep 3-way matching, invoice checking, and HMO tax classifications.</p>
+                  <div class="space-y-1.5">
+                    <button onclick="Chat.usePrompt('Audit this plumber quote: £350 to replace a kitchen mixer tap at 14 Oak St. Is it reasonable?')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
+                      👉 <em>"Audit plumber quote: £350 for mixer tap replacement."</em>
+                    </button>
+                    <button onclick="Chat.usePrompt('Calculate void loss: Room 2 has been vacant for 3 weeks at £650/month rent.')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
+                      👉 <em>"Calculate void loss for 3 vacant weeks at £650/month."</em>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2 shadow-3xs">
+                  <div class="font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider text-[11px] flex items-center gap-1">
+                    <span>📋</span> Website Suggestions & Feedback
+                  </div>
+                  <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-[11px]">Tell Gemini what you want added or changed on OpsHub. It logs it directly for developers.</p>
+                  <div class="space-y-1.5">
+                    <button onclick="Chat.usePrompt('I find it annoying that the table doesn\'t have an export to PDF button, could we add that?')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
+                      👉 <em>"I find it annoying that..." / "Can we add..."</em>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat Messages Container -->
+            <div id="copilot-messages" class="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-50/50 dark:bg-slate-900/60 min-h-[460px] max-h-[600px]">
+              <!-- Populated dynamically via Chat.render() -->
+            </div>
+
+            <!-- Staged / Loaded File Notification Bar in Chat -->
+            <div id="copilot-loaded-file-bar" class="hidden px-4 py-2 bg-emerald-50 dark:bg-emerald-950/50 border-t border-emerald-200 dark:border-emerald-800/60 flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
+                <span class="text-sm">📁</span>
+                <span id="copilot-loaded-file-name" class="font-bold">File Loaded</span>
+                <span class="text-emerald-600 dark:text-emerald-400 text-[11px]" id="copilot-loaded-file-summary">— Synced live into OpsHub Dashboard</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="Chat.askAboutLoadedFile()" class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-3xs">
+                  ⚡ Audit Discrepancies
+                </button>
+                <button onclick="Chat.dismissLoadedFileBar()" class="text-emerald-500 hover:text-emerald-700 dark:hover:text-emerald-300 text-sm font-bold px-1">
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick Action Bar: All 6 Finance Division Specialists -->
+            <div class="px-4 py-2 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center gap-1.5 overflow-x-auto text-[11px] no-scrollbar">
+              <span class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider text-[10px] mr-1 flex-shrink-0">Finance Specialists:</span>
+              
+              <button onclick="Chat.invokeSpecialist('controller', 'Perform a full 3-way reconciliation audit between bank credits, active rent rolls, and tenancy schedules. Flag any discrepancies.')"
+                class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap shadow-3xs font-medium transition-colors flex items-center gap-1">
+                <span>📒</span> <span>Controller (3-Way Match)</span>
+              </button>
+
+              <button onclick="Chat.invokeSpecialist('ap', 'Audit this contractor invoice or repair quote like an AP Specialist against typical UK trade rates: ')"
+                class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors flex items-center gap-1">
+                <span>💳</span> <span>AP (Audit Invoice/Quote)</span>
+              </button>
+
+              <button onclick="Chat.invokeSpecialist('analyst', 'Calculate room yields, RevPAM, and revenue lost to void vacancy periods for our properties.')"
+                class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors flex items-center gap-1">
+                <span>📊</span> <span>Analyst (Yield & Void)</span>
+              </button>
+
+              <button onclick="Chat.invokeSpecialist('fpa', 'Prepare a 13-week rolling cash flow forecast and budget variance analysis based on our rent collection and upcoming bills.')"
+                class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors flex items-center gap-1">
+                <span>📈</span> <span>FP&A (Cash Flow Forecast)</span>
+              </button>
+
+              <button onclick="Chat.invokeSpecialist('tax', 'Classify this property expense: is it tax-deductible as a revenue repair or a capital improvement under UK HMO rules? Expenditure: ')"
+                class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors flex items-center gap-1">
+                <span>⚖️</span> <span>Tax (Repairs vs Capex)</span>
+              </button>
+
+              <button onclick="Chat.invokeSpecialist('cfo', 'Advise on sizing our sinking fund reserve for major HMO capex and calculate our portfolio debt coverage (DSCR).')"
+                class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors flex items-center gap-1">
+                <span>🏛️</span> <span>CFO (Sinking Funds)</span>
+              </button>
+
+              <div class="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1 flex-shrink-0"></div>
+
+              <button onclick="Chat.usePrompt('Remember this rule: ')"
+                class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap shadow-3xs font-semibold transition-colors flex items-center gap-1">
+                <span>🧠</span> <span>Remember Rule</span>
+              </button>
+            </div>
+
+            <!-- Copilot Input Box & Attach Button -->
+            <div class="p-4 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+              <input type="file" id="copilot-file-input" class="hidden" accept=".csv, .xlsx, .xls">
+              <div class="flex items-end gap-2.5">
+                <!-- File Attach Button -->
+                <button onclick="document.getElementById('copilot-file-input').click()" title="Attach Bank CSV or COHO Rent Roll to load into OpsHub and chat" class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 border border-slate-200 dark:border-slate-600 flex items-center justify-center flex-shrink-0 transition-colors shadow-2xs">
+                  <span class="text-base">📎</span>
+                </button>
+
+                <!-- Multiline Input -->
+                <textarea id="copilot-input" rows="1" placeholder="Ask Gemini about rent, arrears, invoices, or drop a CSV here..." class="flex-1 resize-none rounded-xl border border-slate-300 dark:border-slate-600 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all min-h-[42px] max-h-36 overflow-y-auto leading-relaxed" onkeydown="Chat.handleWorkspaceKey(event)" oninput="Chat.autoResize(this)"></textarea>
+
+                <!-- Send Button -->
+                <button id="copilot-send-btn" onclick="Chat.sendWorkspace()" class="w-10 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center flex-shrink-0 transition-colors shadow-sm shadow-emerald-500/20 disabled:opacity-40 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                </button>
+              </div>
+              <div class="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 px-1">
+                <span>💡 Tip: Drag & drop any CSV or Excel file directly onto this chat to load into OpsHub.</span>
+                <span>Press Enter to send · Shift+Enter for newline</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: COHO WORKSPACE -->
+    <div id="view-workspace-coho" class="hidden space-y-6">
+      <!-- Breadcrumb Bar -->
+      <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+        <div class="flex items-center gap-2">
+          <button onclick="App.switchWorkspace('hub')" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition-colors flex items-center gap-1 shadow-2xs">
+            <span>←</span> <span>Hub Home</span>
+          </button>
+          <span class="text-slate-300 dark:text-slate-600">/</span>
+          <span class="text-xs font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+            <span>🏡</span> COHO Operations Center
+          </span>
+        </div>
+        <span class="text-[11px] text-slate-400 dark:text-slate-500">UK HMO Management • 4 Active Properties</span>
+      </div>
+
     <!-- KPI Metric Cards -->
     <div class="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4">
       <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 shadow-2xs transition-colors duration-200">
@@ -224,219 +656,9 @@
       </div>
     </div>
 
-    <!-- PANE 0: Full Antigravity AI Copilot Workspace -->
+    <!-- PANE 0: Full Antigravity AI Copilot Workspace Container -->
     <div id="pane-ai-copilot" role="tabpanel" aria-labelledby="tab-ai-copilot" class="tab-pane hidden space-y-4">
-      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-colors duration-200 min-h-[720px] relative" id="copilot-workspace">
-        
-        <!-- Drag & Drop Overlay for Workspace -->
-        <div id="copilot-drop-overlay" class="hidden absolute inset-0 z-40 bg-emerald-950/80 backdrop-blur-xs border-4 border-dashed border-emerald-400 rounded-2xl flex flex-col items-center justify-center p-8 text-white text-center pointer-events-none transition-all">
-          <div class="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center text-3xl mb-3 animate-bounce">
-            📥
-          </div>
-          <h3 class="text-lg font-bold">Drop Bank CSV or COHO Rent Roll / Excel here</h3>
-          <p class="text-sm text-emerald-200 mt-1 max-w-md">Will automatically parse, update OpsHub metrics, and stage for instant Gemini financial analysis!</p>
-        </div>
-
-        <!-- Copilot Workspace Header (Single-row layout with controls beside title) -->
-        <div class="bg-slate-900 text-white px-4 py-2.5 flex items-center justify-between gap-3 border-b border-slate-800">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <div class="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center text-slate-950 font-black text-sm shadow-sm shadow-emerald-500/30 flex-shrink-0">
-              ⚡
-            </div>
-            <div class="min-w-0">
-              <div class="flex items-center gap-1.5">
-                <h2 class="text-sm font-bold text-white leading-none whitespace-nowrap">Antigravity AI Copilot</h2>
-                <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 whitespace-nowrap">Gemini 3.6 Flash</span>
-              </div>
-              <p class="text-[11px] text-slate-400 mt-0.5 truncate hidden 2xl:block">Drag-and-drop CSVs or ask any question · Learns rules dynamically</p>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-            <!-- Specialist Dropdown (Green Box) -->
-            <div class="relative">
-              <select id="copilot-specialist-select" aria-label="Select Finance Specialist" onchange="Chat.handleSpecialistSelect(this.value)" 
-                class="appearance-none bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-medium pl-2.5 pr-6 py-1.5 rounded-lg border border-slate-700 hover:border-slate-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs">
-                <option value="all">🌟 Specialist: All-Round</option>
-                <option value="controller">📒 Bookkeeper & Controller</option>
-                <option value="ap">💳 AP Invoice Auditor</option>
-                <option value="analyst">📊 Financial Analyst</option>
-                <option value="fpa">📈 FP&A Cash Forecast</option>
-                <option value="tax">⚖️ Tax Strategist</option>
-                <option value="cfo">🏛️ CFO & Capex</option>
-              </select>
-              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-slate-400 text-[10px]">▼</div>
-            </div>
-
-            <!-- COHO Skills Dropdown (Red Box) -->
-            <div class="relative">
-              <select id="copilot-skill-select" aria-label="Select COHO Skill Workflow" onchange="Chat.handleSkillSelect(this)" 
-                class="appearance-none bg-slate-800 hover:bg-slate-750 text-emerald-300 hover:text-emerald-200 text-xs font-medium pl-2.5 pr-6 py-1.5 rounded-lg border border-slate-700 hover:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs">
-                <option value="" selected disabled>🛠️ COHO Skills & SOPs ▾</option>
-                <option value="rent-arrears">⚖️ Rent & Arrears Protocol</option>
-                <option value="reconciliation">📒 3-Way Reconcile</option>
-                <option value="maintenance">🔧 Maintenance (£200 Limit)</option>
-                <option value="compliance">🛡️ HMO Compliance</option>
-                <option value="comms">💬 Tenant & Landlord Comms</option>
-                <option value="kpis">📊 98% Collection & Yield KPI</option>
-                <option value="escalation">🚨 Legal Escalation</option>
-                <option value="learned-rules">🧠 Learned Rules Memory</option>
-              </select>
-              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-emerald-400 text-[10px]">▼</div>
-            </div>
-
-            <button onclick="Chat.toggleGuideInWorkspace()" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors flex items-center gap-1 shadow-2xs whitespace-nowrap">
-              <span>💡</span> <span>Guide</span>
-            </button>
-            <button onclick="Chat.clearHistory()" class="px-2 py-1.5 text-xs font-medium rounded-lg bg-slate-800 hover:bg-rose-950/60 text-slate-300 hover:text-rose-400 border border-slate-700 transition-colors whitespace-nowrap" title="Clear Chat History">
-              🗑️ Clear
-            </button>
-          </div>
-        </div>
-
-        <!-- Embedded Interactive User Guide View (Slide-down) -->
-        <div id="copilot-guide-view" class="hidden p-5 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 transition-all max-h-96 overflow-y-auto">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700">
-            <div>
-              <h3 class="text-sm font-bold text-slate-900 dark:text-white">📖 Rev's Interactive Learning & Prompt Guide</h3>
-              <p class="text-xs text-slate-500 dark:text-slate-400">Click any prompt card below to immediately run it with your active OpsHub data!</p>
-            </div>
-            <button onclick="Chat.toggleGuideInWorkspace()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 font-bold px-2 py-1">✕ Close Guide</button>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 text-xs">
-            <div class="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2 shadow-3xs">
-              <div class="font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider text-[11px] flex items-center gap-1">
-                <span>🧠</span> Teach Rules Dynamically
-              </div>
-              <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-[11px]">Start with <strong>"Remember this rule: ..."</strong> to persist habits directly to the skill repo.</p>
-              <div class="space-y-1.5">
-                <button onclick="Chat.usePrompt('Remember this rule: Tenant Dave in Room 3 pays from his mum\'s account under \'Sarah Smith\'.')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
-                  👉 <em>"Remember: Dave in Room 3 pays under 'Sarah Smith'."</em>
-                </button>
-                <button onclick="Chat.usePrompt('Remember this rule: Landlord John wants quotes over £200 approved before booking work.')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
-                  👉 <em>"Remember: Landlord John quotes > £200 need approval."</em>
-                </button>
-              </div>
-            </div>
-
-            <div class="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2 shadow-3xs">
-              <div class="font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider text-[11px] flex items-center gap-1">
-                <span>🏛️</span> Finance Specialist Queries
-              </div>
-              <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-[11px]">Deep 3-way matching, invoice checking, and HMO tax classifications.</p>
-              <div class="space-y-1.5">
-                <button onclick="Chat.usePrompt('Audit this plumber quote: £350 to replace a kitchen mixer tap at 14 Oak St. Is it reasonable?')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
-                  👉 <em>"Audit plumber quote: £350 for mixer tap replacement."</em>
-                </button>
-                <button onclick="Chat.usePrompt('Calculate void loss: Room 2 has been vacant for 3 weeks at £650/month rent.')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
-                  👉 <em>"Calculate void loss for 3 vacant weeks at £650/month."</em>
-                </button>
-              </div>
-            </div>
-
-            <div class="p-3.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 space-y-2 shadow-3xs">
-              <div class="font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider text-[11px] flex items-center gap-1">
-                <span>📋</span> Website Suggestions & Feedback
-              </div>
-              <p class="text-slate-500 dark:text-slate-400 leading-relaxed text-[11px]">Tell Gemini what you want added or changed on OpsHub. It logs it directly for developers.</p>
-              <div class="space-y-1.5">
-                <button onclick="Chat.usePrompt('I find it annoying that the table doesn\'t have an export to PDF button, could we add that?')" class="w-full text-left p-2 rounded-lg bg-slate-50 dark:bg-slate-900/60 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-[11px] transition-colors">
-                  👉 <em>"I find it annoying that..." / "Can we add..."</em>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Chat Messages Container -->
-        <div id="copilot-messages" class="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-50/50 dark:bg-slate-900/60 min-h-[460px] max-h-[600px]">
-          <!-- Populated dynamically via Chat.render() -->
-        </div>
-
-        <!-- Staged / Loaded File Notification Bar in Chat -->
-        <div id="copilot-loaded-file-bar" class="hidden px-4 py-2 bg-emerald-50 dark:bg-emerald-950/50 border-t border-emerald-200 dark:border-emerald-800/60 flex items-center justify-between text-xs">
-          <div class="flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
-            <span class="text-sm">📁</span>
-            <span id="copilot-loaded-file-name" class="font-bold">File Loaded</span>
-            <span class="text-emerald-600 dark:text-emerald-400 text-[11px]" id="copilot-loaded-file-summary">— Synced live into OpsHub Dashboard</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <button onclick="Chat.askAboutLoadedFile()" class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-colors shadow-3xs">
-              ⚡ Audit Discrepancies
-            </button>
-            <button onclick="Chat.dismissLoadedFileBar()" class="text-emerald-500 hover:text-emerald-700 dark:hover:text-emerald-300 text-sm font-bold px-1">
-              ✕
-            </button>
-          </div>
-        </div>
-
-        <!-- Quick Action Bar: All 6 Finance Division Specialists -->
-        <div class="px-4 py-2 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center gap-1.5 overflow-x-auto text-[11px] no-scrollbar">
-          <span class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider text-[10px] mr-1 flex-shrink-0">Finance Specialists:</span>
-          
-          <button onclick="Chat.invokeSpecialist('controller', 'Perform a full 3-way reconciliation audit between bank credits, active rent rolls, and tenancy schedules. Flag any discrepancies.')"
-            class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap shadow-3xs font-medium transition-colors flex items-center gap-1">
-            <span>📒</span> <span>Controller (3-Way Match)</span>
-          </button>
-
-          <button onclick="Chat.invokeSpecialist('ap', 'Audit this contractor invoice or repair quote like an AP Specialist against typical UK trade rates: ')"
-            class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors flex items-center gap-1">
-            <span>💳</span> <span>AP (Audit Invoice/Quote)</span>
-          </button>
-
-          <button onclick="Chat.invokeSpecialist('analyst', 'Calculate room yields, RevPAM, and revenue lost to void vacancy periods for our properties.')"
-            class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors flex items-center gap-1">
-            <span>📊</span> <span>Analyst (Yield & Void)</span>
-          </button>
-
-          <button onclick="Chat.invokeSpecialist('fpa', 'Prepare a 13-week rolling cash flow forecast and budget variance analysis based on our rent collection and upcoming bills.')"
-            class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors flex items-center gap-1">
-            <span>📈</span> <span>FP&A (Cash Flow Forecast)</span>
-          </button>
-
-          <button onclick="Chat.invokeSpecialist('tax', 'Classify this property expense: is it tax-deductible as a revenue repair or a capital improvement under UK HMO rules? Expenditure: ')"
-            class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors flex items-center gap-1">
-            <span>⚖️</span> <span>Tax (Repairs vs Capex)</span>
-          </button>
-
-          <button onclick="Chat.invokeSpecialist('cfo', 'Advise on sizing our sinking fund reserve for major HMO capex and calculate our portfolio debt coverage (DSCR).')"
-            class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-slate-600 hover:text-emerald-700 dark:hover:text-emerald-300 border border-slate-200 dark:border-slate-600 whitespace-nowrap shadow-3xs transition-colors flex items-center gap-1">
-            <span>🏛️</span> <span>CFO (Sinking Funds)</span>
-          </button>
-
-          <div class="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1 flex-shrink-0"></div>
-
-          <button onclick="Chat.usePrompt('Remember this rule: ')"
-            class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800 whitespace-nowrap shadow-3xs font-semibold transition-colors flex items-center gap-1">
-            <span>🧠</span> <span>Remember Rule</span>
-          </button>
-        </div>
-
-        <!-- Copilot Input Box & Attach Button -->
-        <div class="p-4 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex flex-col gap-2">
-          <input type="file" id="copilot-file-input" class="hidden" accept=".csv, .xlsx, .xls">
-          <div class="flex items-end gap-2.5">
-            <!-- File Attach Button -->
-            <button onclick="document.getElementById('copilot-file-input').click()" title="Attach Bank CSV or COHO Rent Roll to load into OpsHub and chat" class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 border border-slate-200 dark:border-slate-600 flex items-center justify-center flex-shrink-0 transition-colors shadow-2xs">
-              <span class="text-base">📎</span>
-            </button>
-
-            <!-- Multiline Input -->
-            <textarea id="copilot-input" rows="1" placeholder="Ask Gemini about rent, arrears, invoices, or drop a CSV here..." class="flex-1 resize-none rounded-xl border border-slate-300 dark:border-slate-600 px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-900 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all min-h-[42px] max-h-36 overflow-y-auto leading-relaxed" onkeydown="Chat.handleWorkspaceKey(event)" oninput="Chat.autoResize(this)"></textarea>
-
-            <!-- Send Button -->
-            <button id="copilot-send-btn" onclick="Chat.sendWorkspace()" class="w-10 h-10 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center flex-shrink-0 transition-colors shadow-sm shadow-emerald-500/20 disabled:opacity-40 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-            </button>
-          </div>
-          <div class="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 px-1">
-            <span>💡 Tip: Drag & drop any CSV or Excel file directly onto this chat to load into OpsHub.</span>
-            <span>Press Enter to send · Shift+Enter for newline</span>
-          </div>
-        </div>
-
-      </div>
+      <div id="coho-copilot-container" class="w-full"></div>
     </div>
 
     <!-- PANE 1: Rent Reconciler & Arrears -->
@@ -624,8 +846,125 @@
         </div>
       </div>
     </div>
+    <!-- END OF VIEW 2: COHO WORKSPACE -->
 
-  </main>
+    <!-- VIEW 3: PEOPLE360 (P360) WORKSPACE -->
+    <div id="view-workspace-p360" class="hidden space-y-6">
+      <!-- Breadcrumb Bar -->
+      <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+        <div class="flex items-center gap-2">
+          <button onclick="App.switchWorkspace('hub')" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition-colors flex items-center gap-1 shadow-2xs">
+            <span>←</span> <span>Hub Home</span>
+          </button>
+          <span class="text-slate-300 dark:text-slate-600">/</span>
+          <span class="text-xs font-bold text-blue-800 dark:text-blue-300 flex items-center gap-1.5">
+            <span>👥</span> People360 Operations Center
+          </span>
+        </div>
+        <span class="text-[11px] text-blue-600 dark:text-blue-400 font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800">Workforce & HR Operations</span>
+      </div>
+
+      <!-- Placeholder Onboarding Card -->
+      <div class="bg-white dark:bg-slate-800 rounded-3xl border border-blue-200 dark:border-blue-900/60 p-6 sm:p-8 shadow-sm">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950/70 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-3xl flex-shrink-0">
+            👥
+          </div>
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 uppercase tracking-wider mb-1">
+              Workspace Onboarding
+            </div>
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white">People360 (P360) Operations Suite</h2>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
+              Arnold is currently configuring your dedicated People360 operational workflows. When ready, you will manage staff directories, shift rosters, contractor tracking, and payroll disbursements directly here.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/60 space-y-1">
+            <div class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5"><span>📋</span> Workforce & Roster</div>
+            <p class="text-slate-500 dark:text-slate-400 text-[11px]">Staff directories, shift allocations, and active team contracts.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/60 space-y-1">
+            <div class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5"><span>💵</span> Payroll Reconciliation</div>
+            <p class="text-slate-500 dark:text-slate-400 text-[11px]">Timesheet vs disbursement matching and invoice audits.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/60 space-y-1">
+            <div class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5"><span>🧠</span> P360 Learning Memory</div>
+            <p class="text-slate-500 dark:text-slate-400 text-[11px]">Rules saved with <code class="font-mono text-blue-600 dark:text-blue-400">P360</code> are automatically stored in <code class="font-mono text-slate-600 dark:text-slate-300">learned-rules-p360.md</code>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Copilot Container for P360 -->
+      <div class="space-y-3">
+        <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <span>🤖</span> People360 AI Copilot
+        </h3>
+        <div id="p360-copilot-container" class="w-full"></div>
+      </div>
+    </div>
+    <!-- END OF VIEW 3: PEOPLE360 WORKSPACE -->
+
+    <!-- VIEW 4: INNOVUZE SOLUTIONS INC (ISI) WORKSPACE -->
+    <div id="view-workspace-isi" class="hidden space-y-6">
+      <!-- Breadcrumb Bar -->
+      <div class="flex items-center justify-between bg-white dark:bg-slate-800 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+        <div class="flex items-center gap-2">
+          <button onclick="App.switchWorkspace('hub')" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition-colors flex items-center gap-1 shadow-2xs">
+            <span>←</span> <span>Hub Home</span>
+          </button>
+          <span class="text-slate-300 dark:text-slate-600">/</span>
+          <span class="text-xs font-bold text-amber-800 dark:text-amber-300 flex items-center gap-1.5">
+            <span>⚡</span> Innovuze Solutions Inc Operations Center
+          </span>
+        </div>
+        <span class="text-[11px] text-amber-600 dark:text-amber-400 font-semibold px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800">Technical & Solutions Operations</span>
+      </div>
+
+      <!-- Placeholder Onboarding Card -->
+      <div class="bg-white dark:bg-slate-800 rounded-3xl border border-amber-200 dark:border-amber-900/60 p-6 sm:p-8 shadow-sm">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-amber-950/70 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-3xl flex-shrink-0">
+            ⚡
+          </div>
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 uppercase tracking-wider mb-1">
+              Workspace Onboarding
+            </div>
+            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Innovuze Solutions Inc (ISI) Operations Suite</h2>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
+              Arnold is currently configuring your Innovuze Solutions Inc deliverables, project accounts, SLA governance, and vendor operations suite.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/60 space-y-1">
+            <div class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5"><span>📊</span> Technical Projects</div>
+            <p class="text-slate-500 dark:text-slate-400 text-[11px]">Sprint deliveries, operational milestones, and client accounts.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/60 space-y-1">
+            <div class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5"><span>📑</span> SLA & Vendor Governance</div>
+            <p class="text-slate-500 dark:text-slate-400 text-[11px]">Contract commitments, vendor invoices, and compliance benchmarks.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/60 space-y-1">
+            <div class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5"><span>🧠</span> ISI Learning Memory</div>
+            <p class="text-slate-500 dark:text-slate-400 text-[11px]">Rules saved with <code class="font-mono text-amber-600 dark:text-amber-400">ISI</code> are automatically stored in <code class="font-mono text-slate-600 dark:text-slate-300">learned-rules-isi.md</code>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Copilot Container for ISI -->
+      <div class="space-y-3">
+        <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <span>🤖</span> Innovuze Solutions AI Copilot
+        </h3>
+        <div id="isi-copilot-container" class="w-full"></div>
+      </div>
+    </div>
+    <!-- END OF VIEW 4: INNOVUZE SOLUTIONS INC WORKSPACE -->
 
   <!-- MODAL: Message Generator -->
   <div id="message-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">

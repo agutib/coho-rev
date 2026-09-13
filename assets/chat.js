@@ -9,6 +9,11 @@ const Chat = (() => {
   let activeSpecialist = "all";
   let isWorkspaceGuideOpen = false;
   let stagedFileInfo = null; // { name: string, type: string, count: number, summary: string }
+  let currentClientContext = "hub";
+
+  function setClientContext(clientKey) {
+    currentClientContext = clientKey || "hub";
+  }
 
   const SPECIALIST_CONFIGS = {
     all: { name: "All-Round Operations", prefix: "" },
@@ -348,9 +353,9 @@ const Chat = (() => {
         </div>
         
         <div>
-          <h3 class="text-base font-bold text-slate-900 dark:text-white">COHO Antigravity Copilot</h3>
+          <h3 class="text-base font-bold text-slate-900 dark:text-white">Rev OPS Hub Executive Copilot</h3>
           <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-lg leading-relaxed">
-            Your high-speed UK HMO operations & financial intelligence cockpit. Select any finance agent below to immediately consult their domain expertise, or drop a CSV to auto-sync.
+            Your executive multi-client operations & financial intelligence cockpit for <strong>COHO</strong> (UK HMOs), <strong>People360</strong> (Workforce), and <strong>Innovuze Solutions Inc</strong> (Tech Operations). Select any finance specialist, run SOP skills, or ask anything directly.
           </p>
         </div>
 
@@ -551,7 +556,8 @@ const Chat = (() => {
         },
         body: JSON.stringify({
           message: messageWithContext,
-          history: history.slice(0, -1)
+          history: history.slice(0, -1),
+          clientContext: currentClientContext
         })
       });
 
@@ -825,7 +831,8 @@ const Chat = (() => {
     clearHistory,
     autoResize,
     askAboutLoadedFile,
-    dismissLoadedFileBar
+    dismissLoadedFileBar,
+    setClientContext
   };
 })();
 
