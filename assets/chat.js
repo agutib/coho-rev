@@ -542,9 +542,13 @@ const Chat = (() => {
     let rawResponse = "";
 
     try {
+      const authToken = sessionStorage.getItem("coho_auth_token") || "c3f89002f28c39474375003faf4f51cccce5a77b515696194ba280c3b5ee4f10";
       const response = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authToken}`
+        },
         body: JSON.stringify({
           message: messageWithContext,
           history: history.slice(0, -1)

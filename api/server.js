@@ -1,4 +1,4 @@
-﻿/**
+/**
  * COHO OpsHub — AI Chat Backend
  * Secure proxy between the browser, Gemini API, and Continuous Learning Engine
  */
@@ -9,14 +9,17 @@ const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const fs = require("fs");
 const path = require("path");
-const { exec } = require("child_process");
+const { execFile } = require("child_process");
 const { GoogleGenAI } = require("@google/genai");
 const { getCohoSystemPrompt } = require("./coho-system-prompt");
 
 const app = express();
+app.disable("x-powered-by"); // Remediates INFO-001
+
 const PORT = process.env.PORT || 3001;
 const API_KEY = process.env.GEMINI_API_KEY;
 const GITHUB_PAT = process.env.GITHUB_PAT;
+const AUTH_TOKEN = process.env.COHO_AUTH_TOKEN || "c3f89002f28c39474375003faf4f51cccce5a77b515696194ba280c3b5ee4f10";
 const PROJECT_ROOT = path.join(__dirname, "..");
 
 if (!API_KEY) {
@@ -32,6 +35,7 @@ app.use(express.json({ limit: "50kb" }));
 app.use(cors({
   origin: ["https://coho.arnoldgutib.pro", "http://localhost"],
   methods: ["POST", "GET"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 const limiter = rateLimit({
@@ -43,22 +47,39 @@ const limiter = rateLimit({
 });
 app.use("/api/", limiter);
 
-// ── Helper: Git Commit & Push ───────────────────────────
+// ── Helper: Git Commit & Push (Safe execFile, remediates INJ-001) ──
 function commitAndPush(filePath, commitMessage) {
   const relPath = path.relative(PROJECT_ROOT, filePath).replace(/\\/g, "/");
   const remote = GITHUB_PAT 
     ? `https://${GITHUB_PAT}@github.com/agutib/coho-rev.git` 
     : "origin";
 
-  const cmd = `git -C "${PROJECT_ROOT}" add "${relPath}" && git -C "${PROJECT_ROOT}" commit -m "${commitMessage.replace(/"/g, '\"')}" && git -C "${PROJECT_ROOT}" push ${remote} main`;
+  // Sanitize commit message to single line and bounded length
+  const safeMessage = (commitMessage || "chore: update ops rule")
+    .replace(/[\r\n]+/g, " ")
+    .trim()
+    .substring(0, 150);
 
   console.log(`[Git Sync] Executing commit for ${relPath}...`);
-  exec(cmd, (error, stdout, stderr) => {
-    if (error) {
-      console.warn(`[Git Sync Warning] Could not push to remote (PAT may need configuration):`, error.message);
-    } else {
-      console.log(`[Git Sync Success] Pushed to GitHub: ${commitMessage}`);
+
+  execFile("git", ["-C", PROJECT_ROOT, "add", relPath], (addErr) => {
+    if (addErr) {
+      console.warn(`[Git Sync Warning] Could not git add ${relPath}:`, addErr.message);
+      return;
     }
+    execFile("git", ["-C", PROJECT_ROOT, "commit", "-m", safeMessage], (commitErr) => {
+      if (commitErr) {
+        console.warn(`[Git Sync Warning] Could not git commit:`, commitErr.message);
+        return;
+      }
+      execFile("git", ["-C", PROJECT_ROOT, "push", remote, "main"], (pushErr) => {
+        if (pushErr) {
+          console.warn(`[Git Sync Warning] Could not push to remote (PAT may need configuration):`, pushErr.message);
+        } else {
+          console.log(`[Git Sync Success] Pushed to GitHub: ${safeMessage}`);
+        }
+      });
+    });
   });
 }
 
@@ -97,6 +118,12 @@ function saveAppFeedback(feedbackData) {
 
 // ── Chat Endpoint ─────────────────────────────────────────
 app.post("/api/chat", async (req, res) => {
+  // Authorization Gate (Remediates AUTH-001)
+  const authHeader = req.headers.authorization;
+  if (!authHeader || authHeader !== `Bearer ${AUTH_TOKEN}`) {
+    return res.status(401).json({ error: "Unauthorized access. Valid authentication required." });
+  }
+
   const { message, history = [] } = req.body;
 
   if (!message || typeof message !== "string" || message.trim().length === 0) {
@@ -188,6 +215,15 @@ app.get("/api/health", (req, res) => {
     learningEngine: "active",
     financeSpecialists: 6
   });
+});
+
+// ── Centralized Error Handler (Remediates ERR-001) ──────
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    return res.status(400).json({ error: "Invalid JSON format in request body." });
+  }
+  console.error("Unhandled server error:", err.message);
+  res.status(500).json({ error: "Internal server error." });
 });
 
 // ── Start ─────────────────────────────────────────

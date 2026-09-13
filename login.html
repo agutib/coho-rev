@@ -70,7 +70,6 @@
 
   <script src="assets/theme.js"></script>
   <script>
-    // SHA-256 of: coho@2026!
     const PASS_HASH = 'c3f89002f28c39474375003faf4f51cccce5a77b515696194ba280c3b5ee4f10';
 
     if (sessionStorage.getItem('coho_auth') === 'true') {
@@ -98,6 +97,7 @@
 
       if (hash === PASS_HASH) {
         sessionStorage.setItem('coho_auth', 'true');
+        sessionStorage.setItem('coho_auth_token', hash);
         sessionStorage.setItem('coho_auth_time', Date.now().toString());
         window.location.replace('/home');
       } else {

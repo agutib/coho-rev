@@ -82,6 +82,8 @@ COHO-Property-Operations/
   5. *Google Sheets Copy (TSV):* 1-click clipboard copy formatted for direct spreadsheet pasting.
 - **Trigger for Teaching:** If Rev starts a chat message with *"Remember this rule: ..."*, the AI outputs `[[LEARNED_RULE: {...}]]`. The backend captures this, writes to `learned-rules.md`, commits, pushes to Git, and injects it into every future conversation.
 - **Trigger for Feedback:** If Rev complains or suggests a feature, the AI outputs `[[APP_FEEDBACK: {...}]]`. The backend writes to `USER_FEEDBACK_LOG.md` and commits to Git.
+- **Superpowers Engine (All Agents: Codex, Claude, Antigravity, Cursor):** All 14 Superpowers skills (`using-superpowers`, `brainstorming`, `writing-plans`, `executing-plans`, `test-driven-development`, `systematic-debugging`, etc.) are installed across all tool directories (`~/.codex/skills`, `~/.claude/skills`, `~/.gemini/config/plugins/superpowers`, `.cursor/rules`). Always check for and invoke relevant skills before code generation or actions.
+
 
 ---
 
@@ -91,4 +93,22 @@ COHO-Property-Operations/
 - Server `.env` is stored at `/opt/coho-app/api/.env` with permissions `600`.
 - Browser never sees the Gemini API key; calls go to `/api/chat` which Nginx proxies internally to port 3001.
 - All scanner exploit probes (`phpunit`, `.env`, `eval-stdin`) are dropped with HTTP 444 by Nginx.
+
+---
+
+## 🛡️ Mandatory Pre-Launch QA & VAPT Gate Playbook (All AI Agents)
+
+**Hard rule: NO `git push` to any remote, NO merge to `main`/`release`, and NO deploy command may be executed until every gate in Section 8 shows PASS.**
+
+Full reference: [`.agents/rules/prelaunch-qa-vapt-gate.md`](.agents/rules/prelaunch-qa-vapt-gate.md), [`docs/PRELAUNCH_QA_VAPT_GATE_PLAYBOOK.md`](docs/PRELAUNCH_QA_VAPT_GATE_PLAYBOOK.md) and [`audit/`](audit/).
+
+### Gate Summary Before Any Push or Deploy:
+1. **Inventory Pass (`audit/inventory.md`):** Complete map of all pages, endpoints, DB items, forms, 3rd party services, secrets, and cron/PM2 workers.
+2. **Functional QA:** Happy-path & abuse-path testing across auth, payments, forms, API & DB, navigation, error states, and mobile responsiveness.
+3. **Security & Secrets Audit:** Repo secret scan (`trufflehog`/`gitleaks`), `.env` verification, zero frontend secret leaks.
+4. **OWASP Top 10 (2021):** Broken Access Control (IDOR), Cryptographic Failures, Injection, Insecure Design, Misconfiguration, Vulnerable Components, Auth Failures, Data Integrity, Logging, SSRF.
+5. **Nginx Hardening:** TLSv1.2/1.3, HSTS, X-Frame-Options DENY, nosniff, strict CSP, server_tokens off, rate limiting zones (`login_zone`, `api_zone`), block sensitive files (`.env`, `.git`, `.sql`, etc.).
+6. **Findings Log (`audit/findings.md`):** Zero unresolved Critical or High findings. All fixes re-verified independently with evidence.
+7. **Launch Gate Enforcement:** If ANY item fails: **do not push, do not merge, do not deploy.**
+
 

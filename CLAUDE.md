@@ -1,8 +1,16 @@
-﻿# CLAUDE.md — Project & Agent Handover Manual
+# CLAUDE.md — Project & Agent Handover Manual
 **Project:** COHO OpsHub — UK HMO Property Operations & Financial Control Center  
 **Target User:** Rev (Arnold''s wife) — Day-to-day UK HMO Property Operations Manager  
 **Live URL:** https://coho.arnoldgutib.pro  
 **GitHub Repository:** https://github.com/agutib/coho-rev  
+
+---
+
+## ⚡ Superpowers Integration (Claude Code)
+Superpowers skills library is installed globally and in `.claude/skills`:
+- **Global & Workspace Skills:** `~/.claude/skills/` and `.claude/skills/`
+- **Core Workflows:** Invoke `using-superpowers`, `brainstorming`, `writing-plans`, `executing-plans`, `test-driven-development` (TDD), and `systematic-debugging`.
+- **Methodology:** Brainstorm before planning; write failing test before code; systematic debugging before guessing.
 
 ---
 
@@ -87,6 +95,13 @@
 
 ## 🛠️ Common Maintenance & Deployment Commands
 
+### ⚠️ MANDATORY PRE-CHECK: Pre-Launch QA & VAPT Gate
+**Hard rule: NO `git push`, NO merge, and NO deploy command may be run until all Section 8 gates PASS.**
+- Check `audit/inventory.md` coverage.
+- Confirm zero unresolved Critical/High findings in `audit/findings.md`.
+- Run secret scans and verify no `.env` or sensitive keys are staged.
+- Full details in `docs/PRELAUNCH_QA_VAPT_GATE_PLAYBOOK.md`.
+
 ### Git Push from Windows (Powershell)
 ```powershell
 # In c:\Users\Bong\Desktop\Automation\COHO-Property-Operations
@@ -94,6 +109,7 @@ git add -A
 git commit -m "feat: your change description"
 git push origin main
 ```
+
 
 ### Deploy Latest Code to Server (`sindbad-dev-web-vm`)
 ```bash

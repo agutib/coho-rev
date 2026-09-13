@@ -31,7 +31,20 @@ const App = {
 
   logout() {
     sessionStorage.removeItem('coho_auth');
+    sessionStorage.removeItem('coho_auth_token');
+    sessionStorage.removeItem('coho_auth_time');
     window.location.replace('login.html');
+  },
+
+  // HTML sanitization helper (Remediates XSS-001)
+  escapeHTML(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   },
 
   // Save state to local storage for zero-loss persistence
@@ -235,8 +248,17 @@ const App = {
       const dropdown = document.getElementById('exportMenuDropdown');
       if (dropdown && !dropdown.classList.contains('hidden')) {
         if (container && !container.contains(e.target)) {
-          dropdown.classList.add('hidden');
+          this.closeExportMenu();
         }
+      }
+    });
+
+    // Close export dropdown and modals on Escape key (Remediates A11Y-003)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.closeExportMenu();
+        this.closeMessageModal();
+        this.closeAuditModal();
       }
     });
 
@@ -272,6 +294,7 @@ const App = {
     document.querySelectorAll('.nav-tab').forEach(btn => {
       btn.classList.remove('border-emerald-600', 'text-emerald-600', 'dark:text-emerald-400', 'font-bold');
       btn.classList.add('border-transparent', 'text-slate-500', 'dark:text-slate-400');
+      btn.setAttribute('aria-selected', 'false');
     });
 
     const pane = document.getElementById(`pane-${tabId}`);
@@ -281,6 +304,7 @@ const App = {
     if (btn) {
       btn.classList.remove('border-transparent', 'text-slate-500', 'dark:text-slate-400');
       btn.classList.add('border-emerald-600', 'text-emerald-600', 'dark:text-emerald-400', 'font-bold');
+      btn.setAttribute('aria-selected', 'true');
     }
 
     if (tabId === 'ai-copilot') {
@@ -364,18 +388,18 @@ const App = {
     tbody.innerHTML = records.map((rec, idx) => {
       const t = rec.tenancy;
       const matchedInfo = rec.matchedTxns.length > 0
-        ? rec.matchedTxns.map(m => `<span class="inline-block bg-[var(--accent)] px-1.5 py-0.5 rounded text-[10px]">${m.date || 'Rec'} £${m.amount.toFixed(2)} (${m.reference || m.description})</span>`).join(' ')
+        ? rec.matchedTxns.map(m => `<span class="inline-block bg-[var(--accent)] px-1.5 py-0.5 rounded text-[10px]">${this.escapeHTML(m.date || 'Rec')} £${m.amount.toFixed(2)} (${this.escapeHTML(m.reference || m.description)})</span>`).join(' ')
         : '<span class="text-rose-500 italic text-xs">No bank match</span>';
 
       return `
         <tr class="hover:bg-[var(--accent)]/30 transition-colors border-b border-[var(--border)]">
           <td class="py-3 px-3">
-            <div class="font-semibold text-xs text-[var(--foreground)]">${t.property}</div>
-            <div class="text-[11px] text-[var(--muted-foreground)]">${t.room}</div>
+            <div class="font-semibold text-xs text-[var(--foreground)]">${this.escapeHTML(t.property)}</div>
+            <div class="text-[11px] text-[var(--muted-foreground)]">${this.escapeHTML(t.room)}</div>
           </td>
           <td class="py-3 px-3">
-            <div class="font-medium text-xs text-[var(--foreground)]">${t.tenantName}</div>
-            <div class="text-[10px] text-[var(--muted-foreground)] font-mono">${t.id}</div>
+            <div class="font-medium text-xs text-[var(--foreground)]">${this.escapeHTML(t.tenantName)}</div>
+            <div class="text-[10px] text-[var(--muted-foreground)] font-mono">${this.escapeHTML(t.id)}</div>
           </td>
           <td class="py-3 px-3 text-center text-xs font-mono">${t.dueDay}th</td>
           <td class="py-3 px-3 text-right text-xs font-mono font-semibold">£${rec.expected.toFixed(2)}</td>
@@ -385,7 +409,7 @@ const App = {
           </td>
           <td class="py-3 px-3 text-center">
             <span class="px-2 py-0.5 text-[11px] font-semibold rounded-full border ${rec.statusClass}">
-              ${rec.status}
+              ${this.escapeHTML(rec.status)}
             </span>
           </td>
           <td class="py-3 px-3 text-right space-x-1 whitespace-nowrap">
@@ -413,9 +437,9 @@ const App = {
 
     tbody.innerHTML = unalloc.map(t => `
       <tr class="hover:bg-[var(--accent)]/30 transition-colors border-b border-[var(--border)] text-xs font-mono">
-        <td class="py-2.5 px-3">${t.date || 'N/A'}</td>
-        <td class="py-2.5 px-3 font-sans">${t.description || 'Incoming Credit'}</td>
-        <td class="py-2.5 px-3 text-[var(--muted-foreground)] font-bold">${t.reference || 'None'}</td>
+        <td class="py-2.5 px-3">${this.escapeHTML(t.date || 'N/A')}</td>
+        <td class="py-2.5 px-3 font-sans">${this.escapeHTML(t.description || 'Incoming Credit')}</td>
+        <td class="py-2.5 px-3 text-[var(--muted-foreground)] font-bold">${this.escapeHTML(t.reference || 'None')}</td>
         <td class="py-2.5 px-3 text-right text-purple-600 font-bold">£${(t.amount || 0).toFixed(2)}</td>
         <td class="py-2.5 px-3 text-right">
           <span class="px-2 py-0.5 rounded bg-purple-500/10 text-purple-600 text-[10px] font-semibold border border-purple-500/20">Suspense Account</span>
@@ -440,15 +464,15 @@ const App = {
 
       return `
         <tr class="hover:bg-[var(--accent)]/30 transition-colors border-b border-[var(--border)] text-xs">
-          <td class="py-3 px-3 font-semibold text-[var(--foreground)]">${c.property}</td>
-          <td class="py-3 px-3 text-[var(--muted-foreground)]">${c.room}</td>
-          <td class="py-3 px-3 font-medium text-[var(--foreground)]">${c.requirement}</td>
-          <td class="py-3 px-3 font-mono text-[var(--muted-foreground)]">${c.reference}</td>
-          <td class="py-3 px-3 font-mono">${c.expiryDate || 'Continuous'}</td>
+          <td class="py-3 px-3 font-semibold text-[var(--foreground)]">${this.escapeHTML(c.property)}</td>
+          <td class="py-3 px-3 text-[var(--muted-foreground)]">${this.escapeHTML(c.room)}</td>
+          <td class="py-3 px-3 font-medium text-[var(--foreground)]">${this.escapeHTML(c.requirement)}</td>
+          <td class="py-3 px-3 font-mono text-[var(--muted-foreground)]">${this.escapeHTML(c.reference)}</td>
+          <td class="py-3 px-3 font-mono">${this.escapeHTML(c.expiryDate || 'Continuous')}</td>
           <td class="py-3 px-3 text-center">
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${badgeClass}">${c.status}</span>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold border ${badgeClass}">${this.escapeHTML(c.status)}</span>
           </td>
-          <td class="py-3 px-3 text-[var(--muted-foreground)] text-[11px]">${c.notes || c.provider}</td>
+          <td class="py-3 px-3 text-[var(--muted-foreground)] text-[11px]">${this.escapeHTML(c.notes || c.provider)}</td>
         </tr>
       `;
     }).join('');
@@ -465,13 +489,13 @@ const App = {
 
     tbody.innerHTML = this.state.rentRoll.map(t => `
       <tr class="hover:bg-[var(--accent)]/30 transition-colors border-b border-[var(--border)] text-xs">
-        <td class="py-3 px-3 font-semibold text-[var(--foreground)]">${t.property}</td>
-        <td class="py-3 px-3 text-[var(--muted-foreground)]">${t.room}</td>
-        <td class="py-3 px-3 font-medium text-[var(--foreground)]">${t.tenantName}</td>
+        <td class="py-3 px-3 font-semibold text-[var(--foreground)]">${this.escapeHTML(t.property)}</td>
+        <td class="py-3 px-3 text-[var(--muted-foreground)]">${this.escapeHTML(t.room)}</td>
+        <td class="py-3 px-3 font-medium text-[var(--foreground)]">${this.escapeHTML(t.tenantName)}</td>
         <td class="py-3 px-3 font-mono text-right font-semibold">£${(t.monthlyRent || 0).toFixed(2)}</td>
         <td class="py-3 px-3 font-mono text-center">${t.dueDay}th</td>
         <td class="py-3 px-3 font-mono text-right">£${(t.depositAmount || 0).toFixed(2)}</td>
-        <td class="py-3 px-3 text-[var(--muted-foreground)]">${t.depositStatus}</td>
+        <td class="py-3 px-3 text-[var(--muted-foreground)]">${this.escapeHTML(t.depositStatus)}</td>
       </tr>
     `).join('');
   },
@@ -551,12 +575,18 @@ const App = {
   toggleExportMenu(e) {
     if (e) e.stopPropagation();
     const dropdown = document.getElementById('exportMenuDropdown');
-    if (dropdown) dropdown.classList.toggle('hidden');
+    const btn = document.getElementById('exportMenuBtn');
+    if (dropdown) {
+      const isHidden = dropdown.classList.toggle('hidden');
+      if (btn) btn.setAttribute('aria-expanded', (!isHidden).toString());
+    }
   },
 
   closeExportMenu() {
     const dropdown = document.getElementById('exportMenuDropdown');
+    const btn = document.getElementById('exportMenuBtn');
     if (dropdown) dropdown.classList.add('hidden');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
   },
 
   // 1. Export Excel (.xlsx) Multi-Tab Workbook via SheetJS
@@ -822,18 +852,18 @@ const App = {
           <tbody>
             ${records.map(r => `
               <tr>
-                <td><strong>${r.tenancy.property}</strong> - ${r.tenancy.room}</td>
-                <td>${r.tenancy.tenantName}</td>
+                <td><strong>${this.escapeHTML(r.tenancy.property)}</strong> - ${this.escapeHTML(r.tenancy.room)}</td>
+                <td>${this.escapeHTML(r.tenancy.tenantName)}</td>
                 <td>${r.tenancy.dueDay}th</td>
                 <td style="text-align: right; font-family: monospace;">£${r.expected.toFixed(2)}</td>
                 <td style="text-align: right; font-family: monospace; color: #059669;">£${r.received.toFixed(2)}</td>
                 <td style="text-align: right; font-family: monospace; font-weight: bold; color: ${r.balance > 0 ? '#dc2626' : '#059669'};">£${r.balance.toFixed(2)}</td>
                 <td style="text-align: center;">
                   <span class="badge ${r.status === 'CLEARED' ? 'badge-cleared' : r.status === 'PARTIAL' ? 'badge-partial' : r.status === 'OVERPAID' ? 'badge-overpaid' : 'badge-missing'}">
-                    ${r.status}
+                    ${this.escapeHTML(r.status)}
                   </span>
                 </td>
-                <td style="font-size: 10px; color: #64748b;">${r.actionNeeded}</td>
+                <td style="font-size: 10px; color: #64748b;">${this.escapeHTML(r.actionNeeded)}</td>
               </tr>
             `).join('')}
           </tbody>
