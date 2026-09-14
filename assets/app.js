@@ -367,9 +367,9 @@ const App = {
 
     const meta = {
       hub: { name: 'Rev OPS Hub', icon: '🏢', btnClass: 'bg-slate-100 dark:bg-slate-700/80 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-600' },
-      coho: { name: 'COHO Operations', icon: '🏡', btnClass: 'bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' },
+      coho: { name: 'COHO Operations', icon: '🏡', btnClass: 'bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800' },
       p360: { name: 'People360', icon: '👥', btnClass: 'bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-800' },
-      isi: { name: 'Innovuze Solutions', icon: '⚡', btnClass: 'bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800' }
+      isi: { name: 'Innovuze Solutions', icon: '⚡', btnClass: 'bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' }
     };
 
     const info = meta[key] || meta.hub;
