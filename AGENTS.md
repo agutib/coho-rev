@@ -17,7 +17,7 @@
    - No build tools (no webpack/vite). Edits to `index.html` or `assets/*.js` take effect immediately upon page reload.
    - Node.js backend (`api/server.js`) on port `3001` providing Gemini 3.6 Flash streaming to the built-in chat widget.
 3. **Deployment Target:**
-   - Host: `sindbad-dev-web-vm` (`34.124.177.92`), custom SSH Port `2363`.
+   - Host: `sindbad-dev-web-vm` (`34.142.222.26`), custom SSH Port `2363`.
    - Access: Run via WSL Ubuntu distribution as user `bong`.
    - Webroot: `/var/www/rev.arnoldgutib.pro/` (Nginx, symlinked from `/var/www/coho.arnoldgutib.pro/`).
    - Backend repo: `/opt/coho-app/` managed by PM2 (`coho-api`).

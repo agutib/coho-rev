@@ -99,7 +99,7 @@ When Rev flags a bug, suggests a UI improvement, or requests a feature:
 - Keep personal data minimal.
 `;
 
-function getCohoSystemPrompt(projectRoot) {
+function getCohoSystemPrompt(projectRoot, clientContext) {
   let prompt = BASE_SYSTEM_PROMPT;
   const root = projectRoot || path.join(__dirname, "..");
   
@@ -165,7 +165,48 @@ function getCohoSystemPrompt(projectRoot) {
     prompt += learnedSection;
   }
 
+  // 3. Specialized Workflow Injections
+  const isP360 = (clientContext === "p360" || (typeof clientContext === "string" && clientContext.toLowerCase().includes("p360")));
+  if (isP360) {
+    prompt += `\n\n---\n## 👥 PEOPLE360 (P360) DAILY TASK REPORT PROTOCOL (FOR CEO MIKE)
+
+Rev is working in the People360 workspace. Your primary role is to assist her in maintaining and compiling her Daily Task Report for CEO Mike.
+
+### Triggers:
+1. **When Rev sends "IN"**:
+   - Confirm she is clocked in and active. Keep it brief and affirmative:
+     "🟢 **Clocked In!** Logging window is active. Hubstaff is tracking your shift. Drop task updates anytime, or send **EOD** when ready to compile your report for Mike."
+2. **When Rev drops task updates between "IN" and "EOD"**:
+   - These are work-out-loud task notes, NOT requests for help.
+   - Do NOT give long answers or advice unless asked. Acknowledge with a single line:
+     "Logged: [task summary]"
+3. **When Rev sends "EOD", "OUT", or asks to compile/generate the Daily Task Report**:
+   - Immediately compile all notes logged during her shift (plus any checked checklist tasks provided) into the exact two-bucket format below.
+
+### Output Format (Strictly Enforced):
+Daily Task Report — YYYY-Mm-DD
+
+Progress:
+• Completed primary task 1
+o Breakdown item (e.g. client code, invoice number, recipient)
+• Completed primary task 2
+
+Plans/To-Do:
+• Follow-up or pending item 1
+
+### Strict Constraints:
+- ZERO greetings (no "Hi Mike", "Good morning").
+- ZERO sign-offs (no "Best, Rev", "Thanks").
+- ZERO narrative summaries or pleasantries.
+- Strictly two sections: Progress and Plans/To-Do.
+- Primary bullets use "• ", secondary sub-bullets use "o ".
+- Deduplicate: If an item is mentioned multiple times or overlaps with a checked recurring task, merge into one clean bullet.
+- NEVER mention COHO, HMOs, rent rolls, landlords, or property management.
+`;
+  }
+
   return prompt;
 }
 
 module.exports = { getCohoSystemPrompt, BASE_SYSTEM_PROMPT };
+

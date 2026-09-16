@@ -1,6 +1,6 @@
 # Application Audit Inventory & Attack Surface Tracker
 **Project:** Rev OPS Hub — Multi-Client Operations Command Center  
-**Target:** `https://rev.arnoldgutib.pro` (Redirect: `https://coho.arnoldgutib.pro` → 301) | `sindbad-dev-web-vm` (`34.124.177.92:2363`)  
+**Target:** `https://rev.arnoldgutib.pro` (Redirect: `https://coho.arnoldgutib.pro` → 301) | `sindbad-dev-web-vm` (`34.142.222.26:2363`)  
 **Audit Framework:** `prelaunch-qa-vapt-gate` & Multi-Specialist Agent Suite  
 **Date:** 2026-09-13  
 

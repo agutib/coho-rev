@@ -29,6 +29,10 @@ const App = {
     this.bindEvents();
     this.render();
 
+    if (typeof P360 !== 'undefined' && P360.init) {
+      P360.init();
+    }
+
     // Check initial hash route
     const hash = (window.location.hash || '').replace('#/', '').replace('#', '').toLowerCase();
     if (hash === 'coho' || hash === 'p360' || hash === 'isi') {
@@ -419,6 +423,10 @@ const App = {
     // Set Chat client context
     if (typeof Chat !== 'undefined' && Chat.setClientContext) {
       Chat.setClientContext(key);
+    }
+
+    if (key === 'p360' && typeof P360 !== 'undefined' && P360.onWorkspaceEnter) {
+      P360.onWorkspaceEnter();
     }
 
     this.closeClientMenu();
@@ -1112,6 +1120,649 @@ const App = {
     }, 3200);
   }
 };
+
+/**
+ * People360 (P360) Daily Task Report Controller
+ * Manages shift timer, 5-category recurring task checklist, deduplication,
+ * live report preview, Outlook dispatch, and local history archive.
+ */
+const P360 = {
+  state: {
+    isClockedIn: false,
+    startTime: null,
+    endTime: null,
+    elapsedSeconds: 0,
+    timerInterval: null,
+    reportDate: '',
+    checkedTaskIds: new Set(),
+    taskDetails: {},
+    customNotes: '',
+    plansNotes: '',
+    compiledReport: '',
+    history: []
+  },
+
+  init() {
+    // 1. Initialize report date
+    const today = new Date();
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    this.state.reportDate = `${today.getFullYear()}-${monthNames[today.getMonth()]}-${String(today.getDate()).padStart(2, '0')}`;
+    
+    const dateInput = document.getElementById('p360ReportDate');
+    if (dateInput) {
+      dateInput.value = this.state.reportDate;
+    }
+    this.updateSubjectPreview();
+
+    // 2. Load saved history first
+    this.loadHistory();
+
+    // 3. Restore shift state
+    this.loadShiftState();
+
+    // 4. Restore saved draft
+    this.loadDraft();
+
+    // 5. Render catalog
+    this.renderCatalog();
+
+    // 6. Initial compile if empty
+    if (!this.state.compiledReport) {
+      this.compile(false);
+    }
+  },
+
+  onWorkspaceEnter() {
+    this.updateSubjectPreview();
+    this.updateTimerUI();
+    this.renderHistory();
+  },
+
+  renderCatalog() {
+    const container = document.getElementById('p360CatalogContainer');
+    if (!container || !window.P360Engine || !window.P360Engine.P360_CATALOG) return;
+
+    const catalog = window.P360Engine.P360_CATALOG;
+    let html = '';
+
+    catalog.forEach((cat, idx) => {
+      const isDefaultOpen = idx < 3; // First 3 categories open by default
+      html += `
+        <div class="border border-slate-200 dark:border-slate-700/80 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-slate-900/30">
+          <button type="button" onclick="P360.toggleCategory('${cat.id}')" class="w-full px-3.5 py-2.5 flex items-center justify-between text-left font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors select-none">
+            <div class="flex items-center gap-2">
+              <span>${cat.icon}</span>
+              <span>${cat.name}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="p360-cat-badge-${cat.id}" class="text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold">0 selected</span>
+              <svg id="p360-cat-arrow-${cat.id}" class="w-3.5 h-3.5 text-slate-400 transform transition-transform ${isDefaultOpen ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </button>
+          <div id="p360-cat-body-${cat.id}" class="${isDefaultOpen ? '' : 'hidden'} divide-y divide-slate-100 dark:divide-slate-700/60 bg-white dark:bg-slate-800/90">
+      `;
+
+      cat.tasks.forEach(t => {
+        const isChecked = this.state.checkedTaskIds.has(t.id) || (this.state.checkedTaskIds.size === 0 && t.defaultChecked);
+        if (isChecked) {
+          this.state.checkedTaskIds.add(t.id);
+        }
+        const currentDetail = this.state.taskDetails[t.id] || '';
+
+        html += `
+          <div class="p-3 space-y-2">
+            <label class="flex items-start gap-2.5 cursor-pointer select-none">
+              <input type="checkbox" id="task-chk-${t.id}" onchange="P360.handleTaskToggle('${t.id}')" ${isChecked ? 'checked' : ''} class="mt-0.5 rounded text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer">
+              <span class="text-xs text-slate-700 dark:text-slate-200 leading-snug font-medium">${t.label}</span>
+            </label>
+        `;
+
+        if (t.commonClients && Array.isArray(t.commonClients)) {
+          html += `
+            <div class="pl-6.5 flex flex-wrap items-center gap-1">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider select-none mr-1">Clients:</span>
+              ${t.commonClients.map(c => `
+                <button type="button" onclick="P360.toggleClientPill('${t.id}', '${c}')" class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 dark:bg-slate-700 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-200 transition-colors shadow-2xs">
+                  ${c}
+                </button>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        if (t.hasDetails) {
+          html += `
+            <div class="pl-6.5">
+              <input type="text" id="detail-${t.id}" value="${App.escapeHTML(currentDetail)}" oninput="P360.handleDetailChange('${t.id}', this.value)" placeholder="${t.detailPlaceholder || 'Enter specific numbers / client names...'}" class="w-full text-xs px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 font-mono">
+            </div>
+          `;
+        }
+
+        html += `</div>`;
+      });
+
+      html += `
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+    this.updateCategoryBadges();
+  },
+
+  toggleCategory(catId) {
+    const body = document.getElementById(`p360-cat-body-${catId}`);
+    const arrow = document.getElementById(`p360-cat-arrow-${catId}`);
+    if (body) {
+      const isHidden = body.classList.toggle('hidden');
+      if (arrow) arrow.classList.toggle('rotate-180', !isHidden);
+    }
+  },
+
+  toggleClientPill(taskId, clientCode) {
+    const chk = document.getElementById(`task-chk-${taskId}`);
+    if (chk && !chk.checked) {
+      chk.checked = true;
+      this.handleTaskToggle(taskId);
+    }
+    const input = document.getElementById(`detail-${taskId}`);
+    if (input) {
+      const current = input.value.trim();
+      if (!current) {
+        input.value = clientCode;
+      } else if (!current.includes(clientCode)) {
+        input.value = current + ', ' + clientCode;
+      }
+      this.handleDetailChange(taskId, input.value);
+    }
+  },
+
+  handleTaskToggle(taskId) {
+    const chk = document.getElementById(`task-chk-${taskId}`);
+    if (!chk) return;
+    if (chk.checked) {
+      this.state.checkedTaskIds.add(taskId);
+    } else {
+      this.state.checkedTaskIds.delete(taskId);
+    }
+    this.updateCategoryBadges();
+    this.saveDraft();
+    this.compile(false);
+  },
+
+  handleDetailChange(taskId, val) {
+    this.state.taskDetails[taskId] = val;
+    this.saveDraft();
+    this.compile(false);
+  },
+
+  handleInputChange() {
+    const custom = document.getElementById('p360CustomNotes');
+    const plans = document.getElementById('p360PlansNotes');
+    if (custom) this.state.customNotes = custom.value;
+    if (plans) this.state.plansNotes = plans.value;
+    this.saveDraft();
+    this.compile(false);
+  },
+
+  handleDateChange(val) {
+    if (!val) return;
+    this.state.reportDate = val.trim();
+    this.updateSubjectPreview();
+    this.compile(false);
+  },
+
+  updateSubjectPreview() {
+    const subjectEl = document.getElementById('p360SubjectPreview');
+    if (subjectEl && window.P360Engine) {
+      subjectEl.textContent = window.P360Engine.formatSubject(this.state.reportDate);
+    }
+  },
+
+  updateCategoryBadges() {
+    if (!window.P360Engine) return;
+    window.P360Engine.P360_CATALOG.forEach(cat => {
+      let count = 0;
+      cat.tasks.forEach(t => {
+        if (this.state.checkedTaskIds.has(t.id)) count++;
+      });
+      const badge = document.getElementById(`p360-cat-badge-${cat.id}`);
+      if (badge) {
+        badge.textContent = `${count} selected`;
+        badge.className = count > 0 
+          ? 'text-[10px] px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold'
+          : 'text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 font-medium';
+      }
+    });
+  },
+
+  selectAllTasks(select) {
+    if (!window.P360Engine) return;
+    window.P360Engine.P360_CATALOG.forEach(cat => {
+      cat.tasks.forEach(t => {
+        const chk = document.getElementById(`task-chk-${t.id}`);
+        if (chk) chk.checked = select;
+        if (select) this.state.checkedTaskIds.add(t.id);
+        else this.state.checkedTaskIds.delete(t.id);
+      });
+    });
+    this.updateCategoryBadges();
+    this.saveDraft();
+    this.compile(false);
+  },
+
+  // ── Clock In / Out Triggers ──
+  clockIn() {
+    if (this.state.isClockedIn) return;
+    this.state.isClockedIn = true;
+    this.state.startTime = Date.now();
+    this.state.endTime = null;
+    this.state.elapsedSeconds = 0;
+
+    this.startTimerInterval();
+    this.saveShiftState();
+    this.updateTimerUI();
+    App.showToast('🟢 Shift Started! Hubstaff tracking active. Drop notes anytime.');
+  },
+
+  clockOut() {
+    if (!this.state.isClockedIn) return;
+    this.state.isClockedIn = false;
+    this.state.endTime = Date.now();
+    if (this.state.timerInterval) {
+      clearInterval(this.state.timerInterval);
+      this.state.timerInterval = null;
+    }
+    this.saveShiftState();
+    this.updateTimerUI();
+    this.compile(true);
+    App.showToast('🔴 Clocked Out! Daily task report compiled for Mike.');
+  },
+
+  startTimerInterval() {
+    if (this.state.timerInterval) clearInterval(this.state.timerInterval);
+    this.state.timerInterval = setInterval(() => {
+      if (this.state.isClockedIn && this.state.startTime) {
+        this.state.elapsedSeconds = Math.floor((Date.now() - this.state.startTime) / 1000);
+        this.updateTimerUI();
+      }
+    }, 1000);
+  },
+
+  resetShift() {
+    if (!confirm('Are you sure you want to reset the current shift timer?')) return;
+    if (this.state.timerInterval) {
+      clearInterval(this.state.timerInterval);
+      this.state.timerInterval = null;
+    }
+    this.state.isClockedIn = false;
+    this.state.startTime = null;
+    this.state.endTime = null;
+    this.state.elapsedSeconds = 0;
+    this.saveShiftState();
+    this.updateTimerUI();
+    App.showToast('🔄 Shift timer reset to zero.');
+  },
+
+  updateTimerUI() {
+    const timerEl = document.getElementById('p360ShiftTimer');
+    const badgeEl = document.getElementById('p360ShiftStatusBadge');
+    const startLabel = document.getElementById('p360ShiftStartLabel');
+    const pulseDot = document.getElementById('p360PulseDot');
+    const inBtn = document.getElementById('p360ClockInBtn');
+    const outBtn = document.getElementById('p360ClockOutBtn');
+
+    // Format elapsed seconds to HH:MM:SS
+    const secs = this.state.elapsedSeconds || 0;
+    const h = String(Math.floor(secs / 3600)).padStart(2, '0');
+    const m = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
+    const s = String(secs % 60).padStart(2, '0');
+    if (timerEl) timerEl.textContent = `${h}:${m}:${s}`;
+
+    if (this.state.isClockedIn) {
+      if (badgeEl) {
+        badgeEl.textContent = '🟢 TRACKER ACTIVE (Hubstaff)';
+        badgeEl.className = 'text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 animate-pulse';
+      }
+      if (pulseDot) {
+        pulseDot.className = 'w-4 h-4 rounded-full bg-emerald-500 animate-ping flex-shrink-0';
+      }
+      if (startLabel && this.state.startTime) {
+        const d = new Date(this.state.startTime);
+        startLabel.textContent = `Shift: In at ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+      }
+      if (inBtn) inBtn.classList.add('opacity-50', 'pointer-events-none');
+      if (outBtn) {
+        outBtn.disabled = false;
+        outBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+    } else {
+      if (badgeEl) {
+        badgeEl.textContent = this.state.endTime ? '⚪ SHIFT COMPLETED' : '⚪ TRACKER INACTIVE';
+        badgeEl.className = 'text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300';
+      }
+      if (pulseDot) {
+        pulseDot.className = 'w-4 h-4 rounded-full bg-slate-300 dark:bg-slate-600 flex-shrink-0';
+      }
+      if (startLabel) {
+        startLabel.textContent = this.state.endTime 
+          ? `Shift: Out at ${new Date(this.state.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` 
+          : 'Shift: Not started';
+      }
+      if (inBtn) inBtn.classList.remove('opacity-50', 'pointer-events-none');
+      if (outBtn) {
+        outBtn.disabled = true;
+        outBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+    }
+  },
+
+  // ── Report Compilation & Quality Gates ──
+  compile(showToastNotification = true) {
+    if (!window.P360Engine) return;
+
+    // Collect checked tasks
+    const checkedList = [];
+    window.P360Engine.P360_CATALOG.forEach(cat => {
+      cat.tasks.forEach(t => {
+        if (this.state.checkedTaskIds.has(t.id)) {
+          const detail = (this.state.taskDetails[t.id] || '').trim();
+          const detailsArr = detail ? detail.split(',').map(s => s.trim()).filter(Boolean) : [];
+          checkedList.push({
+            text: t.label,
+            details: detailsArr
+          });
+        }
+      });
+    });
+
+    const report = window.P360Engine.compileLocalReport({
+      dateStr: this.state.reportDate,
+      checkedTasks: checkedList,
+      customNotes: this.state.customNotes,
+      plansNotes: this.state.plansNotes
+    });
+
+    this.state.compiledReport = report;
+    const reportBox = document.getElementById('p360CompiledReport');
+    if (reportBox) {
+      reportBox.value = report;
+    }
+
+    this.updateSubjectPreview();
+    this.saveDraft();
+
+    if (showToastNotification) {
+      App.showToast('⚡ Daily Task Report compiled for Mike!');
+    }
+  },
+
+  // ── Dispatch: Direct Outlook Integration ──
+  sendOutlook(mode = 'web') {
+    const reportBox = document.getElementById('p360CompiledReport');
+    let body = reportBox ? reportBox.value : this.state.compiledReport;
+    if (!body || !body.trim()) {
+      this.compile(false);
+      body = this.state.compiledReport;
+    }
+
+    const subject = window.P360Engine.formatSubject(this.state.reportDate);
+    const toInput = document.getElementById('p360EmailTo');
+    const ccInput = document.getElementById('p360EmailCc');
+    const to = (toInput && toInput.value.trim()) ? toInput.value.trim() : 'revemar@trampettimg.com';
+    const cc = (ccInput && ccInput.value.trim()) ? ccInput.value.trim() : 'arnold.gutib@gmail.com';
+
+    const urls = window.P360Engine.buildOutlookUrl({
+      to: to,
+      cc: cc,
+      subject: subject,
+      body: body
+    });
+
+    if (mode === 'mailto') {
+      window.location.href = urls.mailtoUrl;
+      App.showToast('💻 Opening Desktop Outlook...');
+    } else {
+      window.open(urls.webUrl, '_blank');
+      App.showToast('📧 Opening Outlook Web compose window...');
+    }
+  },
+
+  copySlack() {
+    const reportBox = document.getElementById('p360CompiledReport');
+    const raw = reportBox ? reportBox.value : this.state.compiledReport;
+    if (!raw) return;
+
+    const subject = window.P360Engine.formatSubject(this.state.reportDate);
+    const slackText = `*${subject}*\n\n${raw}`;
+
+    navigator.clipboard.writeText(slackText).then(() => {
+      App.showToast('📋 Copied formatted report for Slack / Teams!');
+    }).catch(() => {
+      App.showToast('⚠️ Could not copy to clipboard.');
+    });
+  },
+
+  copyPlainText() {
+    const reportBox = document.getElementById('p360CompiledReport');
+    const raw = reportBox ? reportBox.value : this.state.compiledReport;
+    if (!raw) return;
+
+    navigator.clipboard.writeText(raw).then(() => {
+      App.showToast('📄 Copied plain text report!');
+    }).catch(() => {
+      App.showToast('⚠️ Could not copy to clipboard.');
+    });
+  },
+
+  // ── Shift History & Persistence ──
+  saveShiftState() {
+    try {
+      const data = {
+        isClockedIn: this.state.isClockedIn,
+        startTime: this.state.startTime,
+        endTime: this.state.endTime,
+        elapsedSeconds: this.state.elapsedSeconds
+      };
+      localStorage.setItem('p360_shift_state', JSON.stringify(data));
+    } catch (_) {}
+  },
+
+  loadShiftState() {
+    try {
+      const raw = localStorage.getItem('p360_shift_state');
+      if (raw) {
+        const data = JSON.parse(raw);
+        this.state.isClockedIn = !!data.isClockedIn;
+        this.state.startTime = data.startTime || null;
+        this.state.endTime = data.endTime || null;
+        this.state.elapsedSeconds = data.elapsedSeconds || 0;
+
+        if (this.state.isClockedIn && this.state.startTime) {
+          this.state.elapsedSeconds = Math.floor((Date.now() - this.state.startTime) / 1000);
+          this.startTimerInterval();
+        }
+        this.updateTimerUI();
+      }
+    } catch (_) {}
+  },
+
+  saveDraft() {
+    try {
+      const draft = {
+        reportDate: this.state.reportDate,
+        checkedIds: Array.from(this.state.checkedTaskIds),
+        taskDetails: this.state.taskDetails,
+        customNotes: this.state.customNotes,
+        plansNotes: this.state.plansNotes,
+        compiledReport: this.state.compiledReport
+      };
+      localStorage.setItem('p360_draft', JSON.stringify(draft));
+    } catch (_) {}
+  },
+
+  loadDraft() {
+    try {
+      const raw = localStorage.getItem('p360_draft');
+      if (raw) {
+        const draft = JSON.parse(raw);
+        if (draft.reportDate) this.state.reportDate = draft.reportDate;
+        if (Array.isArray(draft.checkedIds)) {
+          this.state.checkedTaskIds = new Set(draft.checkedIds);
+        }
+        if (draft.taskDetails) this.state.taskDetails = draft.taskDetails;
+        if (draft.customNotes) {
+          this.state.customNotes = draft.customNotes;
+          const el = document.getElementById('p360CustomNotes');
+          if (el) el.value = draft.customNotes;
+        }
+        if (draft.plansNotes) {
+          this.state.plansNotes = draft.plansNotes;
+          const el = document.getElementById('p360PlansNotes');
+          if (el) el.value = draft.plansNotes;
+        }
+        if (draft.compiledReport) {
+          this.state.compiledReport = draft.compiledReport;
+          const el = document.getElementById('p360CompiledReport');
+          if (el) el.value = draft.compiledReport;
+        }
+      }
+    } catch (_) {}
+  },
+
+  saveToHistory() {
+    const reportBox = document.getElementById('p360CompiledReport');
+    const text = reportBox ? reportBox.value : this.state.compiledReport;
+    if (!text || !text.trim()) {
+      App.showToast('⚠️ Compile a report first before saving.');
+      return;
+    }
+
+    const secs = this.state.elapsedSeconds || 0;
+    const h = String(Math.floor(secs / 3600)).padStart(2, '0');
+    const m = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
+    const durationStr = `${h}h ${m}m`;
+
+    const startStr = this.state.startTime ? new Date(this.state.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
+    const endStr = this.state.endTime ? new Date(this.state.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const entry = {
+      id: 'p360-' + Date.now(),
+      date: this.state.reportDate,
+      shiftHours: `${startStr} – ${endStr}`,
+      duration: durationStr,
+      taskCount: this.state.checkedTaskIds.size,
+      subject: window.P360Engine.formatSubject(this.state.reportDate),
+      reportText: text,
+      savedAt: new Date().toISOString()
+    };
+
+    this.state.history.unshift(entry);
+    if (this.state.history.length > 50) this.state.history.pop();
+
+    try {
+      localStorage.setItem('p360_history', JSON.stringify(this.state.history));
+    } catch (_) {}
+
+    this.renderHistory();
+    App.showToast('💾 Daily task report saved to history archive!');
+  },
+
+  loadHistory() {
+    try {
+      const raw = localStorage.getItem('p360_history');
+      if (raw) {
+        this.state.history = JSON.parse(raw);
+      }
+    } catch (_) {}
+    this.renderHistory();
+  },
+
+  renderHistory() {
+    const tbody = document.getElementById('p360HistoryTableBody');
+    const countBadge = document.getElementById('p360HistoryCountBadge');
+    if (!tbody) return;
+
+    if (countBadge) {
+      countBadge.textContent = `${this.state.history.length} report${this.state.history.length === 1 ? '' : 's'}`;
+    }
+
+    if (this.state.history.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="py-6 text-center text-slate-400 dark:text-slate-500">
+            No saved shift reports yet. Reports saved with [Save to Shift History] will appear here.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    let html = '';
+    this.state.history.forEach(item => {
+      html += `
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+          <td class="py-2.5 px-3 font-semibold text-slate-800 dark:text-slate-200">${App.escapeHTML(item.date)}</td>
+          <td class="py-2.5 px-3 font-mono text-slate-600 dark:text-slate-400">${App.escapeHTML(item.shiftHours)}</td>
+          <td class="py-2.5 px-3 font-mono text-blue-600 dark:text-blue-400">${App.escapeHTML(item.duration)}</td>
+          <td class="py-2.5 px-3">${item.taskCount} tasks</td>
+          <td class="py-2.5 px-3 text-right">
+            <div class="inline-flex items-center gap-1">
+              <button onclick="P360.loadHistoryItem('${item.id}')" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition-colors" title="Load into preview editor">
+                👁️ View
+              </button>
+              <button onclick="P360.copyHistoryItem('${item.id}')" class="px-2 py-1 text-[10px] font-semibold rounded bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition-colors" title="Copy report text">
+                📋
+              </button>
+              <button onclick="P360.deleteHistoryItem('${item.id}')" class="px-1.5 py-1 text-[10px] rounded hover:bg-rose-50 dark:hover:bg-rose-950/60 text-slate-400 hover:text-rose-600 transition-colors" title="Delete from history">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    });
+    tbody.innerHTML = html;
+  },
+
+  loadHistoryItem(id) {
+    const item = this.state.history.find(h => h.id === id);
+    if (!item) return;
+
+    this.state.reportDate = item.date;
+    this.state.compiledReport = item.reportText;
+
+    const dateInput = document.getElementById('p360ReportDate');
+    if (dateInput) dateInput.value = item.date;
+
+    const reportBox = document.getElementById('p360CompiledReport');
+    if (reportBox) reportBox.value = item.reportText;
+
+    this.updateSubjectPreview();
+    App.showToast(`👁️ Loaded report for ${item.date} into preview editor.`);
+  },
+
+  copyHistoryItem(id) {
+    const item = this.state.history.find(h => h.id === id);
+    if (!item) return;
+    navigator.clipboard.writeText(item.reportText).then(() => {
+      App.showToast(`📋 Copied report for ${item.date}!`);
+    });
+  },
+
+  deleteHistoryItem(id) {
+    if (!confirm('Remove this saved report from history?')) return;
+    this.state.history = this.state.history.filter(h => h.id !== id);
+    try {
+      localStorage.setItem('p360_history', JSON.stringify(this.state.history));
+    } catch (_) {}
+    this.renderHistory();
+    App.showToast('🗑️ Report removed from history.');
+  }
+};
+
+window.P360 = P360;
 
 // Initialize when DOM ready
 document.addEventListener('DOMContentLoaded', () => {

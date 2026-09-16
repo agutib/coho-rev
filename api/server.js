@@ -163,7 +163,7 @@ app.post("/api/chat", async (req, res) => {
   let fullResponse = "";
 
   try {
-    let currentSystemPrompt = getCohoSystemPrompt(PROJECT_ROOT);
+    let currentSystemPrompt = getCohoSystemPrompt(PROJECT_ROOT, clientContext);
     if (clientContext && clientContext !== "general" && clientContext !== "hub") {
       currentSystemPrompt += `\n\n---\n## 🎯 ACTIVE WORKSPACE CONTEXT: [${clientContext.toUpperCase()}]\nRev is currently in the ${clientContext.toUpperCase()} workspace. Prioritize this organization's terminology, context, and operational rules unless she explicitly mentions another client.\n`;
     }

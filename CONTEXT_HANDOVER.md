@@ -30,7 +30,7 @@ Internet (Browser)
 [Let's Encrypt SSL (Shared SAN cert: arnoldgutib.pro)]
        │
        ▼
-[Nginx 1.18 Reverse Proxy on sindbad-dev-web-vm (34.124.177.92)]
+[Nginx 1.18 Reverse Proxy on sindbad-dev-web-vm (34.142.222.26)]
  ├── /          ──► Serves Static Web SPA from /var/www/coho.arnoldgutib.pro/
  └── /api/chat  ──► Proxies (HTTP 1.1, no-buffer) to 127.0.0.1:3001
                           │
@@ -44,7 +44,7 @@ Internet (Browser)
 
 ### Server Specification:
 - **Server Name:** `sindbad-dev-web-vm`
-- **Public IP:** `34.124.177.92`
+- **Public IP:** `34.142.222.26`
 - **SSH Port:** `2363`
 - **GCP Project:** `sindbad-web-project` (Zone: `asia-southeast1-c`)
 - **OS:** Ubuntu 20.04 LTS

@@ -1,6 +1,6 @@
 # Pre-Launch QA & VAPT Audit Findings & Verification Report
 **Project:** COHO OpsHub — UK HMO Property Operations Center  
-**Target:** `https://coho.arnoldgutib.pro` | `sindbad-dev-web-vm` (`34.124.177.92:2363`)  
+**Target:** `https://rev.arnoldgutib.pro` | `sindbad-dev-web-vm` (`34.142.222.26:2363`)  
 **Audit Framework:** `prelaunch-qa-vapt-gate` & Multi-Specialist Agent Suite  
 **Date:** 2026-09-13  
 **Status:** ✅ **LAUNCH GATE PASSED — ALL 12 FINDINGS REMEDIATED & INDEPENDENTLY VERIFIED**

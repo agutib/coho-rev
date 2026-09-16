@@ -1,5 +1,5 @@
-SSH_CMD="ssh -p 2363 bong@34.124.177.92"
-PROD_URL="https://coho.arnoldgutib.pro"
+SSH_CMD="ssh -p 2363 bong@34.142.222.26"
+PROD_URL="https://rev.arnoldgutib.pro"
 AUTH_TOKEN="c3f89002f28c39474375003faf4f51cccce5a77b515696194ba280c3b5ee4f10"
 
 echo "========================================================"

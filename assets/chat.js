@@ -13,6 +13,9 @@ const Chat = (() => {
 
   function setClientContext(clientKey) {
     currentClientContext = clientKey || "hub";
+    if (history.length === 0) {
+      renderWorkspaceWelcome();
+    }
   }
 
   const SPECIALIST_CONFIGS = {
@@ -346,6 +349,49 @@ const Chat = (() => {
       return;
     }
 
+    if (currentClientContext === "p360") {
+      container.innerHTML = `
+        <div class="flex flex-col items-center justify-center py-6 px-4 text-center max-w-3xl mx-auto space-y-5 animate-in fade-in zoom-in duration-200">
+          <div class="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center text-white text-2xl font-black shadow-lg shadow-blue-500/20">
+            👥
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">People360 Daily Task Assistant</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-lg leading-relaxed">
+              Work out loud here while Hubstaff tracks in the background. Send <strong class="text-blue-600 dark:text-blue-400 font-mono">IN</strong> to start your shift, drop task notes anytime, or send <strong class="text-blue-600 dark:text-blue-400 font-mono">EOD</strong> when ready to compile your clean Daily Task Report for CEO Mike.
+            </p>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full text-left">
+            <button onclick="Chat.usePrompt('IN')" class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-500 transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>🟢</span> Clock In (IN)
+              </div>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Start shift tracker</p>
+            </button>
+            <button onclick="Chat.usePrompt('EOD')" class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-500 transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>🔴</span> Clock Out (EOD)
+              </div>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Compile report for Mike</p>
+            </button>
+            <button onclick="if(window.P360) P360.sendOutlook('web')" class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-500 transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>📧</span> Open Outlook
+              </div>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Launch compose with subject</p>
+            </button>
+            <button onclick="Chat.usePrompt('What operational rules, accounts, and client codes are saved for People360?')" class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-blue-500 transition-all text-left">
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100 flex items-center gap-1.5">
+                <span>🧠</span> P360 Rules
+              </div>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">View saved memory</p>
+            </button>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
     container.innerHTML = `
       <div class="flex flex-col items-center justify-center py-6 px-4 text-center max-w-3xl mx-auto space-y-5">
         <div class="w-14 h-14 rounded-2xl bg-emerald-600 flex items-center justify-center text-white text-2xl font-black shadow-lg shadow-emerald-500/20 animate-in fade-in zoom-in duration-200">
@@ -532,6 +578,31 @@ const Chat = (() => {
     isStreaming = true;
     setWorkspaceSendBtn(false);
 
+    // P360 Shift Tracking Interceptor
+    const cleanText = rawMessage.trim().toUpperCase();
+    if (currentClientContext === "p360") {
+      if (cleanText === "IN" || cleanText === "CLOCK IN") {
+        if (window.P360 && !window.P360.state.isClockedIn) {
+          window.P360.clockIn();
+        }
+      } else if (cleanText === "EOD" || cleanText === "OUT" || cleanText === "CLOCK OUT") {
+        if (window.P360) {
+          if (window.P360.state.isClockedIn) {
+            window.P360.clockOut();
+          } else {
+            window.P360.compile(true);
+          }
+        }
+      } else if (window.P360 && window.P360.state.isClockedIn && !rawMessage.startsWith("Remember this rule")) {
+        const customNotesEl = document.getElementById("p360CustomNotes");
+        if (customNotesEl) {
+          const current = customNotesEl.value.trim();
+          customNotesEl.value = current ? `${current}\n${rawMessage.trim()}` : rawMessage.trim();
+          window.P360.handleInputChange();
+        }
+      }
+    }
+
     // If a specific specialist is chosen, prepend consultation tag
     const specInfo = SPECIALIST_CONFIGS[activeSpecialist];
     const fullMessage = (specInfo && specInfo.prefix ? specInfo.prefix : "") + rawMessage;
@@ -614,6 +685,18 @@ const Chat = (() => {
         .trim();
       history.push({ role: "model", text: finalCleaned });
 
+      // Sync AI-compiled report with P360 preview card
+      if (currentClientContext === "p360" && finalCleaned.includes("Progress:") && finalCleaned.includes("Plans/To-Do:")) {
+        const reportBox = document.getElementById("p360CompiledReport");
+        if (reportBox) {
+          reportBox.value = finalCleaned;
+        }
+        if (window.P360) {
+          window.P360.state.compiledReport = finalCleaned;
+          window.P360.saveDraft();
+        }
+      }
+
     } catch (err) {
       setWorkspaceMessageText(modelBubble, "⚠️ Connection error. Please check your network and try again.");
     }
@@ -626,6 +709,15 @@ const Chat = (() => {
   // Build condensed context of active OpsHub state
   function buildLiveOpsHubContext() {
     try {
+      if (currentClientContext === "p360") {
+        if (!window.P360) return "[People360 Workspace: Workforce & Daily Reporting]";
+        const pState = window.P360.state;
+        const checkedCount = pState.checkedTaskIds ? pState.checkedTaskIds.size : 0;
+        const shiftStatus = pState.isClockedIn ? "Active (Clocked In)" : (pState.endTime ? "Clocked Out" : "Not Started");
+        const customSnippet = pState.customNotes ? `\nCustom notes logged today:\n${pState.customNotes}` : "";
+        return `[People360 Workspace Context: Date: ${pState.reportDate}, Shift Status: ${shiftStatus}, Recurring Tasks Selected: ${checkedCount}${customSnippet}]`;
+      }
+
       if (!App.state) return "";
       const recon = App.state.reconciliation;
       const totalExpected = recon ? recon.summary.totalExpected : 0;

@@ -20,10 +20,10 @@ Superpowers skills library is installed globally and in `.claude/skills`:
 1. **WSL Execution Rule:**
    - Always run remote/SSH commands through WSL **Ubuntu** distribution as user **bong**:
    ```bash
-   wsl -d Ubuntu -u bong -- bash -c "ssh -i /home/bong/.ssh/google_compute_engine -p 2363 -o StrictHostKeyChecking=no bong@34.124.177.92 '<command>'"
+   wsl -d Ubuntu -u bong -- bash -c "ssh -i /home/bong/.ssh/google_compute_engine -p 2363 -o StrictHostKeyChecking=no bong@34.142.222.26 '<command>'"
    ```
 2. **Server Details (`sindbad-dev-web-vm`):**
-   - **IP:** `34.124.177.92`
+   - **IP:** `34.142.222.26`
    - **SSH Port:** `2363` (Custom port)
    - **GCP Project:** `sindbad-web-project` (Zone: `asia-southeast1-c`)
    - **Active GCloud User:** `arnold@sindbad.tech` (never `development@sindbad.tech`)
@@ -114,7 +114,7 @@ git push origin main
 
 ### Deploy Latest Code to Server (`sindbad-dev-web-vm`)
 ```bash
-wsl -d Ubuntu -u bong -- bash -c "ssh -i /home/bong/.ssh/google_compute_engine -p 2363 -o StrictHostKeyChecking=no bong@34.124.177.92 '
+wsl -d Ubuntu -u bong -- bash -c "ssh -i /home/bong/.ssh/google_compute_engine -p 2363 -o StrictHostKeyChecking=no bong@34.142.222.26 '
   cd /opt/coho-app && git pull origin main
   sudo cp /opt/coho-app/index.html /var/www/coho.arnoldgutib.pro/
   sudo cp /opt/coho-app/login.html /var/www/coho.arnoldgutib.pro/
@@ -128,7 +128,7 @@ wsl -d Ubuntu -u bong -- bash -c "ssh -i /home/bong/.ssh/google_compute_engine -
 
 ### Check Backend Health & PM2 Status
 ```bash
-wsl -d Ubuntu -u bong -- bash -c "ssh -i /home/bong/.ssh/google_compute_engine -p 2363 -o StrictHostKeyChecking=no bong@34.124.177.92 '
+wsl -d Ubuntu -u bong -- bash -c "ssh -i /home/bong/.ssh/google_compute_engine -p 2363 -o StrictHostKeyChecking=no bong@34.142.222.26 '
   export PATH=/usr/local/.nvm/versions/node/v20.14.0/bin:\$PATH
   pm2 list
   curl -s http://127.0.0.1:3001/api/health
