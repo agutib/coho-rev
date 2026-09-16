@@ -1145,14 +1145,15 @@ const P360 = {
   init() {
     // 1. Initialize report date
     const today = new Date();
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthNames = (window.P360Engine && window.P360Engine.MONTH_NAMES)
+      ? window.P360Engine.MONTH_NAMES
+      : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     this.state.reportDate = `${today.getFullYear()}-${monthNames[today.getMonth()]}-${String(today.getDate()).padStart(2, '0')}`;
     
     const dateInput = document.getElementById('p360ReportDate');
     if (dateInput) {
       dateInput.value = this.state.reportDate;
     }
-    this.updateSubjectPreview();
 
     // 2. Load saved history first
     this.loadHistory();
@@ -1163,16 +1164,41 @@ const P360 = {
     // 4. Restore saved draft
     this.loadDraft();
 
-    // 5. Render catalog
+    // 5. If no checkedTaskIds from draft, populate all defaultChecked tasks
+    if (this.state.checkedTaskIds.size === 0 && window.P360Engine && window.P360Engine.P360_CATALOG) {
+      window.P360Engine.P360_CATALOG.forEach(cat => {
+        cat.tasks.forEach(t => {
+          if (t.defaultChecked) this.state.checkedTaskIds.add(t.id);
+        });
+      });
+    }
+
+    // 6. Render catalog
     this.renderCatalog();
 
-    // 6. Initial compile if empty
+    // 7. Initial compile if empty
     if (!this.state.compiledReport) {
       this.compile(false);
     }
+    this.updateSubjectPreview();
   },
 
   onWorkspaceEnter() {
+    const container = document.getElementById('p360CatalogContainer');
+    if (!container || !container.hasChildNodes() || container.children.length === 0) {
+      if (this.state.checkedTaskIds.size === 0 && window.P360Engine && window.P360Engine.P360_CATALOG) {
+        window.P360Engine.P360_CATALOG.forEach(cat => {
+          cat.tasks.forEach(t => {
+            if (t.defaultChecked) this.state.checkedTaskIds.add(t.id);
+          });
+        });
+      }
+      this.renderCatalog();
+    }
+    const reportBox = document.getElementById('p360CompiledReport');
+    if (!reportBox || !reportBox.value || !reportBox.value.trim()) {
+      this.compile(false);
+    }
     this.updateSubjectPreview();
     this.updateTimerUI();
     this.renderHistory();
@@ -1181,6 +1207,15 @@ const P360 = {
   renderCatalog() {
     const container = document.getElementById('p360CatalogContainer');
     if (!container || !window.P360Engine || !window.P360Engine.P360_CATALOG) return;
+
+    // Guarantee default checked items are registered if set is empty
+    if (this.state.checkedTaskIds.size === 0) {
+      window.P360Engine.P360_CATALOG.forEach(cat => {
+        cat.tasks.forEach(t => {
+          if (t.defaultChecked) this.state.checkedTaskIds.add(t.id);
+        });
+      });
+    }
 
     const catalog = window.P360Engine.P360_CATALOG;
     let html = '';
@@ -1203,10 +1238,7 @@ const P360 = {
       `;
 
       cat.tasks.forEach(t => {
-        const isChecked = this.state.checkedTaskIds.has(t.id) || (this.state.checkedTaskIds.size === 0 && t.defaultChecked);
-        if (isChecked) {
-          this.state.checkedTaskIds.add(t.id);
-        }
+        const isChecked = this.state.checkedTaskIds.has(t.id);
         const currentDetail = this.state.taskDetails[t.id] || '';
 
         html += `
@@ -1249,6 +1281,35 @@ const P360 = {
 
     container.innerHTML = html;
     this.updateCategoryBadges();
+  },
+
+  loadSampleShift() {
+    this.state.checkedTaskIds.clear();
+    const sampleIds = [
+      'inv-open-monitor',
+      'inv-finalize-stripe-xero',
+      'bank-wf-recon',
+      'payroll-wise-batch',
+      'onboard-profile-create'
+    ];
+    sampleIds.forEach(id => this.state.checkedTaskIds.add(id));
+
+    this.state.taskDetails['inv-finalize-stripe-xero'] = 'SHERMAN, SIF, MEC';
+    this.state.taskDetails['bank-wf-recon'] = 'Wells Fargo 6470';
+
+    this.state.customNotes = 'Reviewed Outstanding Invoices Report and monitored Stripe open invoices.\nEmailed Vinnie re Edge Nation invoices via Stripe.\nCalled Vinnie re Edge Nation payment reminder — follow-up text sent.\nProvided update to Dinese and Mike re Edge Nation payment status.\nResponded to Mike\'s email re Hubstaff timesheet approvals.';
+
+    this.state.plansNotes = 'Follow up with Vinnie re Edge Nation payment confirmation.\nAudit next bi-weekly payroll file in Connecteam.\nReview Stripe customer payment responses.';
+
+    const customEl = document.getElementById('p360CustomNotes');
+    if (customEl) customEl.value = this.state.customNotes;
+
+    const plansEl = document.getElementById('p360PlansNotes');
+    if (plansEl) plansEl.value = this.state.plansNotes;
+
+    this.renderCatalog();
+    this.compile(true);
+    App.showToast('⚡ Sample People360 shift data loaded and compiled!');
   },
 
   toggleCategory(catId) {

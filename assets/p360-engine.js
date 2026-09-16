@@ -382,6 +382,7 @@ function buildOutlookUrl({ to = 'revemar@trampettimg.com', cc = 'arnold.gutib@gm
 
 // Export for Node.js and Browser
 const P360Engine = {
+  MONTH_NAMES,
   formatSubject,
   P360_CATALOG,
   deduplicateTasks,
