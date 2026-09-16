@@ -1583,10 +1583,32 @@ const P360 = {
 
     if (mode === 'mailto') {
       window.location.href = urls.mailtoUrl;
-      App.showToast('💻 Opening Desktop Outlook...');
+      App.showToast('💻 Opening Desktop Outlook (To & Cc auto-filled)...');
     } else {
+      // Note: Microsoft Outlook on the web strips &cc= from deep-link URLs.
+      // We automatically copy the CC address to the clipboard so Rev can easily press Ctrl+V in the Cc field.
+      if (cc && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(cc).then(() => {
+          App.showToast(`📧 Opening Outlook Web! CC (${cc}) copied to clipboard — paste with Ctrl+V into the Cc field.`);
+        }).catch(() => {
+          App.showToast('📧 Opening Outlook Web compose window...');
+        });
+      } else {
+        App.showToast('📧 Opening Outlook Web compose window...');
+      }
       window.open(urls.webUrl, '_blank');
-      App.showToast('📧 Opening Outlook Web compose window...');
+    }
+  },
+
+  copyCc() {
+    const ccInput = document.getElementById('p360EmailCc');
+    const cc = (ccInput && ccInput.value.trim()) ? ccInput.value.trim() : 'arnold.gutib@gmail.com';
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cc).then(() => {
+        App.showToast(`📋 Copied CC address: ${cc}`);
+      }).catch(() => {
+        App.showToast(`⚠️ Could not copy ${cc}`);
+      });
     }
   },
 

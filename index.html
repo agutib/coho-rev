@@ -1005,6 +1005,12 @@
                 <div class="flex items-center gap-2">
                   <span class="text-slate-500 dark:text-slate-400 font-semibold text-[11px] w-8">Cc:</span>
                   <input type="email" id="p360EmailCc" value="arnold.gutib@gmail.com" placeholder="arnold.gutib@gmail.com" class="flex-1 text-xs font-mono px-2 py-1 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                  <button type="button" onclick="P360.copyCc()" class="px-2 py-1 text-[10px] font-bold rounded bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600 transition-colors flex items-center gap-1 flex-shrink-0" title="Copy CC email to clipboard">
+                    <span>📋</span> <span>Copy CC</span>
+                  </button>
+                </div>
+                <div class="text-[10px] text-amber-600 dark:text-amber-400 flex items-center gap-1 pt-0.5">
+                  <span>💡</span> <span>Outlook Web ignores CC in web links. Clicking <strong>Send (Web)</strong> auto-copies CC to your clipboard. Use <strong>App</strong> to auto-fill both!</span>
                 </div>
                 <div class="text-[10px] text-slate-400 dark:text-slate-500 flex items-center justify-between pt-0.5">
                   <span>Sender: <strong class="text-slate-600 dark:text-slate-300">arnold.gutib@sindbad.tech</strong> (Outlook)</span>
@@ -1027,11 +1033,11 @@
             <div class="space-y-2 pt-1">
               <!-- Primary Action: Send via Outlook -->
               <div class="flex items-center gap-2">
-                <button onclick="P360.sendOutlook('web')" class="flex-1 py-2.5 px-3 text-xs font-bold rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md shadow-blue-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2" title="Opens Outlook web composer with Mike's email, subject, and body pre-filled from your authenticated account">
+                <button onclick="P360.sendOutlook('web')" class="flex-1 py-2.5 px-3 text-xs font-bold rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-md shadow-blue-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2" title="Opens Outlook web composer. Automatically copies CC email to clipboard for instant Ctrl+V">
                   <span>📧</span> <span>Send via Outlook (Web)</span>
                 </button>
-                <button onclick="P360.sendOutlook('mailto')" class="px-3 py-2.5 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 transition-colors shadow-2xs" title="Open Desktop Outlook or native mail client">
-                  <span>💻 App</span>
+                <button onclick="P360.sendOutlook('mailto')" class="px-3 py-2.5 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white transition-all shadow-md shadow-emerald-600/20 flex items-center gap-1.5 whitespace-nowrap" title="Opens Desktop Outlook or mail client — automatically pre-fills BOTH To and Cc fields!">
+                  <span>💻</span> <span>App (Auto CC)</span>
                 </button>
               </div>
 
@@ -1235,12 +1241,12 @@
   </div>
 
   <!-- Application Scripts -->
-  <script src="assets/theme.js?v=2.1.0"></script>
-  <script src="assets/parser.js?v=2.1.0"></script>
-  <script src="assets/reconciler.js?v=2.1.0"></script>
-  <script src="assets/templates.js?v=2.1.0"></script>
-  <script src="assets/p360-engine.js?v=2.1.0"></script>
-  <script src="assets/app.js?v=2.1.0"></script>
-  <script src="assets/chat.js?v=2.1.0"></script>
+  <script src="assets/theme.js?v=2.1.1"></script>
+  <script src="assets/parser.js?v=2.1.1"></script>
+  <script src="assets/reconciler.js?v=2.1.1"></script>
+  <script src="assets/templates.js?v=2.1.1"></script>
+  <script src="assets/p360-engine.js?v=2.1.1"></script>
+  <script src="assets/app.js?v=2.1.1"></script>
+  <script src="assets/chat.js?v=2.1.1"></script>
 </body>
 </html>
