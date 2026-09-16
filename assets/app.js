@@ -456,6 +456,12 @@ const App = {
     } else if (this.state.currentWorkspace === 'hub') {
       const el = document.getElementById('hub-copilot-container');
       if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else if (this.state.currentWorkspace === 'p360') {
+      const el = document.getElementById('p360-copilot-container');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else if (this.state.currentWorkspace === 'isi') {
+      const el = document.getElementById('isi-copilot-container');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
     if (typeof Chat !== 'undefined' && Chat.openGuideInWorkspace) {
       Chat.openGuideInWorkspace();

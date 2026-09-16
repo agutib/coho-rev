@@ -220,136 +220,115 @@
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
     <!-- VIEW 1: REV OPS HUB (EXECUTIVE PORTAL) -->
-    <div id="view-hub-home" class="space-y-8">
+    <div id="view-hub-home" class="space-y-5">
       <!-- Executive Welcome Banner -->
-      <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 text-white p-6 sm:p-8 rounded-3xl shadow-lg border border-slate-700/60 relative overflow-hidden">
+      <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 text-white p-4 sm:p-5 rounded-2xl shadow-md border border-slate-700/60 relative overflow-hidden">
         <div class="relative z-10 max-w-3xl">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold border border-emerald-500/30 mb-3">
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-semibold border border-emerald-500/30 mb-2">
             <span>✨</span> <span>Executive Operations Portal</span>
           </div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
             Welcome back, Rev.
           </h1>
-          <p class="text-sm sm:text-base text-slate-300 mt-2 leading-relaxed">
-            Your centralized multi-client operations command center. Monitor HMO rent reconciliation and compliance for <strong class="text-amber-300 font-semibold">COHO</strong>, manage upcoming workforce and HR operations for <strong class="text-blue-300 font-semibold">People360</strong>, and track tech operations for <strong class="text-emerald-300 font-semibold">Innovuze Solutions Inc</strong>.
+          <p class="text-xs sm:text-sm text-slate-300 mt-1 leading-relaxed">
+            Centralized operations command center for <strong class="text-amber-300 font-semibold">COHO</strong> (HMO Property Management), <strong class="text-blue-300 font-semibold">People360</strong> (Daily Task Reporting & Hubstaff), and <strong class="text-emerald-300 font-semibold">Innovuze Solutions</strong>.
           </p>
         </div>
-        <div class="absolute -right-8 -bottom-8 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -right-8 -bottom-8 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
       </div>
 
       <!-- Client Portfolios 3-Card Grid -->
-      <div>
-        <div class="flex items-center justify-between mb-4">
+      <div class="space-y-2.5">
+        <div class="flex items-center justify-between">
           <div>
-            <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <h2 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
               <span>🏢</span> Client Workspaces
             </h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Select a client below to launch their dedicated operational suite.</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">Launch a dedicated operational workspace or query all three below with Gemini.</p>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <!-- CARD 1: COHO (Active HMO Operations) -->
-          <div onclick="App.switchWorkspace('coho')" class="group cursor-pointer bg-white dark:bg-slate-800 rounded-2xl border-2 border-amber-500/30 hover:border-amber-500 dark:border-amber-500/30 dark:hover:border-amber-400 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-bl-full pointer-events-none group-hover:bg-amber-500/20 transition-colors"></div>
+          <div onclick="App.switchWorkspace('coho')" class="group cursor-pointer bg-white dark:bg-slate-800 rounded-2xl border-2 border-amber-500/30 hover:border-amber-500 dark:border-amber-500/30 dark:hover:border-amber-400 p-4 sm:p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-20 h-20 bg-amber-500/10 rounded-bl-full pointer-events-none group-hover:bg-amber-500/20 transition-colors"></div>
             <div>
-              <div class="flex items-center justify-between mb-3">
-                <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+              <div class="flex items-center justify-between mb-2">
+                <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
                   🏡
                 </div>
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
                   <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Active Live
                 </span>
               </div>
-              <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+              <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                 COHO Operations
               </h3>
-              <p class="text-xs font-semibold text-amber-700 dark:text-amber-400 mt-0.5">UK HMO Property Management</p>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 leading-relaxed">
-                Automated 3-way rent reconciliation, bank matching, tenant arrears tracking, HMO compliance calendar, and landlord communications.
+              <p class="text-[11px] font-semibold text-amber-700 dark:text-amber-400">UK HMO Property Management</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed line-clamp-2">
+                3-way rent reconciliation, bank matching, tenant arrears, compliance calendar, and landlord comms.
               </p>
-              <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400">
-                <span class="font-medium text-slate-700 dark:text-slate-200">4 Properties</span>
-                <span>•</span>
-                <span>10 Tenancies</span>
-                <span>•</span>
-                <span>SOP Checklists</span>
-              </div>
             </div>
-            <div class="mt-5 pt-3">
-              <span class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-600 group-hover:bg-amber-700 text-white font-semibold text-xs transition-colors shadow-sm shadow-amber-500/20">
-                <span>Open COHO Workspace</span>
-                <span>→</span>
+            <div class="mt-4 pt-2.5 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
+              <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">4 Props · 10 Tenancies</span>
+              <span class="text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                Open <span>→</span>
               </span>
             </div>
           </div>
 
           <!-- CARD 2: People360 (P360 - Workforce & HR) -->
-          <div onclick="App.switchWorkspace('p360')" class="group cursor-pointer bg-white dark:bg-slate-800 rounded-2xl border-2 border-blue-500/30 hover:border-blue-500 dark:border-blue-500/30 dark:hover:border-blue-400 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-bl-full pointer-events-none group-hover:bg-blue-500/20 transition-colors"></div>
+          <div onclick="App.switchWorkspace('p360')" class="group cursor-pointer bg-white dark:bg-slate-800 rounded-2xl border-2 border-blue-500/30 hover:border-blue-500 dark:border-blue-500/30 dark:hover:border-blue-400 p-4 sm:p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 rounded-bl-full pointer-events-none group-hover:bg-blue-500/20 transition-colors"></div>
             <div>
-              <div class="flex items-center justify-between mb-3">
-                <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+              <div class="flex items-center justify-between mb-2">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
                   👥
                 </div>
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-800">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-300 dark:border-blue-800">
                   <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span> Active Live
                 </span>
               </div>
-              <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+              <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                 People360 (P360)
               </h3>
-              <p class="text-xs font-semibold text-blue-700 dark:text-blue-400 mt-0.5">Daily Task Reporting & Workforce Ops</p>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 leading-relaxed">
-                Automated daily operational task logging for Mike (CEO), 5-category recurring task checklist, smart deduplication, and 1-click Outlook dispatch.
+              <p class="text-[11px] font-semibold text-blue-700 dark:text-blue-400">Daily Task Reporting & Workforce Ops</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed line-clamp-2">
+                Daily task logging for Mike (CEO), 5-category recurring task checklist, deduplication, and 1-click Outlook.
               </p>
-              <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400">
-                <span class="font-medium text-slate-700 dark:text-slate-200">Task Checklist</span>
-                <span>•</span>
-                <span>Shift Tracker</span>
-                <span>•</span>
-                <span>Outlook 1-Click</span>
-              </div>
             </div>
-            <div class="mt-5 pt-3">
-              <span class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 group-hover:bg-blue-700 text-white font-semibold text-xs transition-colors shadow-sm shadow-blue-500/20">
-                <span>Open P360 Workspace</span>
-                <span>→</span>
+            <div class="mt-4 pt-2.5 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
+              <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Shift Tracker · Outlook</span>
+              <span class="text-blue-600 dark:text-blue-400 font-bold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                Open <span>→</span>
               </span>
             </div>
           </div>
 
           <!-- CARD 3: Innovuze Solutions Inc (ISI - Tech & Solutions) -->
-          <div onclick="App.switchWorkspace('isi')" class="group cursor-pointer bg-white dark:bg-slate-800 rounded-2xl border-2 border-emerald-500/30 hover:border-emerald-500 dark:border-emerald-500/30 dark:hover:border-emerald-400 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-bl-full pointer-events-none group-hover:bg-emerald-500/20 transition-colors"></div>
+          <div onclick="App.switchWorkspace('isi')" class="group cursor-pointer bg-white dark:bg-slate-800 rounded-2xl border-2 border-emerald-500/30 hover:border-emerald-500 dark:border-emerald-500/30 dark:hover:border-emerald-400 p-4 sm:p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-bl-full pointer-events-none group-hover:bg-emerald-500/20 transition-colors"></div>
             <div>
-              <div class="flex items-center justify-between mb-3">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+              <div class="flex items-center justify-between mb-2">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
                   ⚡
                 </div>
-                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
                   <span>⏳</span> Setup in Progress
                 </span>
               </div>
-              <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+              <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                 Innovuze Solutions Inc (ISI)
               </h3>
-              <p class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 mt-0.5">Technical & Solutions Operations</p>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-2.5 leading-relaxed">
-                Client deliverables, technology project tracking, vendor service level agreements (SLAs), and engineering operations governance.
+              <p class="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">Technical & Solutions Operations</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed line-clamp-2">
+                Client deliverables, technology project tracking, vendor service level agreements (SLAs), and engineering ops.
               </p>
-              <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center gap-3 text-[11px] text-slate-500 dark:text-slate-400">
-                <span class="font-medium text-slate-700 dark:text-slate-200">Onboarding Data</span>
-                <span>•</span>
-                <span>Gemini Ready</span>
-                <span>•</span>
-                <span>ISI Rules</span>
-              </div>
             </div>
-            <div class="mt-5 pt-3">
-              <span class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 group-hover:bg-emerald-700 text-white font-semibold text-xs transition-colors shadow-sm shadow-emerald-500/20">
-                <span>Open ISI Workspace</span>
-                <span>→</span>
+            <div class="mt-4 pt-2.5 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
+              <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Gemini Ready · Onboarding</span>
+              <span class="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                Open <span>→</span>
               </span>
             </div>
           </div>
@@ -370,7 +349,7 @@
         </div>
 
         <div id="hub-copilot-container" class="w-full">
-          <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-colors duration-200 min-h-[720px] relative" id="copilot-workspace">
+          <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm overflow-hidden flex flex-col transition-colors duration-200 h-[640px] lg:h-[720px] min-h-[560px] relative" id="copilot-workspace">
             
             <!-- Drag & Drop Overlay for Workspace -->
             <div id="copilot-drop-overlay" class="hidden absolute inset-0 z-40 bg-emerald-950/80 backdrop-blur-xs border-4 border-dashed border-emerald-400 rounded-2xl flex flex-col items-center justify-center p-8 text-white text-center pointer-events-none transition-all">
@@ -381,8 +360,8 @@
               <p class="text-sm text-emerald-200 mt-1 max-w-md">Will automatically parse, update OpsHub metrics, and stage for instant Gemini financial analysis!</p>
             </div>
 
-            <!-- Copilot Workspace Header (Single-row layout with controls beside title) -->
-            <div class="bg-slate-900 text-white px-4 py-2.5 flex items-center justify-between gap-3 border-b border-slate-800">
+            <!-- Copilot Workspace Header (Responsive layout with controls beside title) -->
+            <div class="bg-slate-900 text-white px-3.5 sm:px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 border-b border-slate-800">
               <div class="flex items-center gap-2.5 min-w-0">
                 <div class="w-8 h-8 rounded-xl bg-emerald-500 flex items-center justify-center text-slate-950 font-black text-sm shadow-sm shadow-emerald-500/30 flex-shrink-0">
                   ⚡
@@ -497,7 +476,7 @@
             </div>
 
             <!-- Chat Messages Container -->
-            <div id="copilot-messages" class="flex-1 p-5 overflow-y-auto space-y-4 bg-slate-50/50 dark:bg-slate-900/60 min-h-[460px] max-h-[600px]">
+            <div id="copilot-messages" class="flex-1 p-4 sm:p-5 overflow-y-auto space-y-4 bg-slate-50/50 dark:bg-slate-900/60 min-h-[280px]">
               <!-- Populated dynamically via Chat.render() -->
             </div>
 
@@ -922,60 +901,55 @@
         </div>
       </div>
 
-      <!-- 2. MAIN 2-COLUMN WORKSPACE GRID -->
+      <!-- 2. MAIN CO-PILOT 2-PILLAR SPLIT WORKSPACE -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        <!-- LEFT COLUMN: 5-CATEGORY CHERRY-PICK TASK CATALOG & NOTES (7 COLS) -->
-        <div class="lg:col-span-7 space-y-4">
-          
-          <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 shadow-sm space-y-3">
+        <!-- LEFT PILLAR: AI COPILOT ASSISTANT (5 COLS - PROMINENT, SHALLOW, ZERO SCROLL DEPTH) -->
+        <div class="lg:col-span-5 space-y-3 lg:sticky lg:top-20">
+          <div class="bg-white dark:bg-slate-800 rounded-2xl border-2 border-blue-500/30 p-3 sm:p-4 shadow-sm space-y-3">
             <div class="flex items-center justify-between">
-              <div>
-                <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <span>📋</span> Pre-Saved Task Catalog (Cherry-Pick)
-                </h3>
-                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                  Select recurring items completed today. Derived from Rev's 2026 operations log.
-                </p>
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-sm">
+                  🤖
+                </div>
+                <div>
+                  <h3 class="text-sm font-bold text-slate-900 dark:text-white leading-none">
+                    People360 AI Copilot
+                  </h3>
+                  <span class="text-[10px] text-slate-400 dark:text-slate-500">Works out loud · Hubstaff sync</span>
+                </div>
               </div>
-              <div class="flex items-center gap-1.5">
-                <button onclick="P360.selectAllTasks(true)" class="px-2 py-1 text-[10px] font-semibold rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">Select All</button>
-                <button onclick="P360.selectAllTasks(false)" class="px-2 py-1 text-[10px] font-semibold rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">Clear</button>
-              </div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                Live Copilot
+              </span>
             </div>
 
-            <!-- Accordion Container Rendered Dynamically by P360.renderCatalog() -->
-            <div id="p360CatalogContainer" class="space-y-2 text-xs">
-              <!-- Rendered by JS -->
+            <!-- Quick Action Shortcut Pills -->
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px] no-scrollbar">
+              <button type="button" onclick="Chat.usePrompt('IN')" class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold whitespace-nowrap transition-colors flex items-center gap-1 shadow-3xs" title="Clock in and start shift logging window">
+                <span>🟢</span> <span>IN</span>
+              </button>
+              <button type="button" onclick="Chat.usePrompt('EOD')" class="px-2.5 py-1 rounded-lg bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-bold whitespace-nowrap transition-colors flex items-center gap-1 shadow-3xs" title="Clock out and compile daily report for Mike">
+                <span>🔴</span> <span>EOD</span>
+              </button>
+              <button type="button" onclick="Chat.usePrompt('Summarize our completed tasks today and check if anything is missing from our daily checklist.')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 whitespace-nowrap transition-colors flex items-center gap-1 shadow-3xs" title="Summarize shift progress">
+                <span>⚡</span> <span>Summarize</span>
+              </button>
+              <button type="button" onclick="Chat.usePrompt('Remember this rule for P360: ')" class="px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 font-medium whitespace-nowrap transition-colors flex items-center gap-1 shadow-3xs" title="Teach Gemini a persistent rule for People360">
+                <span>🧠</span> <span>Rule</span>
+              </button>
             </div>
+
+            <!-- Copilot Mount Container -->
+            <div id="p360-copilot-container" class="w-full"></div>
           </div>
-
-          <!-- AD-HOC NOTES & PLANS (2 INPUTS) -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <!-- Custom Task Notes -->
-            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 shadow-sm space-y-2">
-              <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                <span>📝</span> Custom Tasks / Hubstaff Notes
-              </label>
-              <textarea id="p360CustomNotes" rows="4" oninput="P360.handleInputChange()" placeholder="Paste work-out-loud notes, specific invoice updates, or Hubstaff activity dumps here..." class="w-full text-xs p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"></textarea>
-              <span class="text-[10px] text-slate-400 dark:text-slate-500 block">Each line becomes a bullet under Progress. AI deduplicates matching items.</span>
-            </div>
-
-            <!-- Plans / To-Do -->
-            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 shadow-sm space-y-2">
-              <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                <span>🎯</span> Plans / To-Do (Next Actions)
-              </label>
-              <textarea id="p360PlansNotes" rows="4" oninput="P360.handleInputChange()" placeholder="Follow-ups for tomorrow, pending timesheets, items awaiting Mike's approval..." class="w-full text-xs p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"></textarea>
-              <span class="text-[10px] text-slate-400 dark:text-slate-500 block">Each line becomes a bullet under Plans/To-Do.</span>
-            </div>
-          </div>
-
         </div>
 
-        <!-- RIGHT COLUMN: COMPILED REPORT PREVIEW & DISPATCH SUITE (5 COLS) -->
-        <div class="lg:col-span-5 space-y-4">
-          <div class="bg-white dark:bg-slate-800 rounded-2xl border-2 border-blue-500/40 p-4 sm:p-5 shadow-sm space-y-3 sticky top-20">
+        <!-- RIGHT PILLAR: OPERATIONS & DISPATCH HUB (7 COLS) -->
+        <div class="lg:col-span-7 space-y-4">
+          
+          <!-- CARD 1: COMPILED REPORT PREVIEW & DISPATCH SUITE -->
+          <div class="bg-white dark:bg-slate-800 rounded-2xl border-2 border-blue-500/40 p-4 sm:p-5 shadow-sm space-y-3">
             
             <div class="flex items-center justify-between">
               <div>
@@ -1026,7 +1000,7 @@
 
             <!-- Editable Report Box -->
             <div class="relative">
-              <textarea id="p360CompiledReport" rows="12" class="w-full text-xs font-mono p-3.5 rounded-xl bg-slate-900 text-slate-100 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 leading-relaxed resize-y" placeholder="Click [Compile Report Now] or check recurring tasks to generate..."></textarea>
+              <textarea id="p360CompiledReport" rows="10" class="w-full text-xs font-mono p-3.5 rounded-xl bg-slate-900 text-slate-100 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 leading-relaxed resize-y" placeholder="Click [Compile Report Now] or check recurring tasks to generate..."></textarea>
             </div>
 
             <!-- Action Buttons Suite -->
@@ -1069,20 +1043,68 @@
             </div>
 
           </div>
+
+          <!-- CARD 2: PRE-SAVED TASK CATALOG (CHERRY-PICK) & NOTES -->
+          <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <span>📋</span> Pre-Saved Task Catalog (Cherry-Pick)
+                </h3>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  Select recurring items completed today. Derived from Rev's 2026 operations log.
+                </p>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button onclick="P360.selectAllTasks(true)" class="px-2 py-1 text-[10px] font-semibold rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">Select All</button>
+                <button onclick="P360.selectAllTasks(false)" class="px-2 py-1 text-[10px] font-semibold rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors">Clear</button>
+              </div>
+            </div>
+
+            <!-- Accordion Container Rendered Dynamically by P360.renderCatalog() -->
+            <div id="p360CatalogContainer" class="space-y-2 text-xs">
+              <!-- Rendered by JS -->
+            </div>
+
+            <!-- AD-HOC NOTES & PLANS (2 INPUTS) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100 dark:border-slate-700/60">
+              <!-- Custom Task Notes -->
+              <div class="space-y-1.5">
+                <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                  <span>📝</span> Custom Tasks / Hubstaff Notes
+                </label>
+                <textarea id="p360CustomNotes" rows="3" oninput="P360.handleInputChange()" placeholder="Paste work-out-loud notes, specific invoice updates, or Hubstaff activity dumps here..." class="w-full text-xs p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"></textarea>
+                <span class="text-[10px] text-slate-400 dark:text-slate-500 block">Each line becomes a bullet under Progress. AI deduplicates matching items.</span>
+              </div>
+
+              <!-- Plans / To-Do -->
+              <div class="space-y-1.5">
+                <label class="block text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                  <span>🎯</span> Plans / To-Do (Next Actions)
+                </label>
+                <textarea id="p360PlansNotes" rows="3" oninput="P360.handleInputChange()" placeholder="Follow-ups for tomorrow, pending timesheets, items awaiting Mike's approval..." class="w-full text-xs p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"></textarea>
+                <span class="text-[10px] text-slate-400 dark:text-slate-500 block">Each line becomes a bullet under Plans/To-Do.</span>
+              </div>
+            </div>
+
+          </div>
+
         </div>
 
       </div>
 
-      <!-- 3. SHIFT HISTORY & PAST REPORTS ARCHIVE -->
-      <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 sm:p-5 shadow-sm space-y-3">
-        <div class="flex items-center justify-between">
-          <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-            <span>📚</span> Shift History & Saved Reports Archive
-          </h3>
-          <span id="p360HistoryCountBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">0 reports</span>
-        </div>
-        
-        <div class="overflow-x-auto">
+      <!-- 3. SHIFT HISTORY & PAST REPORTS ARCHIVE (COLLAPSIBLE AT BASE) -->
+      <details class="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-colors">
+        <summary class="flex items-center justify-between p-4 sm:p-5 cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-750/50 transition-colors">
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span>📚</span> Shift History & Saved Reports Archive
+            </span>
+            <span id="p360HistoryCountBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">0 reports</span>
+          </div>
+          <span class="text-xs text-slate-400 group-open:rotate-180 transition-transform duration-200">▼</span>
+        </summary>
+        <div class="p-4 sm:p-5 pt-0 border-t border-slate-100 dark:border-slate-700/60 overflow-x-auto">
           <table class="w-full text-left text-xs border-collapse">
             <thead>
               <tr class="border-b border-slate-200 dark:border-slate-700 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
@@ -1102,15 +1124,7 @@
             </tbody>
           </table>
         </div>
-      </div>
-
-      <!-- Copilot Container for P360 -->
-      <div class="space-y-3">
-        <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-          <span>🤖</span> People360 AI Copilot
-        </h3>
-        <div id="p360-copilot-container" class="w-full"></div>
-      </div>
+      </details>
     </div>
     <!-- END OF VIEW 3: PEOPLE360 WORKSPACE -->
 
@@ -1241,12 +1255,12 @@
   </div>
 
   <!-- Application Scripts -->
-  <script src="assets/theme.js?v=2.1.1"></script>
-  <script src="assets/parser.js?v=2.1.1"></script>
-  <script src="assets/reconciler.js?v=2.1.1"></script>
-  <script src="assets/templates.js?v=2.1.1"></script>
-  <script src="assets/p360-engine.js?v=2.1.1"></script>
-  <script src="assets/app.js?v=2.1.1"></script>
-  <script src="assets/chat.js?v=2.1.1"></script>
+  <script src="assets/theme.js?v=2.2.0"></script>
+  <script src="assets/parser.js?v=2.2.0"></script>
+  <script src="assets/reconciler.js?v=2.2.0"></script>
+  <script src="assets/templates.js?v=2.2.0"></script>
+  <script src="assets/p360-engine.js?v=2.2.0"></script>
+  <script src="assets/app.js?v=2.2.0"></script>
+  <script src="assets/chat.js?v=2.2.0"></script>
 </body>
 </html>
