@@ -3,12 +3,19 @@
  * Secure proxy between the browser, Gemini API, and Continuous Learning Engine
  */
 
-require("dotenv").config();
+const path = require("path");
+// Ensure .env is loaded regardless of process.cwd()
+require("dotenv").config({ path: path.join(__dirname, ".env") });
+if (!process.env.GEMINI_API_KEY) {
+  require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
+}
+if (!process.env.GEMINI_API_KEY) {
+  require("dotenv").config();
+}
 const express = require("express");
 const cors = require("cors");
 const rateLimit = require("express-rate-limit");
 const fs = require("fs");
-const path = require("path");
 const { execFile } = require("child_process");
 const { GoogleGenAI } = require("@google/genai");
 const { getCohoSystemPrompt } = require("./coho-system-prompt");
