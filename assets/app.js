@@ -457,6 +457,9 @@ const App = {
       const el = document.getElementById('hub-copilot-container');
       if (el) el.scrollIntoView({ behavior: 'smooth' });
     } else if (this.state.currentWorkspace === 'p360') {
+      if (typeof P360 !== 'undefined' && P360.switchLeftTab) {
+        P360.switchLeftTab('copilot');
+      }
       const el = document.getElementById('p360-copilot-container');
       if (el) el.scrollIntoView({ behavior: 'smooth' });
     } else if (this.state.currentWorkspace === 'isi') {
@@ -1848,6 +1851,39 @@ const P360 = {
     } catch (_) {}
     this.renderHistory();
     App.showToast('🗑️ Report removed from history.');
+  },
+
+  switchLeftTab(tabName) {
+    const tasksBtn = document.getElementById('p360TabBtnTasks');
+    const copilotBtn = document.getElementById('p360TabBtnCopilot');
+    const tasksContent = document.getElementById('p360TabContentTasks');
+    const copilotContent = document.getElementById('p360TabContentCopilot');
+
+    if (tabName === 'copilot') {
+      if (tasksContent) tasksContent.classList.add('hidden');
+      if (copilotContent) copilotContent.classList.remove('hidden');
+
+      if (tasksBtn) {
+        tasksBtn.className = 'px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5 transition-all';
+      }
+      if (copilotBtn) {
+        copilotBtn.className = 'px-3 py-1.5 text-xs font-bold rounded-lg bg-white dark:bg-slate-800 text-blue-700 dark:text-blue-300 shadow-xs flex items-center gap-1.5 transition-all';
+      }
+
+      if (window.App && typeof App.mountWorkspaceCopilot === 'function') {
+        App.mountWorkspaceCopilot('p360');
+      }
+    } else {
+      if (copilotContent) copilotContent.classList.add('hidden');
+      if (tasksContent) tasksContent.classList.remove('hidden');
+
+      if (copilotBtn) {
+        copilotBtn.className = 'px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1.5 transition-all';
+      }
+      if (tasksBtn) {
+        tasksBtn.className = 'px-3 py-1.5 text-xs font-bold rounded-lg bg-white dark:bg-slate-800 text-blue-700 dark:text-blue-300 shadow-xs flex items-center gap-1.5 transition-all';
+      }
+    }
   }
 };
 

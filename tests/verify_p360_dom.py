@@ -17,7 +17,12 @@ required_ids = [
     'p360SubjectPreview',
     'p360CompiledReport',
     'p360HistoryCountBadge',
-    'p360HistoryTableBody'
+    'p360HistoryTableBody',
+    'p360TabBtnTasks',
+    'p360TabBtnCopilot',
+    'p360TabContentTasks',
+    'p360TabContentCopilot',
+    'p360-copilot-container'
 ]
 
 missing = []
