@@ -1190,6 +1190,7 @@ const P360 = {
       this.compile(false);
     }
     this.updateSubjectPreview();
+    this.updateIntakeMetrics();
   },
 
   onWorkspaceEnter() {
@@ -1211,6 +1212,7 @@ const P360 = {
     this.updateSubjectPreview();
     this.updateTimerUI();
     this.renderHistory();
+    this.updateIntakeMetrics();
   },
 
   renderCatalog() {
@@ -1420,6 +1422,51 @@ const P360 = {
     this.updateCategoryBadges();
     this.saveDraft();
     this.compile(false);
+    this.updateIntakeMetrics();
+  },
+
+  updateIntakeMetrics() {
+    const checkedEl = document.getElementById('p360MetricsCheckedCount');
+    const customEl = document.getElementById('p360MetricsCustomCount');
+    const plansEl = document.getElementById('p360MetricsPlansCount');
+
+    const checkedCount = this.state.checkedTaskIds.size;
+    const customCount = this.state.customNotes.trim()
+      ? this.state.customNotes.trim().split('\n').filter(l => l.trim().length > 0).length
+      : 0;
+    const plansCount = this.state.plansNotes.trim()
+      ? this.state.plansNotes.trim().split('\n').filter(l => l.trim().length > 0).length
+      : 0;
+
+    if (checkedEl) checkedEl.textContent = checkedCount;
+    if (customEl) customEl.textContent = customCount;
+    if (plansEl) plansEl.textContent = plansCount;
+  },
+
+  insertClientTag(tag) {
+    const el = document.getElementById('p360CustomNotes');
+    if (!el) return;
+    const current = el.value;
+    const prefix = (current.length > 0 && !current.endsWith('\n')) ? '\n' : '';
+    el.value = `${current}${prefix}• [${tag}] `;
+    this.state.customNotes = el.value;
+    this.handleInputChange();
+    el.focus();
+    el.selectionStart = el.selectionEnd = el.value.length;
+    App.showToast(`🏷️ Inserted [${tag}] into Custom Notes`);
+  },
+
+  insertPlanTemplate(text) {
+    const el = document.getElementById('p360PlansNotes');
+    if (!el) return;
+    const current = el.value;
+    const prefix = (current.length > 0 && !current.endsWith('\n')) ? '\n' : '';
+    el.value = `${current}${prefix}• ${text}`;
+    this.state.plansNotes = el.value;
+    this.handleInputChange();
+    el.focus();
+    el.selectionStart = el.selectionEnd = el.value.length;
+    App.showToast(`🎯 Added follow-up plan template`);
   },
 
   // ── Clock In / Out Triggers ──
@@ -1562,6 +1609,7 @@ const P360 = {
 
     this.updateSubjectPreview();
     this.saveDraft();
+    this.updateIntakeMetrics();
 
     if (showToastNotification) {
       App.showToast('⚡ Daily Task Report compiled for Mike!');
