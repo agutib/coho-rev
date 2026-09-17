@@ -47,9 +47,10 @@ assert(!report.toLowerCase().includes('good morning'), 'Report must NOT contain 
 assert(!report.toLowerCase().includes('best,'), 'Report must NOT contain sign-offs');
 assert(!report.toLowerCase().includes('regards'), 'Report must NOT contain sign-offs');
 // Check bullets
+// Check bullets and 4-space sub-bullet indentation
 assert(report.includes('• Reviewed Outstanding Invoices Report'), 'Missing primary bullet');
-assert(report.includes('o SHERMAN (#1042)'), 'Missing sub-bullet o format');
-assert(report.includes('o SIF (#1043)'), 'Missing sub-bullet o format');
+assert(report.includes('    o SHERMAN (#1042)'), 'Missing 4-space indented sub-bullet o format');
+assert(report.includes('    o SIF (#1043)'), 'Missing 4-space indented sub-bullet o format');
 assert(report.includes('• Follow up with Vinnie'), 'Missing plan bullet');
 console.log('  ✅ Passed Two-Bucket Report Structure');
 
@@ -76,7 +77,9 @@ const outlookObj = buildOutlookUrl({
 assert(outlookObj.webUrl.startsWith('https://outlook.office.com/mail/deeplink/compose'), 'Invalid web Outlook deeplink URL');
 assert(outlookObj.webUrl.includes('subject=%5B%20Daily%20Task%20Report%20%E2%80%94%202026-Sep-16%20%5D') || outlookObj.webUrl.includes(encodeURIComponent('[ Daily Task Report — 2026-Sep-16 ]')), 'Subject encoding error');
 assert(outlookObj.mailtoUrl.startsWith('mailto:mike@people360.com'), 'Invalid mailto URL');
-console.log('  ✅ Passed Outlook URL Generation');
+// Verify that sub-bullet indentation uses non-breaking spaces (\u00A0 -> %C2%A0) so Outlook Web cannot collapse it
+assert(outlookObj.webUrl.includes('%C2%A0%C2%A0%C2%A0%C2%A0o%20SHERMAN'), 'Outlook Web URL must protect sub-bullet indentation with non-breaking spaces');
+console.log('  ✅ Passed Outlook URL Generation (with non-collapsing sub-bullet indent)');
 
 // 5. Zero COHO Leakage Test
 console.log('Test 5: Zero COHO HMO Leakage');

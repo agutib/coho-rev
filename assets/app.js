@@ -1696,6 +1696,15 @@ const P360 = {
     });
   },
 
+  copyToClipboard(type = 'text') {
+    if (type === 'slack') return this.copySlack();
+    return this.copyPlainText();
+  },
+
+  saveShiftRecord() {
+    this.saveShift();
+  },
+
   // ── Shift History & Persistence ──
   saveShiftState() {
     try {

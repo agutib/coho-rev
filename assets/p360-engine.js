@@ -337,7 +337,7 @@ function compileLocalReport({ dateStr, checkedTasks = [], customNotes = '', plan
         for (const det of item.details) {
           const cleanDet = String(det).replace(/^[o•\-\*\s]+/, '').trim();
           if (cleanDet) {
-            output += `  o ${cleanDet}\n`;
+            output += `    o ${cleanDet}\n`;
           }
         }
       }
@@ -362,6 +362,26 @@ function compileLocalReport({ dateStr, checkedTasks = [], customNotes = '', plan
 }
 
 /**
+ * Prepare body text specifically for email URL encoding:
+ * Converts leading whitespace on indented sub-bullets (e.g. "    o ") into non-breaking spaces (\u00A0)
+ * so web email clients (like Outlook on the Web) cannot collapse or strip leading indentation in their HTML editors.
+ * Also standardizes line breaks to CRLF (\r\n) per email URL standards.
+ */
+function prepareOutlookBody(bodyText) {
+  if (!bodyText) return '';
+  return bodyText.split(/\r?\n/).map(line => {
+    const match = line.match(/^([ \t]+)(.*)$/);
+    if (match) {
+      const leadingWhitespace = match[1];
+      const rest = match[2];
+      const count = Math.max(leadingWhitespace.length, 4);
+      return '\u00A0'.repeat(count) + rest;
+    }
+    return line;
+  }).join('\r\n');
+}
+
+/**
  * Build Outlook web deep-link and mailto URL
  */
 function buildOutlookUrl({ to = 'revemar@trampettimg.com', cc = 'arnold.gutib@gmail.com', subject = '', body = '' }) {
@@ -369,7 +389,9 @@ function buildOutlookUrl({ to = 'revemar@trampettimg.com', cc = 'arnold.gutib@gm
   const encodedTo = encodeURIComponent(safeTo);
   const encodedCc = cc ? encodeURIComponent(cc) : '';
   const encodedSubject = encodeURIComponent(subject);
-  const encodedBody = encodeURIComponent(body);
+
+  const safeBody = prepareOutlookBody(body);
+  const encodedBody = encodeURIComponent(safeBody);
 
   const ccWeb = encodedCc ? `&cc=${encodedCc}` : '';
   const ccMailto = encodedCc ? `cc=${encodedCc}&` : '';
@@ -377,7 +399,7 @@ function buildOutlookUrl({ to = 'revemar@trampettimg.com', cc = 'arnold.gutib@gm
   const webUrl = `https://outlook.office.com/mail/deeplink/compose?to=${encodedTo}${ccWeb}&subject=${encodedSubject}&body=${encodedBody}`;
   const mailtoUrl = `mailto:${safeTo}?${ccMailto}subject=${encodedSubject}&body=${encodedBody}`;
 
-  return { webUrl, mailtoUrl };
+  return { webUrl, mailtoUrl, preparedBody: safeBody };
 }
 
 // Export for Node.js and Browser
@@ -387,6 +409,7 @@ const P360Engine = {
   P360_CATALOG,
   deduplicateTasks,
   compileLocalReport,
+  prepareOutlookBody,
   buildOutlookUrl
 };
 
