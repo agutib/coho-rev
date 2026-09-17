@@ -1492,11 +1492,11 @@ const P360 = {
 
     if (this.state.isClockedIn) {
       if (badgeEl) {
-        badgeEl.textContent = '🟢 TRACKER ACTIVE (Hubstaff)';
-        badgeEl.className = 'text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 animate-pulse';
+        badgeEl.textContent = '🟢 TRACKER ACTIVE';
+        badgeEl.className = 'text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 whitespace-nowrap animate-pulse';
       }
       if (pulseDot) {
-        pulseDot.className = 'w-4 h-4 rounded-full bg-emerald-500 animate-ping flex-shrink-0';
+        pulseDot.className = 'w-3 h-3 rounded-full bg-emerald-500 animate-ping flex-shrink-0';
       }
       if (startLabel && this.state.startTime) {
         const d = new Date(this.state.startTime);
@@ -1510,10 +1510,10 @@ const P360 = {
     } else {
       if (badgeEl) {
         badgeEl.textContent = this.state.endTime ? '⚪ SHIFT COMPLETED' : '⚪ TRACKER INACTIVE';
-        badgeEl.className = 'text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300';
+        badgeEl.className = 'text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 whitespace-nowrap';
       }
       if (pulseDot) {
-        pulseDot.className = 'w-4 h-4 rounded-full bg-slate-300 dark:bg-slate-600 flex-shrink-0';
+        pulseDot.className = 'w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-600 flex-shrink-0';
       }
       if (startLabel) {
         startLabel.textContent = this.state.endTime 
