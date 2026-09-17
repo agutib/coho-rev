@@ -70,7 +70,7 @@
 
   <!-- Top Navigation & Header Bar -->
   <header class="bg-white dark:bg-slate-800/95 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-xs backdrop-blur-md transition-colors duration-200">
-    <div class="w-full max-w-[1680px] mx-auto px-3.5 sm:px-5 lg:px-6 h-14 sm:h-16 flex items-center justify-between gap-3 sm:gap-4">
+    <div class="w-full mx-auto px-3.5 sm:px-5 lg:px-6 xl:px-8 h-14 sm:h-16 flex items-center justify-between gap-3 sm:gap-4">
       <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0 min-w-0">
         <a href="#/hub" onclick="App.switchWorkspace('hub'); return false;" class="flex items-center gap-2 sm:gap-2.5 group flex-shrink-0">
           <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white font-black text-base sm:text-lg shadow-sm shadow-emerald-500/25 group-hover:scale-105 transition-transform flex-shrink-0">
@@ -222,7 +222,7 @@
   </header>
 
   <!-- Main Content Container -->
-  <main class="w-full max-w-[1680px] mx-auto px-3.5 sm:px-5 lg:px-6 py-3.5 sm:py-4 space-y-4">
+  <main class="w-full mx-auto px-3.5 sm:px-5 lg:px-6 xl:px-8 py-3.5 sm:py-4 space-y-4">
 
     <!-- VIEW 1: REV OPS HUB (EXECUTIVE PORTAL) -->
     <div id="view-hub-home" class="space-y-5">
@@ -384,7 +384,7 @@
                 <!-- Specialist Dropdown (Green Box) -->
                 <div class="relative">
                   <select id="copilot-specialist-select" aria-label="Select Finance Specialist" onchange="Chat.handleSpecialistSelect(this.value)" 
-                    class="appearance-none bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-medium pl-2.5 pr-6 py-1.5 rounded-lg border border-slate-700 hover:border-slate-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs">
+                    class="appearance-none bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium pl-2.5 pr-6 py-1.5 rounded-lg border border-slate-700 hover:border-slate-600 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs">
                     <option value="all">🌟 Specialist: All-Round</option>
                     <option value="controller">📒 Bookkeeper & Controller</option>
                     <option value="ap">💳 AP Invoice Auditor</option>
@@ -399,7 +399,7 @@
                 <!-- COHO Skills Dropdown (Only visible when in COHO workspace) -->
                 <div class="relative hidden" id="copilot-skill-container">
                   <select id="copilot-skill-select" aria-label="Select COHO Skill Workflow" onchange="Chat.handleSkillSelect(this)" 
-                    class="appearance-none bg-slate-800 hover:bg-slate-750 text-emerald-300 hover:text-emerald-200 text-xs font-medium pl-2.5 pr-6 py-1.5 rounded-lg border border-slate-700 hover:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs">
+                    class="appearance-none bg-slate-800 hover:bg-slate-700 text-emerald-300 hover:text-emerald-200 text-xs font-medium pl-2.5 pr-6 py-1.5 rounded-lg border border-slate-700 hover:border-emerald-700 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer shadow-2xs">
                     <option value="" selected disabled>🛠️ COHO Skills & SOPs ▾</option>
                     <option value="rent-arrears">⚖️ Rent & Arrears Protocol</option>
                     <option value="reconciliation">📒 3-Way Reconcile</option>
@@ -938,7 +938,7 @@
 
                 <!-- Quick Header Actions: [⚡ Summarize] beside [🧠 Teach Rule] -->
                 <div class="flex items-center gap-1.5">
-                  <button type="button" onclick="Chat.usePrompt('Summarize our completed tasks today and check if anything is missing from our daily checklist.')" class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-slate-100 dark:bg-slate-750 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-colors flex items-center gap-1 shadow-3xs" title="Summarize shift tasks and verify completeness">
+                  <button type="button" onclick="Chat.usePrompt('Summarize our completed tasks today and check if anything is missing from our daily checklist.')" class="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-amber-50 dark:bg-amber-950/70 hover:bg-amber-100 dark:hover:bg-amber-900/70 text-amber-800 dark:text-amber-300 border border-amber-300/80 dark:border-amber-700/80 transition-colors flex items-center gap-1 shadow-3xs" title="Summarize shift tasks and verify completeness">
                     <span>⚡</span> <span>Summarize</span>
                   </button>
                   <button type="button" onclick="Chat.usePrompt('Remember this rule for P360: ')" class="px-2.5 py-1 text-[11px] font-medium rounded-lg bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 transition-colors flex items-center gap-1 shadow-3xs" title="Teach Gemini a persistent rule for People360">
@@ -978,10 +978,10 @@
                   <button type="button" onclick="Chat.usePrompt('What operational rules, accounts, and client codes are saved for People360?')" class="px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 font-medium whitespace-nowrap transition-colors flex items-center gap-1 shadow-3xs">
                     <span>🔍</span> <span>Lookup P360 Rules</span>
                   </button>
-                  <button type="button" onclick="Chat.usePrompt('Check if our compiled Daily Task Report follows Mike\'s strict format: zero greetings, 2 buckets, bullet points.')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-750 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-medium whitespace-nowrap transition-colors flex items-center gap-1 shadow-3xs">
-                    <span>🛡️</span> <span>Audit Mike\'s Guidelines</span>
+                  <button type="button" onclick="Chat.usePrompt(&quot;Check if our compiled Daily Task Report follows Mike's strict format: zero greetings, 2 buckets, bullet points.&quot;)" class="px-2.5 py-1 rounded-lg bg-purple-50 dark:bg-purple-950/70 hover:bg-purple-100 dark:hover:bg-purple-900/70 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 font-medium whitespace-nowrap transition-colors flex items-center gap-1 shadow-3xs">
+                    <span>🛡️</span> <span>Audit Mike's Guidelines</span>
                   </button>
-                  <button type="button" onclick="Chat.usePrompt('Draft a concise next-day follow-up plan for Mike regarding pending timesheets and client invoices.')" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-750 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-medium whitespace-nowrap transition-colors flex items-center gap-1 shadow-3xs">
+                  <button type="button" onclick="Chat.usePrompt(&quot;Draft a concise next-day follow-up plan for Mike regarding pending timesheets and client invoices.&quot;)" class="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/70 hover:bg-emerald-100 dark:hover:bg-emerald-900/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-medium whitespace-nowrap transition-colors flex items-center gap-1 shadow-3xs">
                     <span>💡</span> <span>Suggest Next Actions</span>
                   </button>
                 </div>
@@ -1169,7 +1169,7 @@
 
       <!-- 3. SHIFT HISTORY & PAST REPORTS ARCHIVE (COLLAPSIBLE AT BASE) -->
       <details class="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-colors">
-        <summary class="flex items-center justify-between p-4 sm:p-5 cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-750/50 transition-colors">
+        <summary class="flex items-center justify-between p-4 sm:p-5 cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
           <div class="flex items-center gap-2">
             <span class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
               <span>📚</span> Shift History & Saved Reports Archive
@@ -1329,12 +1329,12 @@
   </div>
 
   <!-- Application Scripts -->
-  <script src="assets/theme.js?v=2.4.0"></script>
-  <script src="assets/parser.js?v=2.4.0"></script>
-  <script src="assets/reconciler.js?v=2.4.0"></script>
-  <script src="assets/templates.js?v=2.4.0"></script>
-  <script src="assets/p360-engine.js?v=2.4.0"></script>
-  <script src="assets/app.js?v=2.4.0"></script>
-  <script src="assets/chat.js?v=2.4.0"></script>
+  <script src="assets/theme.js?v=2.4.1"></script>
+  <script src="assets/parser.js?v=2.4.1"></script>
+  <script src="assets/reconciler.js?v=2.4.1"></script>
+  <script src="assets/templates.js?v=2.4.1"></script>
+  <script src="assets/p360-engine.js?v=2.4.1"></script>
+  <script src="assets/app.js?v=2.4.1"></script>
+  <script src="assets/chat.js?v=2.4.1"></script>
 </body>
 </html>
