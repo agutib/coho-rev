@@ -18,23 +18,26 @@ const rateLimit = require("express-rate-limit");
 const fs = require("fs");
 const { execFile } = require("child_process");
 const { GoogleGenAI } = require("@google/genai");
+const Anthropic = require("@anthropic-ai/sdk");
 const { getCohoSystemPrompt } = require("./coho-system-prompt");
 
 const app = express();
 app.disable("x-powered-by"); // Remediates INFO-001
 
 const PORT = process.env.PORT || 3001;
-const API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const GITHUB_PAT = process.env.GITHUB_PAT;
 const AUTH_TOKEN = process.env.COHO_AUTH_TOKEN || "c3f89002f28c39474375003faf4f51cccce5a77b515696194ba280c3b5ee4f10";
 const PROJECT_ROOT = path.join(__dirname, "..");
 
-if (!API_KEY) {
-  console.error("FATAL: GEMINI_API_KEY is not set in .env");
+if (!GEMINI_API_KEY && !ANTHROPIC_API_KEY) {
+  console.error("FATAL: Neither GEMINI_API_KEY nor ANTHROPIC_API_KEY is set in .env");
   process.exit(1);
 }
 
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+const ai = GEMINI_API_KEY ? new GoogleGenAI({ apiKey: GEMINI_API_KEY }) : null;
+const anthropic = ANTHROPIC_API_KEY ? new Anthropic({ apiKey: ANTHROPIC_API_KEY }) : null;
 
 // ── Middleware ─────────────────────────────────────────
 app.use(express.json({ limit: "50kb" }));
@@ -143,7 +146,7 @@ app.post("/api/chat", async (req, res) => {
     return res.status(401).json({ error: "Unauthorized access. Valid authentication required." });
   }
 
-  const { message, history = [], clientContext } = req.body;
+  const { message, history = [], clientContext, model = "claude-3-7-sonnet" } = req.body;
 
   if (!message || typeof message !== "string" || message.trim().length === 0) {
     return res.status(400).json({ error: "Message is required." });
@@ -151,16 +154,6 @@ app.post("/api/chat", async (req, res) => {
   if (message.length > 4000) {
     return res.status(400).json({ error: "Message too long." });
   }
-
-  // Build conversation history
-  const contents = [];
-  const recentHistory = history.slice(-20);
-  for (const turn of recentHistory) {
-    if (turn.role === "user" || turn.role === "model") {
-      contents.push({ role: turn.role, parts: [{ text: turn.text }] });
-    }
-  }
-  contents.push({ role: "user", parts: [{ text: message.trim() }] });
 
   // Set up SSE streaming
   res.setHeader("Content-Type", "text/event-stream");
@@ -175,25 +168,90 @@ app.post("/api/chat", async (req, res) => {
       currentSystemPrompt += `\n\n---\n## 🎯 ACTIVE WORKSPACE CONTEXT: [${clientContext.toUpperCase()}]\nRev is currently in the ${clientContext.toUpperCase()} workspace. Prioritize this organization's terminology, context, and operational rules unless she explicitly mentions another client.\n`;
     }
 
-    const responseStream = await ai.models.generateContentStream({
-      model: "gemini-3.6-flash",
-      config: {
-        systemInstruction: currentSystemPrompt,
-        temperature: 0.7,
-        maxOutputTokens: 1024,
-      },
-      contents,
-    });
+    const requestedModel = String(model || "").toLowerCase();
+    const isClaude = requestedModel.startsWith("claude") || requestedModel.includes("anthropic");
 
-    for await (const chunk of responseStream) {
-      const text = chunk.text;
-      if (text) {
-        fullResponse += text;
-        res.write(`data: ${JSON.stringify({ text })}\n\n`);
+    if (isClaude && anthropic) {
+      let claudeModelId = "claude-3-7-sonnet-20250219";
+      if (requestedModel.includes("haiku")) {
+        claudeModelId = "claude-3-5-haiku-20241022";
+      } else if (requestedModel.includes("3-5-sonnet")) {
+        claudeModelId = "claude-3-5-sonnet-20241022";
       }
+
+      // Build conversation history for Claude
+      const claudeMessages = [];
+      const recentHistory = history.slice(-20);
+      for (const turn of recentHistory) {
+        const role = (turn.role === "model" || turn.role === "assistant") ? "assistant" : "user";
+        const text = (turn.text || turn.content || "").trim();
+        if (text) {
+          if (claudeMessages.length > 0 && claudeMessages[claudeMessages.length - 1].role === role) {
+            claudeMessages[claudeMessages.length - 1].content += "\n\n" + text;
+          } else {
+            claudeMessages.push({ role, content: text });
+          }
+        }
+      }
+      while (claudeMessages.length > 0 && claudeMessages[0].role !== "user") {
+        claudeMessages.shift();
+      }
+      if (claudeMessages.length > 0 && claudeMessages[claudeMessages.length - 1].role === "user") {
+        claudeMessages[claudeMessages.length - 1].content += "\n\n" + message.trim();
+      } else {
+        claudeMessages.push({ role: "user", content: message.trim() });
+      }
+
+      const stream = anthropic.messages.stream({
+        model: claudeModelId,
+        max_tokens: 2048,
+        temperature: 0.7,
+        system: currentSystemPrompt,
+        messages: claudeMessages,
+      });
+
+      for await (const event of stream) {
+        if (event.type === "content_block_delta" && event.delta?.type === "text_delta") {
+          const text = event.delta.text;
+          if (text) {
+            fullResponse += text;
+            res.write(`data: ${JSON.stringify({ text })}\n\n`);
+          }
+        }
+      }
+    } else if (ai) {
+      // Gemini execution
+      const contents = [];
+      const recentHistory = history.slice(-20);
+      for (const turn of recentHistory) {
+        if (turn.role === "user" || turn.role === "model") {
+          contents.push({ role: turn.role, parts: [{ text: turn.text }] });
+        }
+      }
+      contents.push({ role: "user", parts: [{ text: message.trim() }] });
+
+      const responseStream = await ai.models.generateContentStream({
+        model: "gemini-3.6-flash",
+        config: {
+          systemInstruction: currentSystemPrompt,
+          temperature: 0.7,
+          maxOutputTokens: 2048,
+        },
+        contents,
+      });
+
+      for await (const chunk of responseStream) {
+        const text = chunk.text;
+        if (text) {
+          fullResponse += text;
+          res.write(`data: ${JSON.stringify({ text })}\n\n`);
+        }
+      }
+    } else {
+      throw new Error("No configured AI model provider available. Check .env for API keys.");
     }
 
-    // Process background learning tags if present
+    // Process background learning tags if present (works identically for Claude & Gemini)
     const ruleMatch = fullResponse.match(/\[\[LEARNED_RULE:\s*(\{.*?\})\s*\]\]/);
     if (ruleMatch) {
       try {
@@ -222,11 +280,11 @@ app.post("/api/chat", async (req, res) => {
     res.write("data: [DONE]\n\n");
     res.end();
   } catch (err) {
-    console.error("Gemini API error:", err.message);
+    console.error("AI service error:", err.message);
     if (!res.headersSent) {
-      res.status(500).json({ error: "AI service error. Please try again." });
+      res.status(500).json({ error: "AI service error: " + err.message });
     } else {
-      res.write(`data: ${JSON.stringify({ error: "AI service error. Please try again." })}\n\n`);
+      res.write(`data: ${JSON.stringify({ error: "AI service error: " + err.message })}\n\n`);
       res.end();
     }
   }
@@ -238,7 +296,12 @@ app.get("/api/health", (req, res) => {
     status: "ok",
     service: "coho-chat-api",
     learningEngine: "active",
-    financeSpecialists: 6
+    financeSpecialists: 6,
+    providers: {
+      gemini: !!ai,
+      anthropic: !!anthropic
+    },
+    defaultModel: anthropic ? "claude-3-7-sonnet" : "gemini-3.6-flash"
   });
 });
 

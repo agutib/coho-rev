@@ -374,13 +374,24 @@
                 <div class="min-w-0">
                   <div class="flex items-center gap-1.5">
                     <h2 class="text-sm font-bold text-white leading-none whitespace-nowrap">Antigravity AI Copilot</h2>
-                    <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 whitespace-nowrap">Gemini 3.6 Flash</span>
+                    <span id="copilot-model-badge" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 whitespace-nowrap transition-all">🧠 Claude 3.7 Sonnet</span>
                   </div>
                   <p class="text-[11px] text-slate-400 mt-0.5 truncate hidden 2xl:block">Drag-and-drop CSVs or ask any question · Learns rules dynamically</p>
                 </div>
               </div>
 
               <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+                <!-- Model Switcher (Anthropic Claude & Google Gemini Dual-Engine) -->
+                <div class="relative">
+                  <select id="copilot-model-select" aria-label="Select AI Model" onchange="Chat.handleModelSelect(this.value)" 
+                    class="appearance-none bg-slate-800 hover:bg-slate-700 text-amber-300 hover:text-amber-200 text-xs font-semibold pl-2.5 pr-6 py-1.5 rounded-lg border border-slate-700 hover:border-amber-600 focus:outline-none focus:ring-1 focus:ring-amber-500 cursor-pointer shadow-2xs">
+                    <option value="claude-3-7-sonnet" selected>🧠 Claude 3.7 Sonnet</option>
+                    <option value="claude-3-5-haiku">⚡ Claude 3.5 Haiku</option>
+                    <option value="gemini-3.6-flash">✨ Gemini 3.6 Flash</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-amber-400 text-[10px]">▼</div>
+                </div>
+
                 <!-- Specialist Dropdown (Green Box) -->
                 <div class="relative">
                   <select id="copilot-specialist-select" aria-label="Select Finance Specialist" onchange="Chat.handleSpecialistSelect(this.value)" 
@@ -1329,12 +1340,12 @@
   </div>
 
   <!-- Application Scripts -->
-  <script src="assets/theme.js?v=2.4.2"></script>
-  <script src="assets/parser.js?v=2.4.2"></script>
-  <script src="assets/reconciler.js?v=2.4.2"></script>
-  <script src="assets/templates.js?v=2.4.2"></script>
-  <script src="assets/p360-engine.js?v=2.4.2"></script>
-  <script src="assets/app.js?v=2.4.2"></script>
-  <script src="assets/chat.js?v=2.4.2"></script>
+  <script src="assets/theme.js?v=2.5.0"></script>
+  <script src="assets/parser.js?v=2.5.0"></script>
+  <script src="assets/reconciler.js?v=2.5.0"></script>
+  <script src="assets/templates.js?v=2.5.0"></script>
+  <script src="assets/p360-engine.js?v=2.5.0"></script>
+  <script src="assets/app.js?v=2.5.0"></script>
+  <script src="assets/chat.js?v=2.5.0"></script>
 </body>
 </html>

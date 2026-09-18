@@ -71,7 +71,70 @@ const Chat = (() => {
     }
   };
 
+  const MODEL_CONFIGS = {
+    "claude-3-7-sonnet": {
+      id: "claude-3-7-sonnet",
+      name: "Claude 3.7 Sonnet",
+      shortName: "Claude 3.7",
+      icon: "🧠",
+      provider: "anthropic",
+      badgeClass: "bg-amber-500/20 text-amber-300 border-amber-500/30"
+    },
+    "claude-3-5-haiku": {
+      id: "claude-3-5-haiku",
+      name: "Claude 3.5 Haiku",
+      shortName: "Claude Haiku",
+      icon: "⚡",
+      provider: "anthropic",
+      badgeClass: "bg-orange-500/20 text-orange-300 border-orange-500/30"
+    },
+    "gemini-3.6-flash": {
+      id: "gemini-3.6-flash",
+      name: "Gemini 3.6 Flash",
+      shortName: "Gemini 3.6",
+      icon: "✨",
+      provider: "gemini",
+      badgeClass: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+    }
+  };
+
+  let activeModel = localStorage.getItem("coho_ai_model") || "claude-3-7-sonnet";
+
+  function updateModelBadgeUI() {
+    const badge = document.getElementById("copilot-model-badge");
+    const select = document.getElementById("copilot-model-select");
+    const cfg = MODEL_CONFIGS[activeModel] || MODEL_CONFIGS["claude-3-7-sonnet"];
+    if (select && select.value !== activeModel) {
+      select.value = activeModel;
+    }
+    if (badge) {
+      badge.className = `text-[10px] font-semibold px-2 py-0.5 rounded-full border whitespace-nowrap transition-all ${cfg.badgeClass}`;
+      badge.textContent = `${cfg.icon} ${cfg.name}`;
+    }
+    const input = document.getElementById("copilot-input");
+    if (input && !input.value) {
+      const providerName = cfg.provider === "anthropic" ? "Claude" : "Gemini";
+      input.placeholder = `Ask ${providerName} about rent, arrears, invoices, or drop a CSV here...`;
+    }
+  }
+
+  function handleModelSelect(modelId) {
+    if (MODEL_CONFIGS[modelId]) {
+      activeModel = modelId;
+      localStorage.setItem("coho_ai_model", modelId);
+      updateModelBadgeUI();
+      if (typeof App !== "undefined" && App.showToast) {
+        App.showToast(`Switched to ${MODEL_CONFIGS[modelId].name}`);
+      }
+    }
+  }
+
+  function getActiveModel() {
+    return activeModel;
+  }
+
   function init() {
+    updateModelBadgeUI();
     renderWorkspaceWelcome();
     bindWorkspaceEvents();
   }
@@ -628,7 +691,8 @@ const Chat = (() => {
         body: JSON.stringify({
           message: messageWithContext,
           history: history.slice(0, -1),
-          clientContext: currentClientContext
+          clientContext: currentClientContext,
+          model: activeModel
         })
       });
 
@@ -924,7 +988,10 @@ const Chat = (() => {
     autoResize,
     askAboutLoadedFile,
     dismissLoadedFileBar,
-    setClientContext
+    setClientContext,
+    handleModelSelect,
+    getActiveModel,
+    updateModelBadgeUI
   };
 })();
 
