@@ -72,17 +72,17 @@ const Chat = (() => {
   };
 
   const MODEL_CONFIGS = {
-    "claude-3-7-sonnet": {
-      id: "claude-3-7-sonnet",
-      name: "Claude 3.7 Sonnet",
-      shortName: "Claude 3.7",
+    "claude-sonnet-4-6": {
+      id: "claude-sonnet-4-6",
+      name: "Claude Sonnet",
+      shortName: "Claude Sonnet",
       icon: "🧠",
       provider: "anthropic",
       badgeClass: "bg-amber-500/20 text-amber-300 border-amber-500/30"
     },
-    "claude-3-5-haiku": {
-      id: "claude-3-5-haiku",
-      name: "Claude 3.5 Haiku",
+    "claude-haiku-4-5-20251001": {
+      id: "claude-haiku-4-5-20251001",
+      name: "Claude Haiku",
       shortName: "Claude Haiku",
       icon: "⚡",
       provider: "anthropic",
@@ -98,7 +98,10 @@ const Chat = (() => {
     }
   };
 
-  let activeModel = localStorage.getItem("coho_ai_model") || "claude-3-7-sonnet";
+  let savedModel = localStorage.getItem("coho_ai_model") || "claude-sonnet-4-6";
+  if (savedModel === "claude-3-7-sonnet" || savedModel === "claude-3-5-sonnet") savedModel = "claude-sonnet-4-6";
+  if (savedModel === "claude-3-5-haiku") savedModel = "claude-haiku-4-5-20251001";
+  let activeModel = MODEL_CONFIGS[savedModel] ? savedModel : "claude-sonnet-4-6";
 
   function updateModelBadgeUI() {
     const badge = document.getElementById("copilot-model-badge");

@@ -172,11 +172,13 @@ app.post("/api/chat", async (req, res) => {
     const isClaude = requestedModel.startsWith("claude") || requestedModel.includes("anthropic");
 
     if (isClaude && anthropic) {
-      let claudeModelId = "claude-3-7-sonnet-20250219";
+      let claudeModelId = "claude-sonnet-4-6";
       if (requestedModel.includes("haiku")) {
-        claudeModelId = "claude-3-5-haiku-20241022";
-      } else if (requestedModel.includes("3-5-sonnet")) {
-        claudeModelId = "claude-3-5-sonnet-20241022";
+        claudeModelId = "claude-haiku-4-5-20251001";
+      } else if (requestedModel.includes("opus")) {
+        claudeModelId = "claude-opus-4-6";
+      } else {
+        claudeModelId = "claude-sonnet-4-6";
       }
 
       // Build conversation history for Claude
@@ -301,7 +303,7 @@ app.get("/api/health", (req, res) => {
       gemini: !!ai,
       anthropic: !!anthropic
     },
-    defaultModel: anthropic ? "claude-3-7-sonnet" : "gemini-3.6-flash"
+    defaultModel: anthropic ? "claude-sonnet-4-6" : "gemini-3.6-flash"
   });
 });
 
