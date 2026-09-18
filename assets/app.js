@@ -1639,8 +1639,26 @@ const P360 = {
     });
 
     if (mode === 'mailto') {
-      window.location.href = urls.mailtoUrl;
-      App.showToast('💻 Opening Desktop Outlook (To & Cc auto-filled)...');
+      // mailto: URIs have a ~2000-char OS limit. If the URL is too long,
+      // copy the body to clipboard and open a short mailto with just To/Cc/Subject.
+      if (urls.mailtoUrl.length > 1800) {
+        const shortMailto = `mailto:${to}?${cc ? 'cc=' + encodeURIComponent(cc) + '&' : ''}subject=${encodeURIComponent(subject)}`;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(body).then(() => {
+            window.location.href = shortMailto;
+            App.showToast('💻 Outlook opening! Body copied to clipboard — paste into email with Ctrl+V.');
+          }).catch(() => {
+            window.location.href = shortMailto;
+            App.showToast('💻 Opening Desktop Outlook (To & Cc auto-filled)...');
+          });
+        } else {
+          window.location.href = shortMailto;
+          App.showToast('💻 Opening Desktop Outlook (To & Cc auto-filled)...');
+        }
+      } else {
+        window.location.href = urls.mailtoUrl;
+        App.showToast('💻 Opening Desktop Outlook (To & Cc auto-filled)...');
+      }
     } else {
       // Note: Microsoft Outlook on the web strips &cc= from deep-link URLs.
       // We automatically copy the CC address to the clipboard so Rev can easily press Ctrl+V in the Cc field.
