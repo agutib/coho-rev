@@ -1170,8 +1170,11 @@ const P360 = {
     // 3. Restore shift state
     this.loadShiftState();
 
-    // 4. Restore saved draft
+    // 4. Restore saved draft (date is always kept as today — see loadDraft())
     this.loadDraft();
+
+    // Re-assert today's date on the input after draft load (guards against any stale override)
+    if (dateInput) dateInput.value = this.state.reportDate;
 
     // 5. If no checkedTaskIds from draft, populate all defaultChecked tasks
     if (this.state.checkedTaskIds.size === 0 && window.P360Engine && window.P360Engine.P360_CATALOG) {
@@ -1785,7 +1788,16 @@ const P360 = {
       const raw = localStorage.getItem('p360_draft');
       if (raw) {
         const draft = JSON.parse(raw);
-        if (draft.reportDate) this.state.reportDate = draft.reportDate;
+
+        // Always use today's date — never let a stale draft from a previous day
+        // overwrite the date (which would make the subject show yesterday's date).
+        // Only restore the draft date if it matches today (same-day resume).
+        const todayDate = this.state.reportDate; // already set in init()
+        if (draft.reportDate && draft.reportDate === todayDate) {
+          // Same-day draft — safe to keep the stored date (no-op, already correct)
+        }
+        // Always keep this.state.reportDate = todayDate (do NOT restore from draft)
+
         if (Array.isArray(draft.checkedIds)) {
           this.state.checkedTaskIds = new Set(draft.checkedIds);
         }
