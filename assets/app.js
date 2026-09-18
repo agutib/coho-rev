@@ -1639,24 +1639,35 @@ const P360 = {
     });
 
     if (mode === 'mailto') {
+      // window.location.href = mailto: is blocked on HTTPS by many browsers.
+      // The reliable cross-browser fix is to create a hidden <a> and click it.
+      function triggerMailto(hrefUrl) {
+        const a = document.createElement('a');
+        a.href = hrefUrl;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => document.body.removeChild(a), 200);
+      }
+
       // mailto: URIs have a ~2000-char OS limit. If the URL is too long,
       // copy the body to clipboard and open a short mailto with just To/Cc/Subject.
       if (urls.mailtoUrl.length > 1800) {
         const shortMailto = `mailto:${to}?${cc ? 'cc=' + encodeURIComponent(cc) + '&' : ''}subject=${encodeURIComponent(subject)}`;
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(body).then(() => {
-            window.location.href = shortMailto;
-            App.showToast('💻 Outlook opening! Body copied to clipboard — paste into email with Ctrl+V.');
+            triggerMailto(shortMailto);
+            App.showToast('💻 Outlook opening! Report body copied — paste with Ctrl+V into the email body.');
           }).catch(() => {
-            window.location.href = shortMailto;
+            triggerMailto(shortMailto);
             App.showToast('💻 Opening Desktop Outlook (To & Cc auto-filled)...');
           });
         } else {
-          window.location.href = shortMailto;
+          triggerMailto(shortMailto);
           App.showToast('💻 Opening Desktop Outlook (To & Cc auto-filled)...');
         }
       } else {
-        window.location.href = urls.mailtoUrl;
+        triggerMailto(urls.mailtoUrl);
         App.showToast('💻 Opening Desktop Outlook (To & Cc auto-filled)...');
       }
     } else {
